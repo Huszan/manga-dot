@@ -1,0 +1,11 @@
+
+<mat-card [ngClass]="size + ' card'">
+  <mat-card-header>
+    <mat-card-title>{{ manga.name }}</mat-card-title>
+    <mat-card-subtitle>{{ manga.chapterCount }} pages</mat-card-subtitle>
+  </mat-card-header>
+  <img mat-card-image [src]="manga.pic" alt="">
+  <mat-card-actions>
+    <button mat-flat-button color="accent" (click)="onClickRead($event)">Read</button>
+  </mat-card-actions>
+</mat-card>

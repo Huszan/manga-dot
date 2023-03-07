@@ -1,0 +1,5 @@
+<div class="manga-list-container">
+  <ng-container *ngFor="let manga of mangas | async; let i = index">
+    <app-manga-front-display [manga]="manga" [size]="'med'"></app-manga-front-display>
+  </ng-container>
+</div>
