@@ -1,22 +1,57 @@
+@import "src/styles";
 
-.card {
-  &.small {
-    width: 100px;
+button {
+  border: none;
+}
+
+.manga-container {
+  position: relative;
+  width: 140px;
+  height: 210px;
+  overflow: hidden;
+  border-radius: 5px;
+  cursor: pointer;
+
+  img {
+    width: inherit;
+    height: inherit;
+    transition: 0.2s ease-out;
   }
-  &.med {
-    width: 200px;
+
+  .manga-title,.manga-chapters {
+    position: absolute;
+    left: 0;
+    padding: 5px;
+
+    max-width: inherit;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+
+    opacity: 80%;
   }
-  &.big {
-    width: 300px;
+
+  .manga-title {
+    bottom: 0;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: $light-text;
+    background-color: $dark-bg-lighter-5;
+  }
+
+  .manga-chapters {
+    top: 0;
+    color: $light-accent-text;
+    background-color: $dark-bg-lighter-10;
   }
 }
 
-.card img {
-  aspect-ratio: 1/1.5;
-}
-
-@media screen and (max-width: 450px) {
-  .card {
-    width: 100px !important;
+.manga-container:hover,.manga-container:focus {
+  img {
+    scale: 105%;
+  }
+  .manga-title,.manga-chapters {
+    opacity: 100%;
   }
 }

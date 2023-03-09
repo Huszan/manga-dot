@@ -9,10 +9,9 @@ import {IMangaForm} from "../../../types/manga-form.type";
 export class MangaFrontDisplayComponent {
 
   @Input() manga!: IMangaForm;
-  @Input() size: 'big' | 'med' | 'small' = 'med';
-  @Output() clickedRead = new EventEmitter();
+  @Output() onRead = new EventEmitter();
 
   onClickRead(event: any) {
-    this.clickedRead.emit(event);
+    this.onRead.emit(event);
   }
 }

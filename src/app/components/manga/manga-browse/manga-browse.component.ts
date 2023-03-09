@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {MangaService} from "../../../services/data/manga.service";
 import {IMangaForm} from "../../../types/manga-form.type";
 import {BehaviorSubject, Subscription} from "rxjs";
@@ -9,9 +9,12 @@ import {BehaviorSubject, Subscription} from "rxjs";
   styleUrls: ['./manga-browse.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MangaBrowseComponent implements OnInit {
+export class MangaBrowseComponent implements OnInit,OnDestroy {
 
   mangas = new BehaviorSubject<IMangaForm[]>([]);
+  isLoading = new BehaviorSubject<boolean>(false);
+
+  chosenManga: number | undefined;
 
   private _subscriptions: Subscription[] = [];
 
@@ -20,10 +23,35 @@ export class MangaBrowseComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    let sub = this.mangaService.mangaList$.subscribe((data) => {
+    let mangaListSub = this.mangaService.displayedMangaList$.subscribe((data) => {
       this.mangas.next(data);
     })
-    this._subscriptions.push(sub);
+    let loadingSub = this.mangaService.isLoading$.subscribe((data) => {
+      this.isLoading.next(data);
+    })
+    this._subscriptions.push(mangaListSub);
+    this._subscriptions.push(loadingSub);
   }
 
+  loadMore() {
+    this.mangaService.loadMorePages();
+  }
+
+  isEverythingLoaded() {
+    return this.mangaService.isEverythingLoaded;
+  }
+
+  onSearchInput(event: any) {
+    this.mangaService.searchInput = event.target.value;
+  }
+
+  onMangaSelect(index: number) {
+    this.chosenManga = index;
+  }
+
+  ngOnDestroy() {
+    this._subscriptions.forEach(sub => {
+      sub.unsubscribe();
+    })
+  }
 }

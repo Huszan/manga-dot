@@ -20,29 +20,39 @@ import {MangaHttpService} from "./services/http/manga-http.service";
 import {HttpClientModule} from "@angular/common/http";
 import { MangaFrontDisplayComponent } from './components/manga/manga-front-display/manga-front-display.component';
 import {MatCardModule} from "@angular/material/card";
+import {DragDropModule} from "@angular/cdk/drag-drop";
+import {MatListModule} from "@angular/material/list";
+import {MatInputModule} from "@angular/material/input";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MangaBrowseComponent,
     MangaFrontDisplayComponent,
+    NavbarComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatSlideToggleModule,
-    MatToolbarModule,
-    MatButtonToggleModule,
-    MatAutocompleteModule,
-    MatDatepickerModule,
-    MatButtonModule,
-    MatIconModule,
-    MatMenuModule,
-    MatSidenavModule,
-    HttpClientModule,
-    MatCardModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatSlideToggleModule,
+        MatToolbarModule,
+        MatButtonToggleModule,
+        MatAutocompleteModule,
+        MatDatepickerModule,
+        MatButtonModule,
+        MatIconModule,
+        MatMenuModule,
+        MatSidenavModule,
+        HttpClientModule,
+        MatCardModule,
+        DragDropModule,
+        MatListModule,
+        MatInputModule,
+        MatProgressSpinnerModule
+    ],
   providers: [
     MangaService,
     MangaHttpService,

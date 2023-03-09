@@ -1,0 +1,20 @@
+
+.site-content-width {
+  max-width: 1300px;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+.logo {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  img {
+    width: 50px;
+    height: 50px;
+  }
+  * {
+    margin: 0;
+  }
+}
