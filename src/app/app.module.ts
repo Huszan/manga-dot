@@ -24,7 +24,8 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
 import {MatListModule} from "@angular/material/list";
 import {MatInputModule} from "@angular/material/input";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import { NavbarComponent } from './components/navbar/navbar.component';
+import { NavbarComponent } from './components/nav/navbar/navbar.component';
+import { SidenavComponent } from './components/nav/sidenav/sidenav.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     MangaBrowseComponent,
     MangaFrontDisplayComponent,
     NavbarComponent,
+    SidenavComponent,
   ],
     imports: [
         BrowserModule,

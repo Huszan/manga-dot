@@ -1,8 +1,13 @@
 
-<div class="min-height-wrapper">
-  <app-navbar></app-navbar>
-  <div class="site-content">
-    <router-outlet></router-outlet>
-  </div>
-</div>
+<mat-drawer-container class="full-height-wrapper" hasBackdrop=true>
+  <mat-drawer #sidenav mode="over" position="end">
+    <app-sidenav></app-sidenav>
+  </mat-drawer>
+  <mat-drawer-content class="full-height-wrapper">
+    <app-navbar [sidenavDrawer]="sidenav"></app-navbar>
+    <div class="site-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-content>
+</mat-drawer-container>
 

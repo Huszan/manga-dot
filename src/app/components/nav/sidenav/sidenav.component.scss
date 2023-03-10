@@ -1,0 +1,14 @@
+
+.side-drawer {
+  min-width: 200px;
+  height: 100%;
+}
+
+a {
+  box-sizing: border-box;
+}
+
+a.active {
+  border-left: #ffc300 6px solid;
+  background-color: #fafafa;
+}
