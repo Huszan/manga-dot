@@ -1,7 +1,7 @@
 <div class="side-drawer">
   <mat-nav-list>
     <a *ngFor="let route of routes; let i = index" mat-list-item routerLinkActive="active" [routerLink]="route.path">
-      {{ titles[i] }}
+      {{ route.title }}
     </a>
   </mat-nav-list>
 </div>

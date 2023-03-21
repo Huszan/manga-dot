@@ -1,14 +1,13 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {IMangaForm} from "../../../types/manga-form.type";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { IManga } from '../../../types/manga.type';
 
 @Component({
   selector: 'app-manga-front-display',
   templateUrl: './manga-front-display.component.html',
-  styleUrls: ['./manga-front-display.component.scss']
+  styleUrls: ['./manga-front-display.component.scss'],
 })
 export class MangaFrontDisplayComponent {
-
-  @Input() manga!: IMangaForm;
+  @Input() manga!: IManga;
   @Output() onRead = new EventEmitter();
 
   onClickRead(event: any) {

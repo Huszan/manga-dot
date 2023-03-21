@@ -9,24 +9,7 @@ import { Routes } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavComponent {
-  routes!: Routes;
-  titles: string[] = [];
+  routes: Routes = this.routingModule.availableRoutes;
 
-  constructor(private routingModule: AppRoutingModule) {
-    this.getDefinedRoutes();
-    this.setupTitles();
-  }
-
-  getDefinedRoutes() {
-    this.routes = this.routingModule.availableRoutes.filter((el) => {
-      return el.redirectTo === undefined;
-    });
-  }
-
-  setupTitles() {
-    this.routes.forEach((el) => {
-      let title = this.routingModule.getTitleDisplay(String(el.title));
-      this.titles.push(title);
-    });
-  }
+  constructor(private routingModule: AppRoutingModule) {}
 }

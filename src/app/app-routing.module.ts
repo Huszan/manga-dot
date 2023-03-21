@@ -18,15 +18,26 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {
+  availableRoutes: Routes = [];
+
   get homeRoute() {
-    return routes[0];
+    return this.availableRoutes[0];
   }
 
-  get availableRoutes() {
-    return routes;
+  constructor() {
+    this._collectAvailableRoutes();
   }
 
-  getTitleDisplay(title: string) {
+  private _collectAvailableRoutes() {
+    routes.forEach((el) => {
+      if (el.redirectTo === undefined && el.title != undefined) {
+        el.title = this._getTitleDisplay(String(el.title));
+        this.availableRoutes.push(el);
+      }
+    });
+  }
+
+  private _getTitleDisplay(title: string): string {
     return title.replace('Manga dot | ', '');
   }
 }

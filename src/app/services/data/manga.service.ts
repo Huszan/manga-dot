@@ -1,32 +1,28 @@
-import {Injectable, OnDestroy, OnInit} from '@angular/core';
-import {MangaHttpService} from "../http/manga-http.service";
-import {BehaviorSubject, Subscription} from "rxjs";
-import {IMangaForm} from "../../types/manga-form.type";
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { MangaHttpService } from '../http/manga-http.service';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { IManga } from '../../types/manga.type';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MangaService implements OnInit, OnDestroy {
-
   public isLoading$ = new BehaviorSubject<boolean>(false);
-  public displayedMangaList$ = new BehaviorSubject<IMangaForm[]>([]);
+  public displayedMangaList$ = new BehaviorSubject<IManga[]>([]);
 
-  private _originalMangaList$ = new BehaviorSubject<IMangaForm[]>([]);
-  private _mangaList$ = new BehaviorSubject<IMangaForm[]>([]);
+  private _originalMangaList$ = new BehaviorSubject<IManga[]>([]);
+  private _mangaList$ = new BehaviorSubject<IManga[]>([]);
   private _subscriptions: Subscription[] = [];
 
   private _searchInput = '';
   private _elementsPerPage = 14;
   private _loadedPages = 1;
 
-  constructor(
-    private _http: MangaHttpService
-  ) {
+  constructor(private _http: MangaHttpService) {
     this._getMangaList();
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   set searchInput(value: string) {
     this._searchInput = value;
@@ -63,40 +59,34 @@ export class MangaService implements OnInit, OnDestroy {
 
   private _getMangaList() {
     this.isLoading$.next(true);
-    let sub = this._http.getMangaList().subscribe(res => {
-      let mangaList = res as IMangaForm[];
+    let sub = this._http.getMangaList().subscribe((res) => {
+      let mangaList = res as IManga[];
       this._originalMangaList$.next(mangaList);
-      // TODO
-      //  Remove line below when done with testing!
-      this._populateMangasForTesting(5);
-      //
       this.triggerDataChain();
       this.isLoading$.next(false);
-    })
+    });
     this._subscriptions.push(sub);
   }
 
   private _searchMangaList() {
-    if(this._toComparableString(this._searchInput) === '') return;
-    let filteredList: IMangaForm[] = [];
+    if (this._toComparableString(this._searchInput) === '') return;
+    let filteredList: IManga[] = [];
 
-    this._mangaList$.value.forEach(el => {
+    this._mangaList$.value.forEach((el) => {
       let isIncluded = false;
-      if(this._isValueIncluded(el.name, this._searchInput)) isIncluded = true;
-      if(this._isValueIncluded(el.chapterCount, this._searchInput)) isIncluded = true;
-      if(isIncluded) {
+      if (this._isValueIncluded(el.name, this._searchInput)) isIncluded = true;
+      if (this._isValueIncluded(el.chapterCount, this._searchInput))
+        isIncluded = true;
+      if (isIncluded) {
         filteredList.push(el);
       }
-    })
+    });
 
     this._mangaList$.next(filteredList);
   }
 
   private _paginateMangaList() {
-    let newList = this._mangaList$.value.slice(
-      0,
-      (this.pageAmountLoaded)
-    );
+    let newList = this._mangaList$.value.slice(0, this.pageAmountLoaded);
     this.displayedMangaList$.next(newList);
   }
 
@@ -119,16 +109,18 @@ export class MangaService implements OnInit, OnDestroy {
   }
 
   private _populateMangasForTesting(iterations: number) {
-    if(this._originalMangaList$.value.length < 1) return;
-    for(let i = 0; i < iterations; i++) {
-      this._originalMangaList$.next([...this._originalMangaList$.value, ...this._originalMangaList$.value])
+    if (this._originalMangaList$.value.length < 1) return;
+    for (let i = 0; i < iterations; i++) {
+      this._originalMangaList$.next([
+        ...this._originalMangaList$.value,
+        ...this._originalMangaList$.value,
+      ]);
     }
   }
 
   ngOnDestroy() {
-    this._subscriptions.forEach(sub => {
+    this._subscriptions.forEach((sub) => {
       sub.unsubscribe();
-    })
+    });
   }
-
 }
