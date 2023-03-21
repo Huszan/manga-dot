@@ -5,27 +5,28 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import {MatToolbarModule} from "@angular/material/toolbar";
-import {MatButtonToggleModule} from "@angular/material/button-toggle";
-import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import {MatDatepickerModule} from "@angular/material/datepicker";
-import {MatButtonModule} from "@angular/material/button";
-import {MatIconModule} from "@angular/material/icon";
-import {MatMenuModule} from "@angular/material/menu";
-import {MatSidenavModule} from "@angular/material/sidenav";
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MangaBrowseComponent } from './components/manga/manga-browse/manga-browse.component';
-import {MangaService} from "./services/data/manga.service";
-import {MangaHttpService} from "./services/http/manga-http.service";
-import {HttpClientModule} from "@angular/common/http";
+import { MangaService } from './services/data/manga.service';
+import { MangaHttpService } from './services/http/manga-http.service';
+import { HttpClientModule } from '@angular/common/http';
 import { MangaFrontDisplayComponent } from './components/manga/manga-front-display/manga-front-display.component';
-import {MatCardModule} from "@angular/material/card";
-import {DragDropModule} from "@angular/cdk/drag-drop";
-import {MatListModule} from "@angular/material/list";
-import {MatInputModule} from "@angular/material/input";
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { MatCardModule } from '@angular/material/card';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatListModule } from '@angular/material/list';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NavbarComponent } from './components/nav/navbar/navbar.component';
 import { SidenavComponent } from './components/nav/sidenav/sidenav.component';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
   declarations: [
@@ -34,31 +35,29 @@ import { SidenavComponent } from './components/nav/sidenav/sidenav.component';
     MangaFrontDisplayComponent,
     NavbarComponent,
     SidenavComponent,
+    HomeComponent,
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatSlideToggleModule,
-        MatToolbarModule,
-        MatButtonToggleModule,
-        MatAutocompleteModule,
-        MatDatepickerModule,
-        MatButtonModule,
-        MatIconModule,
-        MatMenuModule,
-        MatSidenavModule,
-        HttpClientModule,
-        MatCardModule,
-        DragDropModule,
-        MatListModule,
-        MatInputModule,
-        MatProgressSpinnerModule
-    ],
-  providers: [
-    MangaService,
-    MangaHttpService,
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatSlideToggleModule,
+    MatToolbarModule,
+    MatButtonToggleModule,
+    MatAutocompleteModule,
+    MatDatepickerModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatSidenavModule,
+    HttpClientModule,
+    MatCardModule,
+    DragDropModule,
+    MatListModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
   ],
-  bootstrap: [AppComponent]
+  providers: [MangaService, MangaHttpService],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

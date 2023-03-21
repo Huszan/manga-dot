@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
+import { AppRoutingModule } from '../../../app-routing.module';
+import { Route } from '@angular/router';
+import { MangaGenre } from '../../../types/manga.type';
 
 @Component({
   selector: 'app-navbar',
@@ -10,7 +13,9 @@ import { MatDrawer } from '@angular/material/sidenav';
 export class NavbarComponent {
   @Input() sidenavDrawer!: MatDrawer;
 
-  constructor() {}
+  homeRoute: Route = this.routingModule.homeRoute;
+
+  constructor(private routingModule: AppRoutingModule) {}
 
   toggleSidenav() {
     if (!this.sidenavDrawer) return;

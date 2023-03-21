@@ -1,34 +1,31 @@
 import { Injectable } from '@angular/core';
-import {environment} from "../../../environments/environment";
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs";
-import {IManga, IMangaForm} from "../../types/manga-form.type";
+import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { IMangaForm } from '../../types/manga-form.type';
+import { IManga } from '../../types/manga.type';
 
 const MANGA_DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
-  Development: 'http://localhost:3000/'
-}
+  Development: 'http://localhost:3000/',
+};
 enum MANGA_ROUTE {
-  GET_PAGES= 'getMangaPages',
+  GET_PAGES = 'getMangaPages',
   TEST_FORM = 'testMangaForm',
   POST = 'createManga',
   GET_MANGAS = 'getMangaList',
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MangaHttpService {
   private readonly _domain;
 
-  constructor(
-    private http: HttpClient,
-  ) {
-    if(environment.production) {
+  constructor(private http: HttpClient) {
+    if (environment.production) {
       this._domain = MANGA_DOMAIN.Production;
-    }
-    else {
+    } else {
       this._domain = MANGA_DOMAIN.Development;
     }
   }
@@ -42,7 +39,10 @@ export class MangaHttpService {
   }
 
   getMangaPages(manga: IManga, chapter: number): Observable<any> {
-    return this.http.post(this._routeUrl(MANGA_ROUTE.GET_PAGES), {idHtmlLocate: manga.idHtmlLocate, chapter: chapter});
+    return this.http.post(this._routeUrl(MANGA_ROUTE.GET_PAGES), {
+      idHtmlLocate: manga.id_html_locate,
+      chapter: chapter,
+    });
   }
 
   testMangaForm(mangaForm: IMangaForm): Observable<any> {
@@ -52,5 +52,4 @@ export class MangaHttpService {
   postManga(mangaForm: IMangaForm): Observable<any> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.POST), mangaForm);
   }
-
 }
