@@ -1,8 +1,7 @@
-export interface IHtmlLocate {
-  idHtmlLocate: number;
+export interface HtmlLocateType {
+  id: number;
   positions: string[];
   lookedType: string;
   lookedAttr: string;
-  reqComparisons: string[];
   urls: string[];
 }

@@ -27,6 +27,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NavbarComponent } from './components/nav/navbar/navbar.component';
 import { SidenavComponent } from './components/nav/sidenav/sidenav.component';
 import { HomeComponent } from './components/home/home.component';
+import { MangaDisplayComponent } from './components/manga/manga-display/manga-display.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { HomeComponent } from './components/home/home.component';
     NavbarComponent,
     SidenavComponent,
     HomeComponent,
+    MangaDisplayComponent,
   ],
   imports: [
     BrowserModule,

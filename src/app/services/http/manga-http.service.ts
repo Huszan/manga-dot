@@ -3,7 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IMangaForm } from '../../types/manga-form.type';
-import { IManga } from '../../types/manga.type';
+import { MangaType } from '../../types/manga.type';
 
 const MANGA_DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
@@ -34,13 +34,15 @@ export class MangaHttpService {
     return this._domain + route;
   }
 
-  getMangaList(): Observable<any> {
-    return this.http.get(this._routeUrl(MANGA_ROUTE.GET_MANGAS));
+  getMangaList(id?: number): Observable<any> {
+    let route = this._routeUrl(MANGA_ROUTE.GET_MANGAS);
+    if (id != undefined) route += `?id=${id}`;
+    return this.http.get(route);
   }
 
-  getMangaPages(manga: IManga, chapter: number): Observable<any> {
+  getMangaPages(manga: MangaType, chapter: number): Observable<any> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.GET_PAGES), {
-      idHtmlLocate: manga.idHtmlLocate,
+      idHtmlLocate: manga.htmlLocate.id,
       chapter: chapter,
     });
   }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IManga } from '../../../types/manga.type';
+import { MangaType } from '../../../types/manga.type';
 
 @Component({
   selector: 'app-manga-front-display',
@@ -7,7 +7,7 @@ import { IManga } from '../../../types/manga.type';
   styleUrls: ['./manga-front-display.component.scss'],
 })
 export class MangaFrontDisplayComponent {
-  @Input() manga!: IManga;
+  @Input() manga!: MangaType;
   @Output() onRead = new EventEmitter();
 
   onClickRead(event: any) {

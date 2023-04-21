@@ -1,12 +1,14 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
 } from '@angular/core';
 import { MangaService } from '../../../services/data/manga.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { IManga } from '../../../types/manga.type';
+import { MangaType } from '../../../types/manga.type';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-manga-browse',
@@ -15,23 +17,27 @@ import { IManga } from '../../../types/manga.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MangaBrowseComponent implements OnInit, OnDestroy {
-  mangas = new BehaviorSubject<IManga[]>([]);
-  isLoading = new BehaviorSubject<boolean>(false);
-
-  chosenManga: IManga | undefined;
+  mangaList: MangaType[] = [];
+  isLoading: boolean = false;
 
   private _subscriptions: Subscription[] = [];
 
-  constructor(private mangaService: MangaService) {}
+  constructor(
+    private mangaService: MangaService,
+    private router: Router,
+    private _cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     let mangaListSub = this.mangaService.displayedMangaList$.subscribe(
       (data) => {
-        this.mangas.next(data);
+        this.mangaList = data;
+        this._cdr.detectChanges();
       }
     );
     let loadingSub = this.mangaService.isLoading$.subscribe((data) => {
-      this.isLoading.next(data);
+      this.isLoading = data;
+      this._cdr.detectChanges();
     });
     this._subscriptions.push(mangaListSub);
     this._subscriptions.push(loadingSub);
@@ -50,10 +56,14 @@ export class MangaBrowseComponent implements OnInit, OnDestroy {
   }
 
   onMangaSelect(index: number) {
-    this.chosenManga = this.mangaService.displayedMangaList$.value[index];
+    this.mangaService.selectedManga$.next(
+      this.mangaService.displayedMangaList$.value[index]
+    );
+    this.router.navigate(['manga', this.mangaService.selectedManga$.value!.id]);
   }
 
   ngOnDestroy() {
+    this.mangaService.searchInput = '';
     this._subscriptions.forEach((sub) => {
       sub.unsubscribe();
     });

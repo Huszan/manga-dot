@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MangaBrowseComponent } from './components/manga/manga-browse/manga-browse.component';
 import { HomeComponent } from './components/home/home.component';
+import { MangaDisplayComponent } from './components/manga/manga-display/manga-display.component';
 
 const routes: Routes = [
   { title: 'Manga dot | Home', path: 'home', component: HomeComponent },
@@ -9,6 +10,10 @@ const routes: Routes = [
     title: 'Manga dot | Add new',
     path: 'add',
     component: MangaBrowseComponent,
+  },
+  {
+    path: 'manga/:id',
+    component: MangaDisplayComponent,
   },
   { path: '**', redirectTo: 'home' },
 ];

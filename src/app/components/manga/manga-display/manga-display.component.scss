@@ -1,0 +1,47 @@
+
+@media screen and (max-width: 720px) {
+  .display-container {
+    display: flex;
+    flex-direction: column;
+    .logo {
+      align-self: center;
+    }
+  }
+}
+@media screen and (min-width: 721px) {
+  .display-container {
+    .logo {
+      margin-right: 24px;
+    }
+  }
+}
+
+.display-container {
+  padding: 25px;
+
+  .logo {
+    float: left;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 24px;
+  }
+  .nowrap {
+    white-space: nowrap;
+  }
+  .button-panel {
+    display: flex;
+    flex-direction: row;
+    margin: 24px;
+    gap: 10px;
+  }
+}
+
+.chapter-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+mat-card {
+  margin-bottom: 12px;
+}

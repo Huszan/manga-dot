@@ -1,21 +1,21 @@
 
 <section class="manga-browse-section">
   <h2 style="align-self: start">All mangas</h2>
-  <mat-divider style="align-self: stretch"></mat-divider>
+  <div class="divider"></div>
 
   <mat-form-field color="primary" class="search-input-field">
     <mat-label>Search</mat-label>
     <input matInput (input)="onSearchInput($event)">
   </mat-form-field>
-  <mat-spinner color="accent" *ngIf="isLoading | async; else loaded"></mat-spinner>
+  <mat-spinner color="accent" *ngIf="isLoading; else loaded"></mat-spinner>
   <ng-template #loaded>
     <div class="manga-list-container">
-      <ng-container *ngFor="let manga of mangas | async; let i = index">
+      <ng-container *ngFor="let manga of mangaList; let i = index">
         <app-manga-front-display [manga]="manga" (onRead)="onMangaSelect(i)"></app-manga-front-display>
       </ng-container>
-      <span *ngIf="mangas.value.length == 0" class="mat-card-subtitle">Sorry, it looks like nothing was found.</span>
+      <span *ngIf="mangaList.length == 0" class="mat-card-subtitle">Sorry, it looks like nothing was found.</span>
     </div>
   </ng-template>
-
   <button *ngIf="!isEverythingLoaded()" mat-flat-button color="primary" (click)="loadMore()">Load more...</button>
+
 </section>

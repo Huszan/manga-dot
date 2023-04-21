@@ -1,17 +1,18 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { MangaHttpService } from '../http/manga-http.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { IManga } from '../../types/manga.type';
+import { MangaType } from '../../types/manga.type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MangaService implements OnInit, OnDestroy {
   public isLoading$ = new BehaviorSubject<boolean>(false);
-  public displayedMangaList$ = new BehaviorSubject<IManga[]>([]);
+  public displayedMangaList$ = new BehaviorSubject<MangaType[]>([]);
+  public selectedManga$ = new BehaviorSubject<MangaType | undefined>(undefined);
 
-  private _originalMangaList$ = new BehaviorSubject<IManga[]>([]);
-  private _mangaList$ = new BehaviorSubject<IManga[]>([]);
+  private _originalMangaList$ = new BehaviorSubject<MangaType[]>([]);
+  private _mangaList$ = new BehaviorSubject<MangaType[]>([]);
   private _subscriptions: Subscription[] = [];
 
   private _searchInput = '';
@@ -59,8 +60,12 @@ export class MangaService implements OnInit, OnDestroy {
 
   private _getMangaList() {
     this.isLoading$.next(true);
-    let sub = this._http.getMangaList().subscribe((res) => {
-      let mangaList = res as IManga[];
+    let sub = this._http.getMangaList().subscribe((res: MangaType[]) => {
+      let mangaList = res;
+      for (let el of mangaList) {
+        el.lastUpdateDate = new Date(el.lastUpdateDate);
+        el.addedDate = new Date(el.addedDate);
+      }
       this._originalMangaList$.next(mangaList);
       this.triggerDataChain();
       this.isLoading$.next(false);
@@ -68,9 +73,23 @@ export class MangaService implements OnInit, OnDestroy {
     this._subscriptions.push(sub);
   }
 
+  public getManga(id: number) {
+    this.isLoading$.next(true);
+    let sub = this._http.getMangaList(id).subscribe((res: MangaType[]) => {
+      let manga = res.at(0);
+      if (manga) {
+        manga.addedDate = new Date(manga.addedDate);
+        manga.lastUpdateDate = new Date(manga.lastUpdateDate);
+        this.selectedManga$.next(manga);
+      }
+      this.isLoading$.next(false);
+    });
+    this._subscriptions.push(sub);
+  }
+
   private _searchMangaList() {
     if (this._toComparableString(this._searchInput) === '') return;
-    let filteredList: IManga[] = [];
+    let filteredList: MangaType[] = [];
 
     this._mangaList$.value.forEach((el) => {
       let isIncluded = false;

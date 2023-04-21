@@ -1,3 +1,5 @@
+import { HtmlLocateType } from './html-locate.type';
+
 export enum MangaGenre {
   Shojo = 'Shojo',
   Shonen = 'Shonen',
@@ -23,18 +25,18 @@ export enum MangaGenre {
   Yaoi = 'Yaoi',
 }
 
-export interface IManga {
-  idManga: number;
+export interface MangaType {
+  id: number;
   name: string;
   pic: string;
   authors: string[];
-  genres: MangaGenre[];
-  lastUpdateDate: string;
-  addedDate: string;
+  genres: string[];
+  lastUpdateDate: Date;
+  addedDate: Date;
   viewCount: number;
   likeCount: number;
   description: string;
   startingChapter: number;
   chapterCount: number;
-  idHtmlLocate: number;
+  htmlLocate: HtmlLocateType;
 }
