@@ -40,8 +40,8 @@
     </div>
 
     <section class="chapter-list-wrapper">
-      <ng-container *ngFor="let chapter of fakeArray.ofNumber(manga$.value!.chapterCount, manga$.value!.startingChapter)">
-        <button mat-stroked-button style="text-align: left">{{ manga$.value!.name }}: chapter {{ chapter }}</button>
+      <ng-container *ngFor="let chapter of fakeArray.ofNumber(manga$.value!.chapterCount + 1, manga$.value!.startingChapter)">
+        <button mat-stroked-button style="text-align: left" (click)="onChapterSelect(chapter)">{{ manga$.value!.name }}: chapter {{ chapter }}</button>
       </ng-container>
     </section>
 

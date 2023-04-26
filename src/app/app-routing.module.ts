@@ -3,17 +3,23 @@ import { RouterModule, Routes } from '@angular/router';
 import { MangaBrowseComponent } from './components/manga/manga-browse/manga-browse.component';
 import { HomeComponent } from './components/home/home.component';
 import { MangaDisplayComponent } from './components/manga/manga-display/manga-display.component';
+import { MangaChapterComponent } from './components/manga/manga-chapter/manga-chapter.component';
+import { CreateMangaFormComponent } from './components/create-manga-form/create-manga-form.component';
 
 const routes: Routes = [
-  { title: 'Manga dot | Home', path: 'home', component: HomeComponent },
+  { title: 'Manga dot | Browse', path: 'home', component: HomeComponent },
   {
     title: 'Manga dot | Add new',
     path: 'add',
-    component: MangaBrowseComponent,
+    component: CreateMangaFormComponent,
   },
   {
     path: 'manga/:id',
     component: MangaDisplayComponent,
+  },
+  {
+    path: 'manga/:id/:chapter',
+    component: MangaChapterComponent,
   },
   { path: '**', redirectTo: 'home' },
 ];
@@ -36,13 +42,12 @@ export class AppRoutingModule {
   private _collectAvailableRoutes() {
     routes.forEach((el) => {
       if (el.redirectTo === undefined && el.title != undefined) {
-        el.title = this._getTitleDisplay(String(el.title));
         this.availableRoutes.push(el);
       }
     });
   }
 
-  private _getTitleDisplay(title: string): string {
+  public getTitleDisplay(title: string): string {
     return title.replace('Manga dot | ', '');
   }
 }

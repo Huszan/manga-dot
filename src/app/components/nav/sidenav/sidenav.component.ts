@@ -12,4 +12,8 @@ export class SidenavComponent {
   routes: Routes = this.routingModule.availableRoutes;
 
   constructor(private routingModule: AppRoutingModule) {}
+
+  getDisplay(index: number) {
+    return this.routingModule.getTitleDisplay(String(this.routes[index].title));
+  }
 }

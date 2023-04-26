@@ -42,7 +42,7 @@ export class MangaHttpService {
 
   getMangaPages(manga: MangaType, chapter: number): Observable<any> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.GET_PAGES), {
-      idHtmlLocate: manga.htmlLocate.id,
+      manga: manga,
       chapter: chapter,
     });
   }

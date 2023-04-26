@@ -28,6 +28,9 @@ import { NavbarComponent } from './components/nav/navbar/navbar.component';
 import { SidenavComponent } from './components/nav/sidenav/sidenav.component';
 import { HomeComponent } from './components/home/home.component';
 import { MangaDisplayComponent } from './components/manga/manga-display/manga-display.component';
+import { MangaChapterComponent } from './components/manga/manga-chapter/manga-chapter.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { CreateMangaFormComponent } from './components/create-manga-form/create-manga-form.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +41,8 @@ import { MangaDisplayComponent } from './components/manga/manga-display/manga-di
     SidenavComponent,
     HomeComponent,
     MangaDisplayComponent,
+    MangaChapterComponent,
+    CreateMangaFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,6 +63,7 @@ import { MangaDisplayComponent } from './components/manga/manga-display/manga-di
     MatListModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatSnackBarModule,
   ],
   providers: [MangaService, MangaHttpService],
   bootstrap: [AppComponent],

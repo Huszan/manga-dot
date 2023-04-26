@@ -1,0 +1,39 @@
+
+<div class="pages-wrapper">
+  <ng-container *ngIf="!data.isInitialized; else initialized">
+    <mat-spinner color="accent"></mat-spinner>
+  </ng-container>
+  <ng-template #initialized>
+    <ng-container *ngIf="pages.length > 0; else contentNotFound">
+      <ng-container *ngTemplateOutlet="contentFound"></ng-container>
+    </ng-container>
+  </ng-template>
+</div>
+
+<ng-template #contentFound>
+  <ng-container *ngTemplateOutlet="floatingActions"></ng-container>
+  <span class="mat-display-2">
+    <a (click)="goToChapterSelect()">{{ manga$.value?.name }}</a>: chapter {{ chapter }}
+  </span>
+  <ng-container *ngFor="let page of pages">
+    <img [src]="page" alt="no image">
+  </ng-container>
+</ng-template>
+
+<ng-template #contentNotFound>
+  <ng-container *ngTemplateOutlet="floatingActions"></ng-container>
+  <span class="mat-display-1" style="text-align: center; padding: 50px">
+    This chapter cannot be accessed, or doesn't exist. Sorry for inconvenience, try again later.
+  </span>
+</ng-template>
+
+<ng-template #floatingActions>
+  <div class="floating-actions-wrapper">
+    <button mat-icon-button class="previous-button" *ngIf="!data.isFirstChapter" (click)="navigateToPreviousChapter()">
+      <mat-icon>keyboard_arrow_left</mat-icon>
+    </button>
+    <button mat-icon-button class="next-button" *ngIf="!data.isLastChapter" (click)="navigateToNextChapter()">
+      <mat-icon>keyboard_arrow_right</mat-icon>
+    </button>
+  </div>
+</ng-template>

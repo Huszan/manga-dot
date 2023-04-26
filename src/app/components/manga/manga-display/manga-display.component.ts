@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { MangaType } from '../../../types/manga.type';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { MangaService } from '../../../services/data/manga.service';
 import { FakeArray } from '../../../utils/fakeArray';
@@ -25,6 +25,7 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private mangaService: MangaService,
     private _cdr: ChangeDetectorRef
   ) {}
@@ -42,6 +43,10 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
 
   get mangaId(): number {
     return Number(this.route.snapshot.paramMap.get('id'));
+  }
+
+  onChapterSelect(chapter: number) {
+    this.router.navigate(['manga', this.mangaId, chapter]);
   }
 
   ngOnDestroy() {
