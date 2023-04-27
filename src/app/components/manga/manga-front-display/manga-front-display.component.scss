@@ -1,49 +1,63 @@
 @import "src/styles";
 
-button {
-  border: none;
-}
-
-.manga-container {
+.manga-container-wrapper {
   position: relative;
-  width: 140px;
-  height: 210px;
-  overflow: hidden;
-  border-radius: 5px;
-  cursor: pointer;
 
-  img {
-    width: inherit;
-    height: inherit;
-    transition: 0.2s ease-out;
-  }
-
-  .manga-title,.manga-chapters {
+  .remove-button {
     position: absolute;
-    left: 0;
-    padding: 5px;
-
-    max-width: inherit;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    box-sizing: border-box;
-
-    opacity: 80%;
-  }
-
-  .manga-title {
-    bottom: 0;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    color: $light-text;
-    background-color: $dark-bg-lighter-5;
-  }
-
-  .manga-chapters {
+    right: 0;
     top: 0;
-    color: $light-accent-text;
-    background-color: $dark-bg-lighter-10;
+    transform: translateY(-50%) translateX(50%);
+    scale: 75%;
+    z-index: 5;
+  }
+
+  button {
+    border: none;
+  }
+
+  .manga-container {
+    position: relative;
+    width: 140px;
+    height: 210px;
+    overflow: hidden;
+    border-radius: 5px;
+    cursor: pointer;
+
+    img {
+      width: inherit;
+      height: inherit;
+      transition: 0.2s ease-out;
+    }
+
+    .manga-title,.manga-chapters {
+      position: absolute;
+      left: 0;
+      padding: 5px;
+
+      max-width: inherit;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      box-sizing: border-box;
+
+      opacity: 80%;
+    }
+
+    .manga-title {
+      bottom: 0;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      color: $light-text;
+      background-color: $dark-bg-lighter-5;
+    }
+
+    .manga-chapters {
+      top: 0;
+      color: $light-accent-text;
+      background-color: $dark-bg-lighter-10;
+    }
+
   }
 }
 

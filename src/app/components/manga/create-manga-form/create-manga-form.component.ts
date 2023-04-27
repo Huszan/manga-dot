@@ -11,8 +11,9 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { MangaHttpService } from '../../services/http/manga-http.service';
+import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MangaService } from '../../../services/data/manga.service';
 
 @Component({
   selector: 'app-create-manga-form',
@@ -29,6 +30,7 @@ export class CreateMangaFormComponent {
   constructor(
     private _fb: FormBuilder,
     private _mangaHttpService: MangaHttpService,
+    private _mangaService: MangaService,
     private _cdr: ChangeDetectorRef,
     private _snackbar: MatSnackBar
   ) {
@@ -233,6 +235,7 @@ export class CreateMangaFormComponent {
     this._mangaHttpService.postManga(this.lastTestedForm).subscribe((res) => {
       if (res.success) {
         this._snackbar.open('Successfully added manga to database!', 'Ok');
+        this._mangaService.getMangaList();
         this.clearForm();
       } else {
         this._snackbar.open('Something went wrong. Try again later', 'Ok');

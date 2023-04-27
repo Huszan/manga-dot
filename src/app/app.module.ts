@@ -30,7 +30,7 @@ import { HomeComponent } from './components/home/home.component';
 import { MangaDisplayComponent } from './components/manga/manga-display/manga-display.component';
 import { MangaChapterComponent } from './components/manga/manga-chapter/manga-chapter.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { CreateMangaFormComponent } from './components/create-manga-form/create-manga-form.component';
+import { CreateMangaFormComponent } from './components/manga/create-manga-form/create-manga-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FullScreenLoaderComponent } from './components/global/full-screen-loader/full-screen-loader.component';
 

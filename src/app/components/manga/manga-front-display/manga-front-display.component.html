@@ -1,8 +1,13 @@
 
-<button class="manga-container" (click)="onClickRead($event)">
+<div class="manga-container-wrapper">
+  <button mat-mini-fab *ngIf="!isProduction" color="warn" class="remove-button" (click)="onClickRemove()">
+    <mat-icon>delete</mat-icon>
+  </button>
+  <button class="manga-container" (click)="onClickRead($event)">
 
-  <img [src]="manga.pic" alt="">
-  <span class="manga-title mat-body-2">{{manga.name}}</span>
-  <span class="manga-chapters">{{manga.chapterCount}} chapters</span>
+    <img [src]="manga.pic" alt="">
+    <span class="manga-title mat-body-2">{{manga.name}}</span>
+    <span class="manga-chapters">{{manga.chapterCount}} chapters</span>
 
-</button>
+  </button>
+</div>

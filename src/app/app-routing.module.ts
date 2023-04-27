@@ -4,7 +4,7 @@ import { MangaBrowseComponent } from './components/manga/manga-browse/manga-brow
 import { HomeComponent } from './components/home/home.component';
 import { MangaDisplayComponent } from './components/manga/manga-display/manga-display.component';
 import { MangaChapterComponent } from './components/manga/manga-chapter/manga-chapter.component';
-import { CreateMangaFormComponent } from './components/create-manga-form/create-manga-form.component';
+import { CreateMangaFormComponent } from './components/manga/create-manga-form/create-manga-form.component';
 
 const routes: Routes = [
   { title: 'Manga dot | Browse', path: 'home', component: HomeComponent },

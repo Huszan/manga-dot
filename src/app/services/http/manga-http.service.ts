@@ -14,6 +14,7 @@ enum MANGA_ROUTE {
   TEST_FORM = 'testMangaForm',
   POST = 'createManga',
   GET_MANGAS = 'getMangaList',
+  REMOVE = 'removeManga',
 }
 
 @Injectable({
@@ -56,6 +57,12 @@ export class MangaHttpService {
   postManga(mangaForm: any): Observable<any> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.POST), {
       manga: mangaForm,
+    });
+  }
+
+  removeManga(manga: any): Observable<any> {
+    return this.http.post(this._routeUrl(MANGA_ROUTE.REMOVE), {
+      manga: manga,
     });
   }
 }

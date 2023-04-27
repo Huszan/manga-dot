@@ -20,7 +20,7 @@ export class MangaService implements OnInit, OnDestroy {
   private _loadedPages = 1;
 
   constructor(private _http: MangaHttpService) {
-    this._getMangaList();
+    this.getMangaList();
   }
 
   ngOnInit() {}
@@ -58,7 +58,7 @@ export class MangaService implements OnInit, OnDestroy {
     this._paginateMangaList();
   }
 
-  private _getMangaList() {
+  getMangaList() {
     this.isLoading$.next(true);
     let sub = this._http.getMangaList().subscribe((res: MangaType[]) => {
       let mangaList = res;
