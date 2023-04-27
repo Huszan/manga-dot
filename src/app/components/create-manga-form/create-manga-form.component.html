@@ -1,3 +1,156 @@
-<div class="mat-display-2" style="text-align: center; margin-top: 100px">
-  Not implemented yet. It should be available soon, don't worry :)
-</div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-group">
+
+  <div class="form-title mat-display-2">Add new manga</div>
+
+  <mat-form-field>
+    <input matInput
+           formControlName="name"
+           placeholder="Title">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput
+           formControlName="picture"
+           placeholder="Picture url">
+  </mat-form-field>
+
+  <div class="form-array-wrapper" formArrayName="authors">
+    <label for="authors" class="mat-h2">Authors</label>
+    <ng-container *ngFor="let author of authors.controls; let i = index">
+      <mat-form-field [formGroup]="getControlGroup(author)" id="authors">
+        <div class="field">
+          <input matInput
+                 formControlName="name"
+                 type="text">
+          <button mat-icon-button (click)="removeAuthor(i)" type="button">
+            <mat-icon color="warn">delete</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+    </ng-container>
+    <button mat-mini-fab (click)="addAuthor()" type="button">
+      <mat-icon color="primary" style="align-self: center">add</mat-icon>
+    </button>
+  </div>
+
+  <div class="form-array-wrapper" formArrayName="genres">
+    <label for="genre" class="mat-h2">Genres</label>
+    <ng-container *ngFor="let genre of genres.controls; let i = index">
+      <mat-form-field [formGroup]="getControlGroup(genre)" id="genre">
+        <div class="field">
+          <input matInput
+                 formControlName="name"
+                 type="text">
+          <button mat-icon-button (click)="removeGenre(i)" type="button">
+            <mat-icon color="warn">delete</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+    </ng-container>
+    <button mat-mini-fab (click)="addGenre()" type="button">
+      <mat-icon color="primary" style="align-self: center">add</mat-icon>
+    </button>
+  </div>
+
+  <mat-form-field style="width: 100%">
+    <textarea
+      matInput
+      cdkTextareaAutosize
+      cdkAutosizeMinRows="5"
+      formControlName="description"
+      placeholder="Description"
+    >
+    </textarea>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input
+      matInput
+      formControlName="startingChapter"
+      placeholder="Starting chapter"
+      type="number"
+    >
+  </mat-form-field>
+
+  <mat-form-field>
+    <input
+      matInput
+      formControlName="chapterCount"
+      placeholder="Chapter count"
+      type="number"
+    >
+  </mat-form-field>
+
+  <div class="form-group" [formGroup]="htmlLocate" id="htmlLocate">
+
+    <label for="htmlLocate" class="form-title mat-display-1">Scrapper information</label>
+
+    <mat-form-field>
+      <input
+        matInput
+        formControlName="lookedType"
+        placeholder="Element type"
+      >
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        formControlName="lookedAttribute"
+        placeholder="Element attribute"
+      >
+    </mat-form-field>
+
+    <div class="form-array-wrapper" formArrayName="positions">
+      <label for="position" class="mat-h2">Possible positions in html</label>
+      <div class="mat-body warn-text">
+       ex. .separator > a
+      </div>
+      <ng-container *ngFor="let position of positions.controls; let i = index">
+        <mat-form-field [formGroup]="getControlGroup(position)" id="position">
+          <div class="field">
+            <input matInput
+                   formControlName="name"
+                   type="text">
+            <button mat-icon-button (click)="removePosition(i)" type="button" *ngIf="positions.controls.length > 1">
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+          </div>
+        </mat-form-field>
+      </ng-container>
+      <button mat-mini-fab (click)="addPosition()" type="button">
+        <mat-icon color="primary" style="align-self: center">add</mat-icon>
+      </button>
+    </div>
+
+    <div class="form-array-wrapper" formArrayName="urls">
+      <label for="url" class="mat-h2">Possible urls</label>
+      <div class="mat-body warn-text">
+        Put '!!!' in place of chapter number, ex. https://example/manga/chapter-!!!
+      </div>
+      <ng-container *ngFor="let url of urls.controls; let i = index">
+        <mat-form-field [formGroup]="getControlGroup(url)" id="url">
+          <div class="field">
+            <input matInput
+                   formControlName="name"
+                   type="text">
+            <button mat-icon-button (click)="removeUrl(i)" type="button">
+              <mat-icon color="warn" *ngIf="urls.controls.length > 1">delete</mat-icon>
+            </button>
+          </div>
+        </mat-form-field>
+      </ng-container>
+      <button mat-mini-fab (click)="addUrl()" type="button">
+        <mat-icon color="primary" style="align-self: center">add</mat-icon>
+      </button>
+    </div>
+
+  </div>
+
+  <button type="button" mat-raised-button color="primary" [disabled]="!isFormValid" (click)="onTest()">Test</button>
+
+  <button mat-raised-button color="accent" [disabled]="!lastTestedForm">Submit</button>
+
+</form>
+
+<app-full-screen-loader *ngIf="isLoading" displayText="This may take some time. Please, be patient."></app-full-screen-loader>

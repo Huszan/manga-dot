@@ -1,0 +1,25 @@
+.loader-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: var(--primary-darker-color);
+  opacity: 80%;
+  z-index: 1000;
+
+  .display-text-box {
+    position: absolute;
+    display: inline-block;
+    color: white;
+    top: 25%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+  }
+
+  .mat-spinner {
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+  }
+}

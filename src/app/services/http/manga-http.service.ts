@@ -47,11 +47,15 @@ export class MangaHttpService {
     });
   }
 
-  testMangaForm(mangaForm: IMangaForm): Observable<any> {
-    return this.http.post(this._routeUrl(MANGA_ROUTE.TEST_FORM), mangaForm);
+  testMangaForm(mangaForm: any): Observable<any> {
+    return this.http.post(this._routeUrl(MANGA_ROUTE.TEST_FORM), {
+      manga: mangaForm,
+    });
   }
 
-  postManga(mangaForm: IMangaForm): Observable<any> {
-    return this.http.post(this._routeUrl(MANGA_ROUTE.POST), mangaForm);
+  postManga(mangaForm: any): Observable<any> {
+    return this.http.post(this._routeUrl(MANGA_ROUTE.POST), {
+      manga: mangaForm,
+    });
   }
 }
