@@ -1,16 +1,15 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MangaBrowseComponent } from './components/manga/manga-browse/manga-browse.component';
-import { HomeComponent } from './components/home/home.component';
 import { MangaDisplayComponent } from './components/manga/manga-display/manga-display.component';
 import { MangaChapterComponent } from './components/manga/manga-chapter/manga-chapter.component';
 import { CreateMangaFormComponent } from './components/manga/create-manga-form/create-manga-form.component';
 
 const routes: Routes = [
-  { title: 'Manga dot | Browse', path: 'home', component: HomeComponent },
+  { title: 'Manga dot | Browse', path: '', component: MangaBrowseComponent },
   {
     title: 'Manga dot | Add new',
-    path: 'add',
+    path: 'manga/add',
     component: CreateMangaFormComponent,
   },
   {
@@ -21,7 +20,7 @@ const routes: Routes = [
     path: 'manga/:id/:chapter',
     component: MangaChapterComponent,
   },
-  { path: '**', redirectTo: 'home' },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({
