@@ -6,10 +6,16 @@ import { MangaChapterComponent } from './components/manga/manga-chapter/manga-ch
 import { CreateMangaFormComponent } from './components/manga/create-manga-form/create-manga-form.component';
 
 const routes: Routes = [
-  { title: 'Manga dot | Browse', path: '', component: MangaBrowseComponent },
+  {
+    title: 'Manga dot | Browse',
+    path: '',
+    pathMatch: 'full',
+    component: MangaBrowseComponent,
+  },
   {
     title: 'Manga dot | Add new',
     path: 'manga/add',
+    pathMatch: 'full',
     component: CreateMangaFormComponent,
   },
   {

@@ -1,6 +1,12 @@
 <div class="side-drawer">
   <mat-nav-list>
-    <a *ngFor="let route of routes; let i = index" mat-list-item routerLinkActive="active" [routerLink]="route.path">
+    <a
+      *ngFor="let route of routes; let i = index"
+      mat-list-item
+      [routerLinkActive]="'active'"
+      [routerLinkActiveOptions]="{ exact: true }"
+      [routerLink]="route.path"
+    >
       {{ getDisplay(i) }}
     </a>
   </mat-nav-list>
