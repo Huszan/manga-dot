@@ -1,6 +1,6 @@
 
 <ng-container *ngIf="manga$.value === undefined; else mangaFound">
-  <span class="mat-h1">Manga not found</span>
+  <app-full-screen-loader displayText="Your manga is loading."></app-full-screen-loader>
 </ng-container>
 
 <ng-template #mangaFound>
