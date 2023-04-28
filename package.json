@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build --configuration production --base-href /manga-dot",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "deploy": "ng deploy --base-href=/manga-dot/"
   },
   "private": true,
   "dependencies": {
