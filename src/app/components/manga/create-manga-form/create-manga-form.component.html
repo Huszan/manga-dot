@@ -76,7 +76,7 @@
     <input
       matInput
       formControlName="chapterCount"
-      placeholder="Chapter count"
+      placeholder="Last chapter"
       type="number"
     >
   </mat-form-field>
@@ -153,4 +153,4 @@
 
 </form>
 
-<app-full-screen-loader *ngIf="isLoading" displayText="This may take some time. Please, be patient."></app-full-screen-loader>
+<app-full-screen-loader *ngIf="isLoading" displayText="This may take some time. Please, be patient. {{testingProgress}}%"></app-full-screen-loader>

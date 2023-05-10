@@ -12,6 +12,7 @@ const MANGA_DOMAIN = {
 enum MANGA_ROUTE {
   GET_PAGES = 'getMangaPages',
   TEST_FORM = 'testMangaForm',
+  TEST_CHAPTER = 'testMangaChapter',
   POST = 'createManga',
   GET_MANGAS = 'getMangaList',
   REMOVE = 'removeManga',
@@ -52,6 +53,13 @@ export class MangaHttpService {
     return this.http.post(this._routeUrl(MANGA_ROUTE.TEST_FORM), {
       manga: mangaForm,
       testId: testId,
+    });
+  }
+
+  testMangaChapter(mangaForm: any, chapter: number): Observable<any> {
+    return this.http.post(this._routeUrl(MANGA_ROUTE.TEST_CHAPTER), {
+      manga: mangaForm,
+      chapter: chapter,
     });
   }
 
