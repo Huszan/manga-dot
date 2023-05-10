@@ -14,6 +14,7 @@ import {
 import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MangaService } from '../../../services/data/manga.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-create-manga-form',
@@ -27,6 +28,7 @@ export class CreateMangaFormComponent {
   lastTestedForm: any | undefined = undefined;
   lastTestId: number | undefined = undefined;
   isLoading: boolean = false;
+  currentlyTestingChapter: number = 0;
 
   constructor(
     private _fb: FormBuilder,
@@ -46,7 +48,7 @@ export class CreateMangaFormComponent {
       genres: this._fb.array([]),
       description: [''],
       startingChapter: ['1', Validators.required],
-      chapterCount: ['1', Validators.required],
+      chapterCount: ['2', Validators.required],
       htmlLocate: this._fb.group({
         positions: this._fb.array([], Validators.required),
         lookedType: ['img', Validators.required],
@@ -202,30 +204,56 @@ export class CreateMangaFormComponent {
   }
 
   onTest() {
-    let testedForm = this.formData;
     this.isLoading = true;
-    this._mangaHttpService
-      .testMangaForm(testedForm, this.lastTestId)
-      .subscribe((res) => {
-        if (!res.success) {
-          let message = 'Testing unsuccessful. ';
-          if ('failedChapters' in res) {
-            message += `Failed on chapters: ${JSON.stringify(
-              res.failedChapters
-            )}`;
-          }
-          this._snackbar.open(message, 'Ok');
-        } else {
-          this._snackbar.open(
-            'Testing successful. Click submit to add manga to database!',
-            'Ok'
-          );
-        }
-        this.lastTestedForm = testedForm;
-        this.lastTestId = res.testId;
-        this.isLoading = false;
-        this._cdr.detectChanges();
-      });
+    this.testFormLocally().then((res) => {
+      this.isLoading = false;
+      this._cdr.detectChanges();
+      this.displayTestSnackbar(res);
+    });
+  }
+
+  async testFormLocally() {
+    let failedOn = [];
+    this.lastTestedForm = this.formData;
+    for (
+      let i = this.startingChapter.value;
+      i <= this.chapterCount.value;
+      i++
+    ) {
+      this.currentlyTestingChapter = i;
+      const response = await firstValueFrom(
+        this._mangaHttpService.testMangaChapter(this.formData, i)
+      );
+      console.log(response);
+      if (!response) {
+        failedOn.push(i);
+      }
+      this._cdr.detectChanges();
+    }
+    return {
+      success: failedOn.length === 0,
+      failedOn: failedOn,
+    };
+  }
+
+  displayTestSnackbar(data: any) {
+    if (data.success) {
+      this._snackbar.open(
+        'Testing successful. Click submit to add manga to database!',
+        'Ok'
+      );
+    } else {
+      this._snackbar.open(
+        `Testing unsuccessful. Failed chapters: ${String(data.failedOn)}`,
+        'Ok'
+      );
+    }
+  }
+
+  get testingProgress() {
+    return Math.round(
+      (this.currentlyTestingChapter / this.chapterCount.value) * 100
+    );
   }
 
   onSubmit() {
