@@ -25,6 +25,7 @@ export class CreateMangaFormComponent {
   form!: FormGroup;
 
   lastTestedForm: any | undefined = undefined;
+  lastTestId: number | undefined = undefined;
   isLoading: boolean = false;
 
   constructor(
@@ -48,11 +49,8 @@ export class CreateMangaFormComponent {
       chapterCount: ['1', Validators.required],
       htmlLocate: this._fb.group({
         positions: this._fb.array([], Validators.required),
-        lookedType: [{ value: 'img', disabled: true }, Validators.required],
-        lookedAttribute: [
-          { value: 'src', disabled: true },
-          Validators.required,
-        ],
+        lookedType: ['img', Validators.required],
+        lookedAttribute: ['src', Validators.required],
         urls: this._fb.array([], Validators.required),
       }),
     });
@@ -128,14 +126,14 @@ export class CreateMangaFormComponent {
     return this.htmlLocate.get('positions') as FormArray;
   }
 
-  newPosition(): FormGroup {
+  newPosition(value = ''): FormGroup {
     return this._fb.group({
-      name: ['', Validators.required],
+      name: [value, Validators.required],
     });
   }
 
-  addPosition() {
-    this.positions.push(this.newPosition());
+  addPosition(value = '') {
+    this.positions.push(this.newPosition(value));
   }
 
   removePosition(index: number) {
@@ -154,14 +152,14 @@ export class CreateMangaFormComponent {
     return this.htmlLocate.get('urls') as FormArray;
   }
 
-  newUrl(): FormGroup {
+  newUrl(value = ''): FormGroup {
     return this._fb.group({
-      name: ['', Validators.required],
+      name: [value, Validators.required],
     });
   }
 
-  addUrl() {
-    this.urls.push(this.newUrl());
+  addUrl(value = '') {
+    this.urls.push(this.newUrl(value));
   }
 
   removeUrl(index: number) {
@@ -206,25 +204,28 @@ export class CreateMangaFormComponent {
   onTest() {
     let testedForm = this.formData;
     this.isLoading = true;
-    this._mangaHttpService.testMangaForm(testedForm).subscribe((res) => {
-      if (!res.success) {
-        let message = 'Testing unsuccessful. ';
-        if ('failedChapters' in res) {
-          message += `Failed on chapters: ${JSON.stringify(
-            res.failedChapters
-          )}`;
+    this._mangaHttpService
+      .testMangaForm(testedForm, this.lastTestId)
+      .subscribe((res) => {
+        if (!res.success) {
+          let message = 'Testing unsuccessful. ';
+          if ('failedChapters' in res) {
+            message += `Failed on chapters: ${JSON.stringify(
+              res.failedChapters
+            )}`;
+          }
+          this._snackbar.open(message, 'Ok');
+        } else {
+          this._snackbar.open(
+            'Testing successful. Click submit to add manga to database!',
+            'Ok'
+          );
         }
-        this._snackbar.open(message, 'Ok');
-      } else {
         this.lastTestedForm = testedForm;
-        this._snackbar.open(
-          'Testing successful. Click submit to add manga to database!',
-          'Ok'
-        );
-      }
-      this.isLoading = false;
-      this._cdr.detectChanges();
-    });
+        this.lastTestId = res.testId;
+        this.isLoading = false;
+        this._cdr.detectChanges();
+      });
   }
 
   onSubmit() {

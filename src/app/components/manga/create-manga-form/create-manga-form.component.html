@@ -147,7 +147,7 @@
 
   </div>
 
-  <button type="button" mat-raised-button color="primary" [disabled]="!isFormValid" (click)="onTest()">Test</button>
+  <button type="button" mat-raised-button color="primary" [disabled]="!isFormValid" (click)="onTest()">{{lastTestId ? 'Test again' : 'Test'}}</button>
 
   <button mat-raised-button color="accent" [disabled]="!lastTestedForm">Submit</button>
 

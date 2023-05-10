@@ -48,9 +48,10 @@ export class MangaHttpService {
     });
   }
 
-  testMangaForm(mangaForm: any): Observable<any> {
+  testMangaForm(mangaForm: any, testId?: number | undefined): Observable<any> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.TEST_FORM), {
       manga: mangaForm,
+      testId: testId,
     });
   }
 
