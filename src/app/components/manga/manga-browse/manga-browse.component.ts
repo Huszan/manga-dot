@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { MangaService } from '../../../services/data/manga.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { MangaType } from '../../../types/manga.type';
 import { Router } from '@angular/router';
 

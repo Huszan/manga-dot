@@ -16,11 +16,14 @@
 
   .manga-container {
     position: relative;
-    width: 140px;
-    height: 210px;
     overflow: hidden;
     border-radius: 5px;
     cursor: pointer;
+    aspect-ratio: 2/3;
+
+    &.small { width: 100px; }
+    &.medium { width: 140px; }
+    &.big { width: 180px; }
 
     img {
       width: inherit;
