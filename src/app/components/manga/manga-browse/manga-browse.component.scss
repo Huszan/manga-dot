@@ -16,8 +16,35 @@
   align-items: center;
   gap: 10px;
   margin: 20px;
-  .search-input-field {
+
+  .action-bar {
     width: 100%;
-    max-width: 400px;
+    display: flex;
+    flex-direction: row;
+
+    .search-input-field {
+      width: 400px;
+    }
+
+    .size-slider-wrapper {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: center;
+      width: 200px;
+      span + mat-slider {
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .manga-browse-section {
+    .action-bar {
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+    }
   }
 }

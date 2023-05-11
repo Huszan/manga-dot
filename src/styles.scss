@@ -8,9 +8,11 @@
   margin: 0;
   padding: 0;
 }
+
 a {
   cursor: pointer;
 }
+
 .sticky {
   position: sticky;
   position: -webkit-sticky; /* For macOS/iOS Safari */
@@ -279,6 +281,11 @@ $altTheme: (
   max-width: 1300px;
   margin: auto;
   box-sizing: border-box;
+}
+
+.spacer {
+  width: 100%;
+  flex-grow: 1;
 }
 
 

@@ -32,6 +32,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CreateMangaFormComponent } from './components/manga/create-manga-form/create-manga-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FullScreenLoaderComponent } from './components/global/full-screen-loader/full-screen-loader.component';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { FullScreenLoaderComponent } from './components/global/full-screen-loade
     MatProgressSpinnerModule,
     MatSnackBarModule,
     ReactiveFormsModule,
+    MatSliderModule,
   ],
   providers: [MangaService, MangaHttpService],
   bootstrap: [AppComponent],

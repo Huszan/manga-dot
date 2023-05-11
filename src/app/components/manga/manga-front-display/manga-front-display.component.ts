@@ -20,6 +20,7 @@ import { MangaService } from '../../../services/data/manga.service';
 })
 export class MangaFrontDisplayComponent {
   @Input() manga!: MangaType;
+  @Input() size: number = 140;
   @Output() onRead = new EventEmitter();
 
   constructor(

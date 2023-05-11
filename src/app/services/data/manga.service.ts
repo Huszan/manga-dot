@@ -1,7 +1,8 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { MangaHttpService } from '../http/manga-http.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, retry, Subscription } from 'rxjs';
 import { MangaType } from '../../types/manga.type';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class MangaService implements OnInit, OnDestroy {
   private _elementsPerPage = 14;
   private _loadedPages = 1;
 
-  constructor(private _http: MangaHttpService) {
+  constructor(private _http: MangaHttpService, private _snackbar: MatSnackBar) {
     this.getMangaList();
   }
 
@@ -60,30 +61,64 @@ export class MangaService implements OnInit, OnDestroy {
 
   getMangaList() {
     this.isLoading$.next(true);
-    let sub = this._http.getMangaList().subscribe((res: MangaType[]) => {
-      let mangaList = res;
-      for (let el of mangaList) {
-        el.lastUpdateDate = new Date(el.lastUpdateDate);
-        el.addedDate = new Date(el.addedDate);
-      }
-      this._originalMangaList$.next(mangaList);
-      this.triggerDataChain();
-      this.isLoading$.next(false);
-    });
+    let sub = this._http
+      .getMangaList()
+      .pipe(
+        retry(3),
+        catchError(() => {
+          let errSnack = this._snackbar.open(
+            "Can't connect to the server. Please retry, or try again later.",
+            'Retry'
+          );
+          this.isLoading$.next(false);
+          errSnack.afterDismissed().subscribe(() => {
+            this.getMangaList();
+          });
+          return EMPTY;
+        })
+      )
+      .subscribe((res: MangaType[]) => {
+        let mangaList = res;
+        for (let el of mangaList) {
+          el.lastUpdateDate = new Date(el.lastUpdateDate);
+          el.addedDate = new Date(el.addedDate);
+        }
+        this._originalMangaList$.next(mangaList);
+        this.triggerDataChain();
+        this.isLoading$.next(false);
+      });
     this._subscriptions.push(sub);
   }
 
   public getManga(id: number) {
     this.isLoading$.next(true);
-    let sub = this._http.getMangaList(id).subscribe((res: MangaType[]) => {
-      let manga = res.at(0);
-      if (manga) {
-        manga.addedDate = new Date(manga.addedDate);
-        manga.lastUpdateDate = new Date(manga.lastUpdateDate);
-        this.selectedManga$.next(manga);
-      }
-      this.isLoading$.next(false);
-    });
+    let sub = this._http
+      .getMangaList(id)
+      .pipe(
+        retry(3),
+        catchError(() => {
+          let errSnack = this._snackbar.open(
+            "Can't connect to the server. Please retry, or try again later.",
+            'Retry'
+          );
+          this.isLoading$.next(false);
+          errSnack.afterDismissed().subscribe(() => {
+            this.getManga(id);
+          });
+          return EMPTY;
+        })
+      )
+      .subscribe((res: MangaType[]) => {
+        if (res === null) {
+        }
+        let manga = res.at(0);
+        if (manga) {
+          manga.addedDate = new Date(manga.addedDate);
+          manga.lastUpdateDate = new Date(manga.lastUpdateDate);
+          this.selectedManga$.next(manga);
+        }
+        this.isLoading$.next(false);
+      });
     this._subscriptions.push(sub);
   }
 
