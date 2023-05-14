@@ -6,9 +6,9 @@ import {
   OnInit,
 } from '@angular/core';
 import { MangaService } from '../../../services/data/manga.service';
-import { Subscription } from 'rxjs';
 import { MangaType } from '../../../types/manga.type';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-manga-browse',
@@ -29,18 +29,8 @@ export class MangaBrowseComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    let mangaListSub = this.mangaService.displayedMangaList$.subscribe(
-      (data) => {
-        this.mangaList = data;
-        this._cdr.detectChanges();
-      }
-    );
-    let loadingSub = this.mangaService.isLoading$.subscribe((data) => {
-      this.isLoading = data;
-      this._cdr.detectChanges();
-    });
-    this._subscriptions.push(mangaListSub);
-    this._subscriptions.push(loadingSub);
+    this._subscribeToMangaList();
+    this._subscribeToLoading();
   }
 
   loadMore() {
@@ -56,10 +46,24 @@ export class MangaBrowseComponent implements OnInit, OnDestroy {
   }
 
   onMangaSelect(index: number) {
-    this.mangaService.selectedManga$.next(
-      this.mangaService.displayedMangaList$.value[index]
-    );
-    this.router.navigate(['manga', this.mangaService.selectedManga$.value!.id]);
+    this.mangaService.selectedManga$.next(this.mangaList[index]);
+    this.router.navigate(['manga', this.mangaList[index].id]);
+  }
+
+  private _subscribeToMangaList() {
+    let sub = this.mangaService.displayedMangaList$.subscribe((res) => {
+      this.mangaList = res;
+      this._cdr.detectChanges();
+    });
+    this._subscriptions.push(sub);
+  }
+
+  private _subscribeToLoading() {
+    let sub = this.mangaService.isLoading$.subscribe((res) => {
+      this.isLoading = res;
+      this._cdr.detectChanges();
+    });
+    this._subscriptions.push(sub);
   }
 
   ngOnDestroy() {

@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { AppRoutingModule } from '../../../app-routing.module';
 import { Route } from '@angular/router';
-import { MangaGenre } from '../../../types/manga.type';
 
 @Component({
   selector: 'app-navbar',

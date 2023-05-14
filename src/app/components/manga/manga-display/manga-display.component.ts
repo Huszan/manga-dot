@@ -2,12 +2,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { MangaType } from '../../../types/manga.type';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
 import { MangaService } from '../../../services/data/manga.service';
 import { FakeArray } from '../../../utils/fakeArray';
 
@@ -17,11 +15,10 @@ import { FakeArray } from '../../../utils/fakeArray';
   styleUrls: ['./manga-display.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MangaDisplayComponent implements OnInit, OnDestroy {
-  manga$ = new BehaviorSubject<MangaType | undefined>(undefined);
+export class MangaDisplayComponent implements OnInit {
+  manga: MangaType | undefined = undefined;
 
   fakeArray = FakeArray;
-  subscriptions: Subscription[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -31,27 +28,26 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (!this.mangaService.selectedManga$.value) {
-      this.mangaService.getManga(this.mangaId);
-    }
-    let mangaSub = this.mangaService.selectedManga$.subscribe((manga) => {
-      this.manga$.next(manga);
-      this._cdr.detectChanges();
-    });
-    this.subscriptions.push(mangaSub);
+    this._initializeManga();
   }
 
   get mangaId(): number {
     return Number(this.route.snapshot.paramMap.get('id'));
   }
 
-  onChapterSelect(chapter: number) {
-    this.router.navigate(['manga', this.mangaId, chapter]);
+  private _initializeManga() {
+    if (!this.mangaService.selectedManga$.value) {
+      this.mangaService.getManga(this.mangaId).subscribe((res) => {
+        this.manga = res[0];
+        this._cdr.detectChanges();
+      });
+    } else {
+      this.manga = this.mangaService.selectedManga$.value;
+      this._cdr.detectChanges();
+    }
   }
 
-  ngOnDestroy() {
-    this.subscriptions.forEach((el) => {
-      el.unsubscribe();
-    });
+  onChapterSelect(chapter: number) {
+    this.router.navigate(['manga', this.mangaId, chapter]);
   }
 }

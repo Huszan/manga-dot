@@ -1,46 +1,46 @@
 
-<ng-container *ngIf="manga$.value === undefined; else mangaFound">
+<ng-container *ngIf="manga === undefined; else mangaFound">
   <app-full-screen-loader displayText="Your manga is loading."></app-full-screen-loader>
 </ng-container>
 
 <ng-template #mangaFound>
 
   <div class="display-container cf">
-    <img class="logo" [src]="manga$.value!.pic">
-    <p class="mat-display-3"><span style="display: inline-block"><b>{{ manga$.value!.name.toUpperCase() }}</b></span></p>
+    <img class="logo" [src]="manga!.pic">
+    <p class="mat-display-3"><span style="display: inline-block"><b>{{ manga!.name.toUpperCase() }}</b></span></p>
 
-    <p *ngIf="manga$.value!.authors" class="mat-body-2"><b>Authors: </b>
-      <ng-container *ngFor="let author of manga$.value!.authors">
+    <p *ngIf="manga!.authors" class="mat-body-2"><b>Authors: </b>
+      <ng-container *ngFor="let author of manga!.authors">
         {{ author }}
       </ng-container>
     </p>
-    <p *ngIf="manga$.value!.genres" class="mat-body-2"><b>Tags: </b>
-      <ng-container *ngFor="let genre of manga$.value!.genres">
+    <p *ngIf="manga!.genres" class="mat-body-2"><b>Tags: </b>
+      <ng-container *ngFor="let genre of manga!.genres">
         {{ genre }}
       </ng-container>
     </p>
-    <p class="mat-body"><b>Added: </b>{{ manga$.value!.addedDate.toLocaleDateString() }}</p>
-    <p class="mat-body"><b>Last update: </b>{{ manga$.value!.lastUpdateDate.toLocaleDateString() }}</p>
-    <p *ngIf="manga$.value!.description" class="mat-body"><b>Description: </b>{{ manga$.value!.description }}</p>
+    <p class="mat-body"><b>Added: </b>{{ manga!.addedDate.toLocaleDateString() }}</p>
+    <p class="mat-body"><b>Last update: </b>{{ manga!.lastUpdateDate.toLocaleDateString() }}</p>
+    <p *ngIf="manga!.description" class="mat-body"><b>Description: </b>{{ manga!.description }}</p>
 
     <div class="button-panel">
       <div class="mat-button" style="cursor: default">
         <span class="mat-button-wrapper">
-          <mat-icon style="margin-right: 8px">remove_red_eye</mat-icon> {{ manga$.value!.viewCount }}
+          <mat-icon style="margin-right: 8px">remove_red_eye</mat-icon> {{ manga!.viewCount }}
         </span>
       </div>
       <!--        <button *ngIf="!isLiked" mat-button color="primary">-->
-      <!--          <mat-icon style="margin-right: 8px" color="primary">thumb_up</mat-icon> {{ manga$.value!.likeCount }}-->
+      <!--          <mat-icon style="margin-right: 8px" color="primary">thumb_up</mat-icon> {{ manga.likeCount }}-->
       <!--        </button>-->
       <!--        <button *ngIf="isLiked" mat-button color="primary">-->
-      <!--          <mat-icon style="margin-right: 8px" color="accent">thumb_up</mat-icon> {{ manga$.value!.likeCount }}-->
+      <!--          <mat-icon style="margin-right: 8px" color="accent">thumb_up</mat-icon> {{ manga.likeCount }}-->
       <!--        </button>-->
     </div>
   </div>
 
   <section class="chapter-list-wrapper">
-    <ng-container *ngFor="let chapter of fakeArray.ofNumber(manga$.value!.chapterCount + 1, manga$.value!.startingChapter)">
-      <button mat-stroked-button style="text-align: left" (click)="onChapterSelect(chapter)">{{ manga$.value!.name }}: chapter {{ chapter }}</button>
+    <ng-container *ngFor="let chapter of fakeArray.ofNumber(manga!.chapterCount + 1, manga!.startingChapter)">
+      <button mat-stroked-button style="text-align: left" (click)="onChapterSelect(chapter)">{{ manga!.name }}: chapter {{ chapter }}</button>
     </ng-container>
   </section>
 

@@ -2,12 +2,10 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MangaService } from '../../../services/data/manga.service';
-import { BehaviorSubject, Subscription, tap } from 'rxjs';
 import { MangaType } from '../../../types/manga.type';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
@@ -19,8 +17,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./manga-chapter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MangaChapterComponent implements OnInit, OnDestroy {
-  manga$ = new BehaviorSubject<MangaType | undefined>(undefined);
+export class MangaChapterComponent implements OnInit {
+  manga: MangaType | undefined = undefined;
   chapter: number = 0;
   mangaId: number = 0;
   data = {
@@ -29,8 +27,6 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     isInitialized: false,
   };
   pages: SafeUrl[] = [];
-
-  private _subscriptions: Subscription[] = [];
 
   constructor(
     private _cdr: ChangeDetectorRef,
@@ -45,37 +41,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this._getChapter();
     this._getMangaId();
-    const mangaSub = this._mangaSub().subscribe((manga) => {
-      if (!manga) {
-        return;
-      }
-      this._mangaHttpService
-        .getMangaPages(manga!, this.chapter)
-        .subscribe((res) => {
-          if (res || res.length > 0) {
-            this.pages = this.sanitizePages(res);
-          }
-          this.data.isInitialized = true;
-          this._cdr.detectChanges();
-        });
-    });
-    this._subscriptions.push(mangaSub);
-  }
-
-  private _mangaSub() {
-    if (!this._mangaService.selectedManga$.value) {
-      this._mangaService.getManga(this.mangaId);
-    }
-    return this._mangaService.selectedManga$.pipe(
-      tap((manga) => {
-        if (!manga) {
-          return;
-        }
-        this.data.isFirstChapter = manga.startingChapter >= this.chapter;
-        this.data.isLastChapter = manga.chapterCount <= this.chapter;
-        this.manga$.next(manga);
-      })
-    );
+    this._getManga();
   }
 
   private _getMangaId() {
@@ -84,6 +50,37 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   private _getChapter() {
     this.chapter = Number(this.route.snapshot.paramMap.get('chapter'));
+  }
+
+  private _getManga() {
+    if (
+      !this._mangaService.selectedManga$.value ||
+      this._mangaService.selectedManga$.value?.id !== this.mangaId
+    ) {
+      this._mangaService
+        .getManga(this.mangaId)
+        .subscribe((res: MangaType[]) => {
+          this.manga = res.at(0);
+          this._cdr.detectChanges();
+          this._getPages();
+        });
+    } else {
+      this.manga = this._mangaService.selectedManga$.value;
+      this._cdr.detectChanges();
+      this._getPages();
+    }
+  }
+
+  private _getPages() {
+    this._mangaHttpService
+      .getMangaPages(this.manga!, this.chapter)
+      .subscribe((res) => {
+        if (res || res.length > 0) {
+          this.pages = this.sanitizePages(res);
+        }
+        this.data.isInitialized = true;
+        this._cdr.detectChanges();
+      });
   }
 
   goToChapterSelect() {
@@ -115,17 +112,5 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
       sanitizedPages.push(this._sanitizer.bypassSecurityTrustUrl(el));
     });
     return sanitizedPages;
-  }
-
-  onError() {
-    this._router.navigate(['']).then(() => {
-      this._snackBar.open('Something went wrong. Try again later.', 'Ok');
-    });
-  }
-
-  ngOnDestroy() {
-    this._subscriptions.forEach((sub) => {
-      sub.unsubscribe();
-    });
   }
 }
