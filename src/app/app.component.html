@@ -4,9 +4,7 @@
     <app-sidenav></app-sidenav>
   </mat-drawer>
   <mat-drawer-content class="full-height-wrapper">
-    <div class="background" [ngStyle]="{ 'background': 'url(assets/bg-min.png)' }" style="z-index: -100">
-      <div class="filter"></div>
-    </div>
+    <div class="background" [ngStyle]="{ 'background': 'url(assets/bg-blur-less-min.png)' }" style="z-index: -100"></div>
     <app-navbar [sidenavDrawer]="sidenav"></app-navbar>
     <mat-card class="site-content-width">
       <router-outlet></router-outlet>

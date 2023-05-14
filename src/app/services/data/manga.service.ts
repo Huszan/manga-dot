@@ -1,20 +1,19 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { MangaHttpService } from '../http/manga-http.service';
-import { BehaviorSubject, catchError, EMPTY, retry, Subscription } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, retry, tap } from 'rxjs';
 import { MangaType } from '../../types/manga.type';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MangaService implements OnInit, OnDestroy {
+export class MangaService implements OnInit {
   public isLoading$ = new BehaviorSubject<boolean>(false);
   public displayedMangaList$ = new BehaviorSubject<MangaType[]>([]);
   public selectedManga$ = new BehaviorSubject<MangaType | undefined>(undefined);
 
-  private _originalMangaList$ = new BehaviorSubject<MangaType[]>([]);
-  private _mangaList$ = new BehaviorSubject<MangaType[]>([]);
-  private _subscriptions: Subscription[] = [];
+  private _originalMangaList: MangaType[] = [];
+  private _mangaList: MangaType[] = [];
 
   private _searchInput = '';
   private _elementsPerPage = 14;
@@ -33,7 +32,7 @@ export class MangaService implements OnInit, OnDestroy {
   }
 
   get pageAmount() {
-    return this._mangaList$.value.length;
+    return this._mangaList.length;
   }
 
   get pageAmountLoaded() {
@@ -54,14 +53,14 @@ export class MangaService implements OnInit, OnDestroy {
   }
 
   triggerDataChain() {
-    this._mangaList$.next(this._originalMangaList$.value);
+    this._mangaList = this._originalMangaList;
     this._searchMangaList();
     this._paginateMangaList();
   }
 
   getMangaList() {
     this.isLoading$.next(true);
-    let sub = this._http
+    this._http
       .getMangaList()
       .pipe(
         retry(3),
@@ -70,7 +69,7 @@ export class MangaService implements OnInit, OnDestroy {
             "Can't connect to the server. Please retry, or try again later.",
             'Retry'
           );
-          this.isLoading$.next(false);
+          this.isLoading$.next(true);
           errSnack.afterDismissed().subscribe(() => {
             this.getMangaList();
           });
@@ -83,34 +82,28 @@ export class MangaService implements OnInit, OnDestroy {
           el.lastUpdateDate = new Date(el.lastUpdateDate);
           el.addedDate = new Date(el.addedDate);
         }
-        this._originalMangaList$.next(mangaList);
+        this._originalMangaList = mangaList;
         this.triggerDataChain();
         this.isLoading$.next(false);
       });
-    this._subscriptions.push(sub);
   }
 
   public getManga(id: number) {
     this.isLoading$.next(true);
-    let sub = this._http
-      .getMangaList(id)
-      .pipe(
-        retry(3),
-        catchError(() => {
-          let errSnack = this._snackbar.open(
-            "Can't connect to the server. Please retry, or try again later.",
-            'Retry'
-          );
-          this.isLoading$.next(false);
-          errSnack.afterDismissed().subscribe(() => {
-            this.getManga(id);
-          });
-          return EMPTY;
-        })
-      )
-      .subscribe((res: MangaType[]) => {
-        if (res === null) {
-        }
+    return this._http.getMangaList(id).pipe(
+      retry(3),
+      catchError(() => {
+        let errSnack = this._snackbar.open(
+          "Can't connect to the server. Please retry, or try again later.",
+          'Retry'
+        );
+        this.isLoading$.next(false);
+        errSnack.afterDismissed().subscribe(() => {
+          this.getManga(id);
+        });
+        return EMPTY;
+      }),
+      tap((res: MangaType[]) => {
         let manga = res.at(0);
         if (manga) {
           manga.addedDate = new Date(manga.addedDate);
@@ -118,15 +111,15 @@ export class MangaService implements OnInit, OnDestroy {
           this.selectedManga$.next(manga);
         }
         this.isLoading$.next(false);
-      });
-    this._subscriptions.push(sub);
+      })
+    );
   }
 
   private _searchMangaList() {
     if (this._toComparableString(this._searchInput) === '') return;
     let filteredList: MangaType[] = [];
 
-    this._mangaList$.value.forEach((el) => {
+    this._mangaList.forEach((el) => {
       let isIncluded = false;
       if (this._isValueIncluded(el.name, this._searchInput)) isIncluded = true;
       if (this._isValueIncluded(el.chapterCount, this._searchInput))
@@ -136,11 +129,11 @@ export class MangaService implements OnInit, OnDestroy {
       }
     });
 
-    this._mangaList$.next(filteredList);
+    this._mangaList = filteredList;
   }
 
   private _paginateMangaList() {
-    let newList = this._mangaList$.value.slice(0, this.pageAmountLoaded);
+    let newList = this._mangaList.slice(0, this.pageAmountLoaded);
     this.displayedMangaList$.next(newList);
   }
 
@@ -163,18 +156,12 @@ export class MangaService implements OnInit, OnDestroy {
   }
 
   private _populateMangasForTesting(iterations: number) {
-    if (this._originalMangaList$.value.length < 1) return;
+    if (this._originalMangaList.length < 1) return;
     for (let i = 0; i < iterations; i++) {
-      this._originalMangaList$.next([
-        ...this._originalMangaList$.value,
-        ...this._originalMangaList$.value,
-      ]);
+      this._originalMangaList = [
+        ...this._originalMangaList,
+        ...this._originalMangaList,
+      ];
     }
-  }
-
-  ngOnDestroy() {
-    this._subscriptions.forEach((sub) => {
-      sub.unsubscribe();
-    });
   }
 }

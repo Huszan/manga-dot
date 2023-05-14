@@ -13,7 +13,7 @@
 <ng-template #contentFound>
   <ng-container *ngTemplateOutlet="floatingActions"></ng-container>
   <span class="mat-display-2">
-    <a (click)="goToChapterSelect()">{{ manga$.value?.name }}</a>: chapter {{ chapter }}
+    <a (click)="goToChapterSelect()">{{ manga!.name }}</a>: chapter {{ chapter }}
   </span>
   <ng-container *ngFor="let page of pages">
     <img [src]="page" alt="no image">
