@@ -1,7 +1,7 @@
 
 <mat-drawer-container class="full-height-wrapper" hasBackdrop=true>
-  <mat-drawer #sidenav mode="over" position="end">
-    <app-sidenav></app-sidenav>
+  <mat-drawer #sidenav autoFocus="false" mode="over" position="end">
+    <app-sidenav [drawer]="sidenav"></app-sidenav>
   </mat-drawer>
   <mat-drawer-content class="full-height-wrapper">
     <div class="background" [ngStyle]="{ 'background': 'url(assets/bg-blur-less-min.png)' }" style="z-index: -100"></div>
