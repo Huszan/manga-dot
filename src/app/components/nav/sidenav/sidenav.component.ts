@@ -46,7 +46,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   onLogoutClick() {
     this._userManager.logout()?.subscribe((res) => {
-      this._snackbar.open(res.message, 'Ok', { duration: 2000 });
+      this._snackbar.open(res.message, 'Close', { duration: 8000 });
     });
   }
 

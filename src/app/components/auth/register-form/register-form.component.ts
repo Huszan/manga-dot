@@ -81,12 +81,12 @@ export class RegisterFormComponent {
     };
     this._auth.registerUser(user).subscribe((res) => {
       if (res.status === 0) {
-        this._snackbar.open(res.message, 'Ok', {
-          duration: 2000,
+        this._snackbar.open(res.message, 'Close', {
+          duration: 8000,
         });
       } else {
-        this._snackbar.open(res.message, 'Ok', {
-          duration: 2000,
+        this._snackbar.open(res.message, 'Close', {
+          duration: 8000,
         });
         this.resetForm();
         this._router.navigate(['']);

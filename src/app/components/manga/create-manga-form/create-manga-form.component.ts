@@ -239,12 +239,13 @@ export class CreateMangaFormComponent {
     if (data.success) {
       this._snackbar.open(
         'Testing successful. Click submit to add manga to database!',
-        'Ok'
+        'Close',
+        { duration: 8000 }
       );
     } else {
       this._snackbar.open(
         `Testing unsuccessful. Failed chapters: ${String(data.failedOn)}`,
-        'Ok'
+        'Close'
       );
     }
   }
@@ -262,11 +263,15 @@ export class CreateMangaFormComponent {
     this.isLoading = true;
     this._mangaHttpService.postManga(this.lastTestedForm).subscribe((res) => {
       if (res.success) {
-        this._snackbar.open('Successfully added manga to database!', 'Ok');
+        this._snackbar.open('Successfully added manga to database!', 'Close', {
+          duration: 8000,
+        });
         this._mangaService.getMangaList();
         this.clearForm();
       } else {
-        this._snackbar.open('Something went wrong. Try again later', 'Ok');
+        this._snackbar.open('Something went wrong. Try again later', 'Close', {
+          duration: 8000,
+        });
       }
       this.isLoading = false;
       this._cdr.detectChanges();

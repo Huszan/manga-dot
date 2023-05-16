@@ -81,8 +81,8 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
 
   onLike() {
     if (!this.user) {
-      this._snackbar.open('Only logged in users can like manga', '', {
-        duration: 2000,
+      this._snackbar.open('You need to be logged in', 'Close', {
+        duration: 8000,
       });
       return;
     }
@@ -95,7 +95,7 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
         this.mangaService.getMangaList();
         this._loadManga();
       } else {
-        this._snackbar.open(res.message, 'Ok', { duration: 5000 });
+        this._snackbar.open(res.message, 'Close', { duration: 8000 });
       }
     });
   }

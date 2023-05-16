@@ -67,7 +67,7 @@ export class MangaService implements OnInit {
         retry(3),
         catchError(() => {
           let errSnack = this._snackbar.open(
-            "Can't connect to the server. Please retry, or try again later.",
+            "Can't connect to the server. It can take some time to come back online.",
             'Retry'
           );
           this.isLoading$.next(true);
@@ -95,7 +95,7 @@ export class MangaService implements OnInit {
       retry(3),
       catchError(() => {
         let errSnack = this._snackbar.open(
-          "Can't connect to the server. Please retry, or try again later.",
+          "Can't connect to the server. It can take some time to come back online.",
           'Retry'
         );
         this.isLoading$.next(false);

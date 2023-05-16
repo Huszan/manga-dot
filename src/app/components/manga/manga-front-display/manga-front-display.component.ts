@@ -52,17 +52,25 @@ export class MangaFrontDisplayComponent implements OnInit, OnDestroy {
 
   onClickRemove() {
     if (this.user?.accountType === AccountType.User) {
-      this._snackbar.open("You don't have rights to perform this action", '', {
-        duration: 3000,
-      });
+      this._snackbar.open(
+        "You don't have rights to perform this action",
+        'Close',
+        {
+          duration: 8000,
+        }
+      );
       return;
     }
     this._mangaHttpService.removeManga(this.manga).subscribe((res) => {
       if ('success' in res && res.success) {
         this._mangaService.getMangaList();
-        this._snackbar.open('Successfully removed manga', 'Ok');
+        this._snackbar.open('Successfully removed manga', 'Close', {
+          duration: 8000,
+        });
       } else {
-        this._snackbar.open('Something went wrong. Try again later.', 'Ok');
+        this._snackbar.open('Something went wrong. Try again later.', 'Close', {
+          duration: 8000,
+        });
       }
     });
   }
