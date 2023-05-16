@@ -3,6 +3,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MangaType } from '../../types/manga.type';
+import { LikeType } from '../../types/like.type';
 
 const MANGA_DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
@@ -15,6 +16,7 @@ enum MANGA_ROUTE {
   POST = 'createManga',
   GET_MANGAS = 'getMangaList',
   REMOVE = 'removeManga',
+  LIKE = 'likeManga',
 }
 
 @Injectable({
@@ -73,6 +75,12 @@ export class MangaHttpService {
   removeManga(manga: any): Observable<any> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.REMOVE).toString(), {
       manga: manga,
+    });
+  }
+
+  likeManga(like: LikeType): Observable<any> {
+    return this.http.post(this._routeUrl(MANGA_ROUTE.LIKE).toString(), {
+      like: like,
     });
   }
 }

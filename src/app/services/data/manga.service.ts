@@ -3,6 +3,7 @@ import { MangaHttpService } from '../http/manga-http.service';
 import { BehaviorSubject, catchError, EMPTY, retry, tap } from 'rxjs';
 import { MangaType } from '../../types/manga.type';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { LikeType } from '../../types/like.type';
 
 @Injectable({
   providedIn: 'root',
@@ -66,7 +67,7 @@ export class MangaService implements OnInit {
         retry(3),
         catchError(() => {
           let errSnack = this._snackbar.open(
-            "Can't connect to the server. Please retry, or try again later.",
+            "Can't connect to the server. It can take some time to come back online.",
             'Retry'
           );
           this.isLoading$.next(true);
@@ -94,7 +95,7 @@ export class MangaService implements OnInit {
       retry(3),
       catchError(() => {
         let errSnack = this._snackbar.open(
-          "Can't connect to the server. Please retry, or try again later.",
+          "Can't connect to the server. It can take some time to come back online.",
           'Retry'
         );
         this.isLoading$.next(false);
@@ -113,6 +114,10 @@ export class MangaService implements OnInit {
         this.isLoading$.next(false);
       })
     );
+  }
+
+  public likeManga(like: LikeType) {
+    return this._http.likeManga(like).pipe(retry(3));
   }
 
   private _searchMangaList() {

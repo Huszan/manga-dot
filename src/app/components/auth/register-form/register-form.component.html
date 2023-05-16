@@ -1,0 +1,30 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-group">
+
+  <div class="form-title mat-display-2">Register new account</div>
+
+  <mat-form-field>
+    <input matInput
+           formControlName="name"
+           placeholder="Username">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput
+           type="email"
+           formControlName="email"
+           placeholder="Email">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput
+           type="password"
+           formControlName="password"
+           placeholder="Password">
+  </mat-form-field>
+
+
+  <button mat-raised-button color="accent" [disabled]="!form.valid">Submit</button>
+
+</form>
+
+<app-full-screen-loader *ngIf="isLoading"></app-full-screen-loader>

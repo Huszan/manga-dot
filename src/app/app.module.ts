@@ -33,6 +33,12 @@ import { CreateMangaFormComponent } from './components/manga/create-manga-form/c
 import { ReactiveFormsModule } from '@angular/forms';
 import { FullScreenLoaderComponent } from './components/global/full-screen-loader/full-screen-loader.component';
 import { MatSliderModule } from '@angular/material/slider';
+import { LoginFormComponent } from './components/auth/login-form/login-form.component';
+import { RegisterFormComponent } from './components/auth/register-form/register-form.component';
+import { ActivateAccountComponent } from './components/auth/activate-account/activate-account.component';
+import { ResendActivateFormComponent } from './components/auth/resend-activate-form/resend-activate-form.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ForgotPasswordDialogComponent } from './components/auth/forgot-password-dialog/forgot-password-dialog.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +51,11 @@ import { MatSliderModule } from '@angular/material/slider';
     MangaChapterComponent,
     CreateMangaFormComponent,
     FullScreenLoaderComponent,
+    LoginFormComponent,
+    RegisterFormComponent,
+    ActivateAccountComponent,
+    ResendActivateFormComponent,
+    ForgotPasswordDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -68,6 +79,7 @@ import { MatSliderModule } from '@angular/material/slider';
     MatSnackBarModule,
     ReactiveFormsModule,
     MatSliderModule,
+    MatDialogModule,
   ],
   providers: [MangaService, MangaHttpService],
   bootstrap: [AppComponent],

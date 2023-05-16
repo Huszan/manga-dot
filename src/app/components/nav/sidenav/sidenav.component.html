@@ -1,4 +1,12 @@
 <div class="side-drawer">
+  <div class="user-box">
+    <ng-container *ngIf="user">
+      <ng-container *ngTemplateOutlet="userLogged"></ng-container>
+    </ng-container>
+    <ng-container *ngIf="!user">
+      <ng-container *ngTemplateOutlet="userNotLogged"></ng-container>
+    </ng-container>
+  </div>
   <mat-nav-list>
     <a
       *ngFor="let route of routes; let i = index"
@@ -6,8 +14,31 @@
       [routerLinkActive]="'active'"
       [routerLinkActiveOptions]="{ exact: true }"
       [routerLink]="route.path"
+      (click)="onRouteClick()"
     >
       {{ getDisplay(i) }}
     </a>
   </mat-nav-list>
 </div>
+
+<ng-template #userNotLogged>
+  <div class="login-actions">
+    <button mat-raised-button [routerLink]="'login'" (click)="onRouteClick()">Login</button>
+    <button mat-raised-button color="accent" [routerLink]="'register'" (click)="onRouteClick()">Register</button>
+  </div>
+</ng-template>
+
+<ng-template #userLogged>
+  <div class="account-type mat-caption"
+       [ngClass]="{
+        'user': user?.accountType === 'user',
+        'mod': user?.accountType === 'mod',
+        'admin': user?.accountType === 'admin'
+        }"
+  >
+    {{ user?.accountType!.toUpperCase() }}</div>
+  <h2 class="mat-h2">{{ user?.name }}</h2>
+  <div class="login-actions">
+    <button mat-raised-button color="warn" (click)="onLogoutClick()">Logout</button>
+  </div>
+</ng-template>

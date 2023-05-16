@@ -4,6 +4,9 @@ import { MangaBrowseComponent } from './components/manga/manga-browse/manga-brow
 import { MangaDisplayComponent } from './components/manga/manga-display/manga-display.component';
 import { MangaChapterComponent } from './components/manga/manga-chapter/manga-chapter.component';
 import { CreateMangaFormComponent } from './components/manga/create-manga-form/create-manga-form.component';
+import { LoginFormComponent } from './components/auth/login-form/login-form.component';
+import { RegisterFormComponent } from './components/auth/register-form/register-form.component';
+import { ActivateAccountComponent } from './components/auth/activate-account/activate-account.component';
 
 const routes: Routes = [
   {
@@ -25,6 +28,18 @@ const routes: Routes = [
   {
     path: 'manga/:id/:chapter',
     component: MangaChapterComponent,
+  },
+  {
+    path: 'login',
+    component: LoginFormComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterFormComponent,
+  },
+  {
+    path: 'activate',
+    component: ActivateAccountComponent,
   },
   { path: '**', redirectTo: '' },
 ];
