@@ -13,7 +13,8 @@
       mat-list-item
       [routerLinkActive]="'active'"
       [routerLinkActiveOptions]="{ exact: true }"
-      (click)="onRouteClick(route.path!)"
+      [routerLink]="route.path"
+      (click)="onRouteClick()"
     >
       {{ getDisplay(i) }}
     </a>
@@ -22,8 +23,8 @@
 
 <ng-template #userNotLogged>
   <div class="login-actions">
-    <button mat-raised-button (click)="onRouteClick('login')">Login</button>
-    <button mat-raised-button color="accent" (click)="onRouteClick('register')">Register</button>
+    <button mat-raised-button [routerLink]="'login'" (click)="onRouteClick()">Login</button>
+    <button mat-raised-button color="accent" [routerLink]="'register'" (click)="onRouteClick()">Register</button>
   </div>
 </ng-template>
 

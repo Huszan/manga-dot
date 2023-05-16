@@ -55,10 +55,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
   }
 
-  onRouteClick(path: string) {
-    this._router.navigate([path]).then(() => {
-      this.drawer.close();
-    });
+  onRouteClick() {
+    this.drawer.close();
   }
 
   ngOnDestroy() {
