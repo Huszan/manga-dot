@@ -29,12 +29,11 @@
           <mat-icon style="margin-right: 8px">remove_red_eye</mat-icon> {{ manga!.viewCount }}
         </span>
       </div>
-      <!--        <button *ngIf="!isLiked" mat-button color="primary">-->
-      <!--          <mat-icon style="margin-right: 8px" color="primary">thumb_up</mat-icon> {{ manga.likeCount }}-->
-      <!--        </button>-->
-      <!--        <button *ngIf="isLiked" mat-button color="primary">-->
-      <!--          <mat-icon style="margin-right: 8px" color="accent">thumb_up</mat-icon> {{ manga.likeCount }}-->
-      <!--        </button>-->
+              <button mat-button color="primary" (click)="onLike()">
+                <mat-icon *ngIf="!isLikedByUser" style="margin-right: 8px" color="primary">thumb_up</mat-icon>
+                <mat-icon *ngIf="isLikedByUser" style="margin-right: 8px" color="accent">thumb_up</mat-icon>
+                {{ manga!.likes.length }}
+              </button>
     </div>
   </div>
 

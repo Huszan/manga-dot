@@ -1,4 +1,10 @@
 <div class="side-drawer">
+  <ng-container *ngIf="user">
+    <ng-container *ngTemplateOutlet="userLogged"></ng-container>
+  </ng-container>
+  <ng-container *ngIf="!user">
+    <ng-container *ngTemplateOutlet="userNotLogged"></ng-container>
+  </ng-container>
   <mat-nav-list>
     <a
       *ngFor="let route of routes; let i = index"
@@ -11,3 +17,18 @@
     </a>
   </mat-nav-list>
 </div>
+
+<ng-template #userNotLogged>
+  <div class="login-actions">
+    <button mat-raised-button [routerLink]="'login'">Login</button>
+    <button mat-raised-button color="accent" [routerLink]="'register'">Register</button>
+  </div>
+</ng-template>
+
+<ng-template #userLogged>
+  <div class="mat-h2" style="text-align: center; padding: 5px">Welcome
+    {{ user?.name }}!</div>
+  <div class="login-actions">
+    <button mat-raised-button color="warn" (click)="onLogoutClick()">Logout</button>
+  </div>
+</ng-template>

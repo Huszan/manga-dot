@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ChangeDetectorRef, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -33,6 +33,8 @@ import { CreateMangaFormComponent } from './components/manga/create-manga-form/c
 import { ReactiveFormsModule } from '@angular/forms';
 import { FullScreenLoaderComponent } from './components/global/full-screen-loader/full-screen-loader.component';
 import { MatSliderModule } from '@angular/material/slider';
+import { LoginFormComponent } from './components/auth/login-form/login-form.component';
+import { RegisterFormComponent } from './components/auth/register-form/register-form.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { MatSliderModule } from '@angular/material/slider';
     MangaChapterComponent,
     CreateMangaFormComponent,
     FullScreenLoaderComponent,
+    LoginFormComponent,
+    RegisterFormComponent,
   ],
   imports: [
     BrowserModule,

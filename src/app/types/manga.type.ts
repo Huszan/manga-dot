@@ -1,4 +1,5 @@
 import { HtmlLocateType } from './html-locate.type';
+import { LikeType } from './like.type';
 
 export enum MangaGenre {
   Shojo = 'Shojo',
@@ -34,7 +35,7 @@ export interface MangaType {
   lastUpdateDate: Date;
   addedDate: Date;
   viewCount: number;
-  likeCount: number;
+  likes: LikeType[];
   description: string;
   startingChapter: number;
   chapterCount: number;

@@ -12,3 +12,12 @@ a.active {
   border-left: #ffc300 6px solid;
   background-color: #fafafa;
 }
+
+.login-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  gap: 5px;
+}

@@ -224,7 +224,6 @@ export class CreateMangaFormComponent {
       const response = await firstValueFrom(
         this._mangaHttpService.testMangaChapter(this.formData, i)
       );
-      console.log(response);
       if (!response) {
         failedOn.push(i);
       }
