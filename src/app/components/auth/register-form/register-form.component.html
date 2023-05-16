@@ -1,5 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-group">
 
+  <div class="form-title mat-display-2">Register new account</div>
+
   <mat-form-field>
     <input matInput
            formControlName="name"
@@ -21,7 +23,7 @@
   </mat-form-field>
 
 
-  <button mat-raised-button color="accent" [disabled]="!form.valid">Register</button>
+  <button mat-raised-button color="accent" [disabled]="!form.valid">Submit</button>
 
 </form>
 
