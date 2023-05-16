@@ -66,6 +66,10 @@ export class AuthService {
     return this._http.resend(email, url);
   }
 
+  forgotPassword(email: string, password: string) {
+    return this._http.forgotPassword(email, password);
+  }
+
   private _setAuthToken() {
     if (!this.currentUser$.value) return;
     localStorage.setItem(

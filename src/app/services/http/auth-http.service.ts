@@ -22,6 +22,7 @@ enum ROUTE {
   REGISTER = 'register',
   ACTIVATE = 'activate',
   RESEND = 'resendActivation',
+  FORGOT_PASSWORD = 'forgotPassword',
 }
 
 @Injectable({
@@ -78,6 +79,13 @@ export class AuthHttpService {
     return this.http.post(this._routeUrl(ROUTE.RESEND).toString(), {
       email: email,
       activateUrl: activateUrl,
+    });
+  }
+
+  forgotPassword(email: string, password: string): Observable<any> {
+    return this.http.post(this._routeUrl(ROUTE.FORGOT_PASSWORD).toString(), {
+      email: email,
+      newPassword: password,
     });
   }
 }

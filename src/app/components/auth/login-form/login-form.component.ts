@@ -10,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ResendActivateFormComponent } from '../resend-activate-form/resend-activate-form.component';
+import { ForgotPasswordDialogComponent } from '../forgot-password-dialog/forgot-password-dialog.component';
 
 @Component({
   selector: 'app-login-form',
@@ -74,6 +75,17 @@ export class LoginFormComponent {
 
   openResendDialog() {
     const dialogRef = this._dialog.open(ResendActivateFormComponent);
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res && res.message) {
+        this._snackbar.open(res.message, 'Close', {
+          duration: 8000,
+        });
+      }
+    });
+  }
+
+  openForgotPasswordDialog() {
+    const dialogRef = this._dialog.open(ForgotPasswordDialogComponent);
     dialogRef.afterClosed().subscribe((res) => {
       if (res && res.message) {
         this._snackbar.open(res.message, 'Close', {

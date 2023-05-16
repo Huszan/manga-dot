@@ -38,6 +38,7 @@ import { RegisterFormComponent } from './components/auth/register-form/register-
 import { ActivateAccountComponent } from './components/auth/activate-account/activate-account.component';
 import { ResendActivateFormComponent } from './components/auth/resend-activate-form/resend-activate-form.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { ForgotPasswordDialogComponent } from './components/auth/forgot-password-dialog/forgot-password-dialog.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     RegisterFormComponent,
     ActivateAccountComponent,
     ResendActivateFormComponent,
+    ForgotPasswordDialogComponent,
   ],
   imports: [
     BrowserModule,
