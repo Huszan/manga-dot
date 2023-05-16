@@ -21,3 +21,18 @@ a.active {
   padding: 5px;
   gap: 5px;
 }
+
+.user-box {
+  padding: 5px;
+  background-color: #fafafa;
+  border-bottom: #141214 1px solid;
+  h2, .account-type {
+    text-align: center;
+  }
+  .account-type {
+    font-size: 12px;
+    &.user { color: black; }
+    &.mod { color: saddlebrown; }
+    &.admin { color: darkred; }
+  }
+}
