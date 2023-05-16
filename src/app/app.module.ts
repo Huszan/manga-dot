@@ -35,6 +35,7 @@ import { FullScreenLoaderComponent } from './components/global/full-screen-loade
 import { MatSliderModule } from '@angular/material/slider';
 import { LoginFormComponent } from './components/auth/login-form/login-form.component';
 import { RegisterFormComponent } from './components/auth/register-form/register-form.component';
+import { ActivateAccountComponent } from './components/auth/activate-account/activate-account.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { RegisterFormComponent } from './components/auth/register-form/register-
     FullScreenLoaderComponent,
     LoginFormComponent,
     RegisterFormComponent,
+    ActivateAccountComponent,
   ],
   imports: [
     BrowserModule,

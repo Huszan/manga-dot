@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { UserType } from '../../types/user.type';
+import * as domain from 'domain';
 
 export enum AccountType {
   User = 'user',
@@ -19,6 +20,7 @@ enum ROUTE {
   TOKEN_LOGIN = 'login/token',
   LOGOUT = 'logout',
   REGISTER = 'register',
+  ACTIVATE = 'activate',
 }
 
 @Injectable({
@@ -42,6 +44,7 @@ export class AuthHttpService {
   register(user: UserType): Observable<any> {
     return this.http.post(this._routeUrl(ROUTE.REGISTER).toString(), {
       user: user,
+      activateUrl: document.URL.replace('register', 'activate'),
     });
   }
 
@@ -61,6 +64,12 @@ export class AuthHttpService {
   logout(id: number): Observable<any> {
     return this.http.post(this._routeUrl(ROUTE.LOGOUT).toString(), {
       id: id,
+    });
+  }
+
+  activate(code: string): Observable<any> {
+    return this.http.post(this._routeUrl(ROUTE.ACTIVATE).toString(), {
+      code: code,
     });
   }
 }

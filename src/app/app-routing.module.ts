@@ -6,6 +6,7 @@ import { MangaChapterComponent } from './components/manga/manga-chapter/manga-ch
 import { CreateMangaFormComponent } from './components/manga/create-manga-form/create-manga-form.component';
 import { LoginFormComponent } from './components/auth/login-form/login-form.component';
 import { RegisterFormComponent } from './components/auth/register-form/register-form.component';
+import { ActivateAccountComponent } from './components/auth/activate-account/activate-account.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,10 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegisterFormComponent,
+  },
+  {
+    path: 'activate',
+    component: ActivateAccountComponent,
   },
   { path: '**', redirectTo: '' },
 ];
