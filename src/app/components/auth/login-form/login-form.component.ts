@@ -8,6 +8,8 @@ import {
 import { AuthService } from '../../../services/data/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ResendActivateFormComponent } from '../resend-activate-form/resend-activate-form.component';
 
 @Component({
   selector: 'app-login-form',
@@ -23,7 +25,8 @@ export class LoginFormComponent {
     private _cdr: ChangeDetectorRef,
     private _auth: AuthService,
     private _snackbar: MatSnackBar,
-    private _router: Router
+    private _router: Router,
+    private _dialog: MatDialog
   ) {
     this._initForm();
   }
@@ -67,5 +70,16 @@ export class LoginFormComponent {
         this.isLoading = false;
         this._cdr.detectChanges();
       });
+  }
+
+  openResendDialog() {
+    const dialogRef = this._dialog.open(ResendActivateFormComponent);
+    dialogRef.afterClosed().subscribe((res) => {
+      if (res && res.message) {
+        this._snackbar.open(res.message, 'Close', {
+          duration: 8000,
+        });
+      }
+    });
   }
 }

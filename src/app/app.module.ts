@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -36,6 +36,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { LoginFormComponent } from './components/auth/login-form/login-form.component';
 import { RegisterFormComponent } from './components/auth/register-form/register-form.component';
 import { ActivateAccountComponent } from './components/auth/activate-account/activate-account.component';
+import { ResendActivateFormComponent } from './components/auth/resend-activate-form/resend-activate-form.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,7 @@ import { ActivateAccountComponent } from './components/auth/activate-account/act
     LoginFormComponent,
     RegisterFormComponent,
     ActivateAccountComponent,
+    ResendActivateFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,6 +77,7 @@ import { ActivateAccountComponent } from './components/auth/activate-account/act
     MatSnackBarModule,
     ReactiveFormsModule,
     MatSliderModule,
+    MatDialogModule,
   ],
   providers: [MangaService, MangaHttpService],
   bootstrap: [AppComponent],

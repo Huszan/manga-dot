@@ -62,6 +62,10 @@ export class AuthService {
     return this._http.activate(code);
   }
 
+  resend(email: string, url: string) {
+    return this._http.resend(email, url);
+  }
+
   private _setAuthToken() {
     if (!this.currentUser$.value) return;
     localStorage.setItem(

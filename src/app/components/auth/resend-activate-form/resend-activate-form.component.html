@@ -1,0 +1,12 @@
+<form [formGroup]="form" class="form-group">
+
+  <mat-form-field>
+    <input matInput
+           type="email"
+           formControlName="email"
+           placeholder="Email">
+  </mat-form-field>
+
+  <button mat-raised-button color="accent" (click)="onSubmit()" type="button" [disabled]="!form.valid">Send</button>
+
+</form>

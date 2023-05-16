@@ -14,6 +14,7 @@
            placeholder="Password">
   </mat-form-field>
 
+  <a (click)="openResendDialog()" style="color: var(--primary-color)">Resend verification email</a>
 
   <button mat-raised-button color="accent" [disabled]="!form.valid">Login</button>
 
