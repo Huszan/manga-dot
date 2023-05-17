@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 
 export enum StoreItem {
-  MANGA_BROWSE_SIZE = 'mangaBrowseSize',
+  AUTH_TOKEN = 'auth_token',
+  MANGA_BROWSE_SIZE = 'manga_browse_size',
 }
 
 @Injectable({
