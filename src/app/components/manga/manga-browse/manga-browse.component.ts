@@ -13,7 +13,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { StoreItem, StoreService } from '../../../services/store.service';
 import { MatSlider } from '@angular/material/slider';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Subject, timeout } from 'rxjs';
 
 export const SortOptions: { display: string; value: any }[] = [
   { display: 'Most popular', value: { view_count: 'DESC' } },
@@ -78,6 +78,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
 
   getElements() {
     this.isLoading = true;
+    this._cdr.detectChanges();
     this.httpManga
       .getMangaList(
         {
@@ -104,11 +105,11 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
 
   onSearchInput(event: any) {
     this.reset();
+    this.isLoading = true;
     this.inputSubject.next(event.target.value);
   }
 
   private reset() {
-    this.isLoading = true;
     this.isEverythingLoaded = false;
     this.mangaList = [];
     this.currentLoad = 0;
