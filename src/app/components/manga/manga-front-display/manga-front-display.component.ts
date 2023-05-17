@@ -9,7 +9,6 @@ import {
   Output,
 } from '@angular/core';
 import { MangaType } from '../../../types/manga.type';
-import { environment } from '../../../../environments/environment';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MangaService } from '../../../services/data/manga.service';
@@ -37,12 +36,14 @@ export class MangaFrontDisplayComponent implements OnInit, OnDestroy {
     private _mangaService: MangaService,
     private _mangaHttpService: MangaHttpService,
     private _snackbar: MatSnackBar,
-    private _auth: AuthService
+    private _auth: AuthService,
+    private _cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.userSub = this._auth.currentUser$.subscribe((user) => {
       this.user = user;
+      this._cdr.detectChanges();
     });
   }
 
@@ -63,7 +64,6 @@ export class MangaFrontDisplayComponent implements OnInit, OnDestroy {
     }
     this._mangaHttpService.removeManga(this.manga).subscribe((res) => {
       if ('success' in res && res.success) {
-        this._mangaService.getMangaList();
         this._snackbar.open('Successfully removed manga', 'Close', {
           duration: 8000,
         });

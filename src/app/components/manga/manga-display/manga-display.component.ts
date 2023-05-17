@@ -14,6 +14,7 @@ import { UserType } from '../../../types/user.type';
 import { Subscription } from 'rxjs';
 import { LikeType } from '../../../types/like.type';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MangaHttpService } from '../../../services/http/manga-http.service';
 
 @Component({
   selector: 'app-manga-display',
@@ -22,7 +23,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MangaDisplayComponent implements OnInit, OnDestroy {
-  manga: MangaType | undefined = undefined;
+  manga: MangaType | null = null;
   user: UserType | null = null;
 
   private _userSub!: Subscription;
@@ -34,6 +35,7 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private mangaService: MangaService,
+    private mangaHttp: MangaHttpService,
     private _cdr: ChangeDetectorRef,
     private _auth: AuthService,
     private _snackbar: MatSnackBar
@@ -62,9 +64,7 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
   }
 
   private _loadManga() {
-    this.mangaService.getManga(this.mangaId).subscribe((res) => {
-      this.mangaService.selectedManga$.next(res[0]);
-    });
+    this.mangaService.loadManga(this.mangaId);
   }
 
   get isLikedByUser() {
@@ -90,9 +90,8 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
       mangaId: this.manga?.id!,
       userId: this.user?.id!,
     };
-    this.mangaService.likeManga(like).subscribe((res) => {
+    this.mangaHttp.likeManga(like).subscribe((res) => {
       if (res.status === 1) {
-        this.mangaService.getMangaList();
         this._loadManga();
       } else {
         this._snackbar.open(res.message, 'Close', { duration: 8000 });

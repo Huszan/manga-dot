@@ -1,28 +1,39 @@
 
 <section class="manga-browse-section">
-  <h2 style="align-self: start">All mangas</h2>
-  <div class="divider"></div>
+  <ng-container *ngIf="title">
+    <h2 *ngIf="!titleNav" style="align-self: start">{{ title }}</h2>
+    <a *ngIf="titleNav" class="mat-h2" style="align-self: start" [routerLink]="titleNav.link" [queryParams]="titleNav.queryParams">{{ title }}</a>
+    <div class="divider"></div>
+  </ng-container>
 
   <div class="action-bar">
-    <mat-form-field color="primary" class="search-input-field">
-      <mat-label>Search</mat-label>
-      <input matInput (input)="onSearchInput($event)">
-    </mat-form-field>
+    <ng-container *ngIf="canSearch">
+      <mat-form-field color="primary" class="search-input-field">
+        <mat-label>Search</mat-label>
+        <input matInput (input)="onSearchInput($event)">
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngIf="canSort">
+      <mat-form-field>
+        <mat-label>Sort by</mat-label>
+        <mat-select disableOptionCentering (valueChange)="onSortValueChange($event)" #sortSelect>
+          <mat-option *ngFor="let option of sortOptions; let i = index" [value]="i">{{option.display}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
     <span class="spacer"></span>
-    <span class="size-slider-wrapper">
+    <span *ngIf="canChangeIconSize" class="size-slider-wrapper">
       <span>Size</span>
-      <mat-slider min="100" max="220" step="10" value="140" #sizeSlider></mat-slider>
+      <mat-slider min="100" max="220" step="10" value="140" #sizeSlider (valueChange)="onSizeSliderChange()"></mat-slider>
     </span>
   </div>
-  <mat-spinner color="accent" *ngIf="isLoading; else loaded"></mat-spinner>
-  <ng-template #loaded>
-    <div class="manga-list-container">
-      <ng-container *ngFor="let manga of mangaList; let i = index">
-        <app-manga-front-display [manga]="manga" (onRead)="onMangaSelect(i)" [size]="sizeSlider.value"></app-manga-front-display>
-      </ng-container>
-      <span *ngIf="mangaList.length == 0" class="mat-card-subtitle">Sorry, it looks like nothing was found.</span>
-    </div>
-  </ng-template>
-  <button *ngIf="!isEverythingLoaded()" mat-flat-button color="primary" (click)="loadMore()">Load more...</button>
+  <div class="manga-list-container">
+    <ng-container *ngFor="let manga of mangaList; let i = index">
+      <app-manga-front-display [manga]="manga" (onRead)="onMangaSelect(i)" [size]="sizeSlider ? sizeSlider.value : 140"></app-manga-front-display>
+    </ng-container>
+    <span *ngIf="mangaList.length == 0" class="mat-card-subtitle">Sorry, it looks like nothing was found.</span>
+  </div>
+  <mat-spinner color="accent" *ngIf="isLoading"></mat-spinner>
+  <button *ngIf="!isEverythingLoaded && canLoadMore && !isLoading" mat-flat-button color="primary" (click)="loadMore()">Load more...</button>
 
 </section>

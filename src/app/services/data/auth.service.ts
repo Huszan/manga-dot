@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { UserType } from '../../types/user.type';
 import { AuthHttpService } from '../http/auth-http.service';
 import { BehaviorSubject, retry, take, tap } from 'rxjs';
+import { StoreItem, StoreService } from '../store.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +10,8 @@ import { BehaviorSubject, retry, take, tap } from 'rxjs';
 export class AuthService {
   currentUser$ = new BehaviorSubject<UserType | null>(null);
 
-  constructor(private _http: AuthHttpService) {
-    let token = localStorage.getItem('authToken');
+  constructor(private _http: AuthHttpService, private store: StoreService) {
+    let token = store.getItem(StoreItem.AUTH_TOKEN);
     if (token) {
       this._loginByToken(token).subscribe();
     }
@@ -21,7 +22,7 @@ export class AuthService {
       retry(3),
       take(1),
       tap((res) => {
-        if (res.status === 1) {
+        if (res.status === 1 && res.data) {
           this.currentUser$.next(res.data);
           this._setAuthToken();
         }
@@ -52,7 +53,7 @@ export class AuthService {
       tap((res) => {
         if (res.status === 1) {
           this.currentUser$.next(null);
-          this._removeAuthToken();
+          this.store.removeItem(StoreItem.AUTH_TOKEN);
         }
       })
     );
@@ -71,14 +72,10 @@ export class AuthService {
   }
 
   private _setAuthToken() {
-    if (!this.currentUser$.value) return;
-    localStorage.setItem(
-      'authToken',
-      String(this.currentUser$!.value.authToken)
+    if (!this.currentUser$.value || !this.currentUser$.value?.authToken) return;
+    this.store.setItem(
+      StoreItem.AUTH_TOKEN,
+      this.currentUser$.value?.authToken
     );
-  }
-
-  private _removeAuthToken() {
-    localStorage.removeItem('authToken');
   }
 }

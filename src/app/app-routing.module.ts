@@ -1,17 +1,24 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MangaBrowseComponent } from './components/manga/manga-browse/manga-browse.component';
 import { MangaDisplayComponent } from './components/manga/manga-display/manga-display.component';
 import { MangaChapterComponent } from './components/manga/manga-chapter/manga-chapter.component';
 import { CreateMangaFormComponent } from './components/manga/create-manga-form/create-manga-form.component';
 import { LoginFormComponent } from './components/auth/login-form/login-form.component';
 import { RegisterFormComponent } from './components/auth/register-form/register-form.component';
 import { ActivateAccountComponent } from './components/auth/activate-account/activate-account.component';
+import { HomeViewComponent } from './components/views/home-view/home-view.component';
+import { MangaBrowseComponent } from './components/manga/manga-browse/manga-browse.component';
 
 const routes: Routes = [
   {
-    title: 'Manga dot | Browse',
+    title: 'Manga dot | Home',
     path: '',
+    pathMatch: 'full',
+    component: HomeViewComponent,
+  },
+  {
+    title: 'Manga dot | Browse',
+    path: 'manga/browse',
     pathMatch: 'full',
     component: MangaBrowseComponent,
   },
