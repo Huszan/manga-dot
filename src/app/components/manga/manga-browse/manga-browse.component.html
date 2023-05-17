@@ -11,7 +11,7 @@
     <span class="spacer"></span>
     <span class="size-slider-wrapper">
       <span>Size</span>
-      <mat-slider min="100" max="220" step="10" value="140" #sizeSlider></mat-slider>
+      <mat-slider min="100" max="220" step="10" value="140" #sizeSlider id="sizeSlider" (valueChange)="onSizeSliderChange()"></mat-slider>
     </span>
   </div>
   <mat-spinner color="accent" *ngIf="isLoading; else loaded"></mat-spinner>
