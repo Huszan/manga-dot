@@ -61,12 +61,10 @@ export class MangaChapterComponent implements OnInit {
         .getManga(this.mangaId)
         .subscribe((res: MangaType[]) => {
           this.manga = res.at(0);
-          this._cdr.detectChanges();
           this._getPages();
         });
     } else {
       this.manga = this._mangaService.selectedManga$.value;
-      this._cdr.detectChanges();
       this._getPages();
     }
   }
