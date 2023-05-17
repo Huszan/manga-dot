@@ -266,7 +266,6 @@ export class CreateMangaFormComponent {
         this._snackbar.open('Successfully added manga to database!', 'Close', {
           duration: 8000,
         });
-        this._mangaService.getMangaList();
         this.clearForm();
       } else {
         this._snackbar.open('Something went wrong. Try again later', 'Close', {

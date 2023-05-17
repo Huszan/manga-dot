@@ -64,7 +64,6 @@ export class MangaFrontDisplayComponent implements OnInit, OnDestroy {
     }
     this._mangaHttpService.removeManga(this.manga).subscribe((res) => {
       if ('success' in res && res.success) {
-        this._mangaService.getMangaList();
         this._snackbar.open('Successfully removed manga', 'Close', {
           duration: 8000,
         });

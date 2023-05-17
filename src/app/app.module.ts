@@ -39,6 +39,8 @@ import { ActivateAccountComponent } from './components/auth/activate-account/act
 import { ResendActivateFormComponent } from './components/auth/resend-activate-form/resend-activate-form.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ForgotPasswordDialogComponent } from './components/auth/forgot-password-dialog/forgot-password-dialog.component';
+import { HomeViewComponent } from './components/views/home-view/home-view.component';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -56,6 +58,7 @@ import { ForgotPasswordDialogComponent } from './components/auth/forgot-password
     ActivateAccountComponent,
     ResendActivateFormComponent,
     ForgotPasswordDialogComponent,
+    HomeViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,6 +83,7 @@ import { ForgotPasswordDialogComponent } from './components/auth/forgot-password
     ReactiveFormsModule,
     MatSliderModule,
     MatDialogModule,
+    MatSelectModule,
   ],
   providers: [MangaService, MangaHttpService],
   bootstrap: [AppComponent],

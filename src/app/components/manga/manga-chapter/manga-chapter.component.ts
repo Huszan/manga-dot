@@ -32,6 +32,7 @@ export class MangaChapterComponent implements OnInit {
     private _cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private _router: Router,
+    private _mangaHttp: MangaHttpService,
     private _mangaService: MangaService,
     private _mangaHttpService: MangaHttpService,
     private _sanitizer: DomSanitizer,
@@ -57,8 +58,10 @@ export class MangaChapterComponent implements OnInit {
       !this._mangaService.selectedManga$.value ||
       this._mangaService.selectedManga$.value?.id !== this.mangaId
     ) {
-      this._mangaService
-        .getManga(this.mangaId)
+      this._mangaHttp
+        .getMangaList({
+          where: { id: this.mangaId },
+        })
         .subscribe((res: MangaType[]) => {
           this.manga = res.at(0);
           this._getPages();

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { MangaType } from '../../types/manga.type';
 import { LikeType } from '../../types/like.type';
 
@@ -17,6 +17,12 @@ enum MANGA_ROUTE {
   GET_MANGAS = 'getMangaList',
   REMOVE = 'removeManga',
   LIKE = 'likeManga',
+}
+export interface RepositoryFindOptions {
+  where?: any;
+  skip?: number;
+  take?: number;
+  order?: any;
 }
 
 @Injectable({
@@ -37,12 +43,25 @@ export class MangaHttpService {
     return new URL(this._domain + route);
   }
 
-  getMangaList(id?: number): Observable<any> {
+  getMangaList(
+    options?: RepositoryFindOptions,
+    bigSearch?: string
+  ): Observable<any> {
     let route = this._routeUrl(MANGA_ROUTE.GET_MANGAS);
-    if (id) {
-      route.searchParams.set('id', String(id));
-    }
-    return this.http.get(route.toString());
+    return this.http
+      .post(route.toString(), {
+        options: options,
+        bigSearch: bigSearch,
+      })
+      .pipe(
+        map((response: any) => {
+          for (let manga of response) {
+            manga.addedDate = new Date(manga.addedDate);
+            manga.lastUpdateDate = new Date(manga.lastUpdateDate);
+          }
+          return response;
+        })
+      );
   }
 
   getMangaPages(manga: MangaType, chapter: number): Observable<any> {
