@@ -8,10 +8,12 @@
            placeholder="Title">
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field class="picture-preview-trigger">
     <input matInput
            formControlName="picture"
            placeholder="Picture url">
+    <img class="picture-preview" alt="" [src]="picture.value
+  ? picture.value : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg'">
   </mat-form-field>
 
   <div class="form-array-wrapper" formArrayName="authors">
