@@ -25,7 +25,7 @@ import { AccountType } from '../../../services/http/auth-http.service';
 })
 export class MangaFrontDisplayComponent implements OnInit, OnDestroy {
   @Input() manga!: MangaType;
-  @Input() size: number = 140;
+  @Input() size?: number;
   @Output() onRead = new EventEmitter();
 
   user: UserType | null = null;
