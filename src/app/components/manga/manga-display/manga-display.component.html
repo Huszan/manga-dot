@@ -7,7 +7,7 @@
 
   <div class="display-container cf">
     <img class="logo" [src]="manga!.pic">
-    <p class="mat-display-3"><span style="display: inline-block"><b>{{ manga!.name.toUpperCase() }}</b></span></p>
+    <p class="mat-display-3"><span><b>{{ manga!.name.toUpperCase() }}</b></span></p>
 
     <p *ngIf="manga!.authors" class="mat-body-2"><b>Authors: </b>
       <ng-container *ngFor="let author of manga!.authors">
