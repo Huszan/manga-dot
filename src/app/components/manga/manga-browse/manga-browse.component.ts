@@ -124,8 +124,8 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
     let savedSize = Number(this.store.getItem(StoreItem.MANGA_BROWSE_SIZE));
     if (
       savedSize &&
-      savedSize > this.sizeSlider.min &&
-      savedSize < this.sizeSlider.max
+      savedSize >= this.sizeSlider.min &&
+      savedSize <= this.sizeSlider.max
     ) {
       this.sizeSlider.value = savedSize;
     } else {

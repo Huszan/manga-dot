@@ -1,13 +1,15 @@
 <ng-container *ngFor="let el of browseElements">
-  <app-manga-browse
-    [title]="el.title"
-    [titleNav]="el.titleNav"
-    [canChangeIconSize]="el.canChangeIconSize"
-    [canLoadMore]="el.canLoadMore"
-    [canSearch]="el.canSearch"
-    [canSort]="el.canSort"
-    [sortBy]="el.sortBy"
-    [elementsPerLoad]="el.elementsPerLoad"
-  >
-  </app-manga-browse>
+  <div class="browse-container">
+    <app-manga-browse
+      [title]="el.title"
+      [titleNav]="el.titleNav"
+      [canChangeIconSize]="el.canChangeIconSize"
+      [canLoadMore]="el.canLoadMore"
+      [canSearch]="el.canSearch"
+      [canSort]="el.canSort"
+      [sortBy]="el.sortBy"
+      [elementsPerLoad]="el.elementsPerLoad"
+    >
+    </app-manga-browse>
+  </div>
 </ng-container>

@@ -4,8 +4,8 @@
     <mat-icon>delete</mat-icon>
   </button>
   <button
-    class="manga-container medium"
-    [style]="{'width': size+'px'}"
+    class="manga-container"
+    [style]="{'width': size ? size*10+'px' : ''}"
     (click)="onClickRead($event)"
   >
 

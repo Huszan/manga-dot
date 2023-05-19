@@ -32,7 +32,7 @@ export class HomeViewComponent {
       canLoadMore: false,
       canSearch: false,
       canSort: false,
-      elementsPerLoad: 7,
+      elementsPerLoad: 9,
     },
     {
       title: 'Popular',
@@ -47,7 +47,7 @@ export class HomeViewComponent {
       canLoadMore: false,
       canSearch: false,
       canSort: false,
-      elementsPerLoad: 7,
+      elementsPerLoad: 9,
     },
     {
       title: 'Best rated',
@@ -62,7 +62,7 @@ export class HomeViewComponent {
       canLoadMore: false,
       canSearch: false,
       canSort: false,
-      elementsPerLoad: 7,
+      elementsPerLoad: 9,
     },
   ];
 }

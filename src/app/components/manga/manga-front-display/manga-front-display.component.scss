@@ -21,13 +21,12 @@
     cursor: pointer;
     aspect-ratio: 2/3;
 
-    &.small { width: 100px; }
-    &.medium { width: 140px; }
-    &.big { width: 180px; }
+    width: 135px;
+    min-width: 80px;
 
     img {
-      width: inherit;
-      height: inherit;
+      width: 100%;
+      height: 100%;
       transition: 0.2s ease-out;
     }
 
@@ -67,6 +66,15 @@
     }
     .manga-title,.manga-chapters {
       opacity: 100%;
+    }
+  }
+}
+
+@media screen and (max-width: 1300px){
+  .manga-container-wrapper {
+    .manga-container {
+      width: 13vw;
+      max-width: 95vw;
     }
   }
 }

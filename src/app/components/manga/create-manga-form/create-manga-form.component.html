@@ -8,10 +8,11 @@
            placeholder="Title">
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field class="picture-preview-trigger">
     <input matInput
            formControlName="picture"
            placeholder="Picture url">
+    <img class="picture-preview" alt="" [src]="picture.value">
   </mat-form-field>
 
   <div class="form-array-wrapper" formArrayName="authors">

@@ -24,12 +24,12 @@
     <span class="spacer"></span>
     <span *ngIf="canChangeIconSize" class="size-slider-wrapper">
       <span>Size</span>
-      <mat-slider min="100" max="220" step="10" value="140" #sizeSlider (valueChange)="onSizeSliderChange()"></mat-slider>
+      <mat-slider min="10" max="41" step="1" value="10" #sizeSlider (valueChange)="onSizeSliderChange()"></mat-slider>
     </span>
   </div>
   <div class="manga-list-container">
     <ng-container *ngFor="let manga of mangaList; let i = index">
-      <app-manga-front-display [manga]="manga" (onRead)="onMangaSelect(i)" [size]="sizeSlider ? sizeSlider.value : 140"></app-manga-front-display>
+      <app-manga-front-display [manga]="manga" (onRead)="onMangaSelect(i)" [size]="sizeSlider ? sizeSlider.value : undefined"></app-manga-front-display>
     </ng-container>
     <span *ngIf="mangaList.length == 0 && !isLoading" class="mat-card-subtitle">Sorry, it looks like nothing was found.</span>
   </div>
