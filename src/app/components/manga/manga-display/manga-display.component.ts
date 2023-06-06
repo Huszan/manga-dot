@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 import { LikeType } from '../../../types/like.type';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
+import { ChapterType } from '../../../types/chapter.type';
 
 @Component({
   selector: 'app-manga-display',

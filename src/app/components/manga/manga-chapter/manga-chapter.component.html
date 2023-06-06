@@ -4,7 +4,7 @@
     <mat-spinner color="accent"></mat-spinner>
   </ng-container>
   <ng-template #initialized>
-    <ng-container *ngIf="pages.length > 0; else contentNotFound">
+    <ng-container *ngIf="manga && manga!.chapters[chapter].pages.length > 0; else contentNotFound">
       <ng-container *ngTemplateOutlet="contentFound"></ng-container>
     </ng-container>
   </ng-template>
@@ -13,10 +13,10 @@
 <ng-template #contentFound>
   <ng-container *ngTemplateOutlet="floatingActions"></ng-container>
   <span class="mat-display-2">
-    <a (click)="goToChapterSelect()">{{ manga!.name }}</a>: chapter {{ chapter }}
+    <a (click)="goToChapterSelect()">{{ manga!.name }}</a>: {{ manga!.chapters[chapter].name }}
   </span>
-  <ng-container *ngFor="let page of pages">
-    <img [src]="page" alt="no image">
+  <ng-container *ngFor="let page of manga!.chapters[chapter].pages">
+    <img [src]="sanitizeUrl(page.url)" alt="no image">
   </ng-container>
 </ng-template>
 
@@ -29,10 +29,10 @@
 
 <ng-template #floatingActions>
   <div class="floating-actions-wrapper">
-    <button mat-icon-button class="previous-button" *ngIf="!data.isFirstChapter" (click)="navigateToPreviousChapter()">
+    <button mat-icon-button class="previous-button" *ngIf="!isFirstChapter" (click)="navigateToPreviousChapter()">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>
-    <button mat-icon-button class="next-button" *ngIf="!data.isLastChapter" (click)="navigateToNextChapter()">
+    <button mat-icon-button class="next-button" *ngIf="!isLastChapter" (click)="navigateToNextChapter()">
       <mat-icon>keyboard_arrow_right</mat-icon>
     </button>
   </div>
