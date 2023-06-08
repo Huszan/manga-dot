@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { MangaType } from '../../types/manga.type';
 import { LikeType } from '../../types/like.type';
+import { ChapterType } from '../../types/chapter.type';
 
 const MANGA_DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
@@ -64,9 +65,9 @@ export class MangaHttpService {
       );
   }
 
-  getMangaPages(manga: MangaType, chapter: number): Observable<any> {
+  getMangaPages(mangaId: number, chapter: ChapterType): Observable<any> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.GET_PAGES).toString(), {
-      manga: manga,
+      mangaId: mangaId,
       chapter: chapter,
     });
   }

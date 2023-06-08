@@ -21,8 +21,9 @@ export class MangaChapterComponent implements OnInit {
   manga: MangaType | undefined = undefined;
   chapter: number = 0;
   mangaId: number = 0;
-  data = {
-    isInitialized: false,
+  isInitialized = {
+    manga: false,
+    pages: false,
   };
 
   constructor(
@@ -51,6 +52,7 @@ export class MangaChapterComponent implements OnInit {
   }
 
   private _getManga() {
+    this.isInitialized.manga = false;
     if (
       !this._mangaService.selectedManga$.value ||
       this._mangaService.selectedManga$.value?.id !== this.mangaId
@@ -62,14 +64,43 @@ export class MangaChapterComponent implements OnInit {
         .subscribe((res: MangaType[]) => {
           this.manga = res.at(0);
           if (!this.isChapterValid) this.goToChapterSelect();
-          this.data.isInitialized = true;
+          if (
+            !this.manga?.chapters[this.chapter].pages ||
+            this.manga?.chapters[this.chapter].pages === []
+          ) {
+            this._getPages();
+          }
+          this.isInitialized.manga = true;
           this._cdr.detectChanges();
         });
     } else {
       this.manga = this._mangaService.selectedManga$.value;
-      this.data.isInitialized = true;
+      if (
+        !this.manga?.chapters[this.chapter].pages ||
+        this.manga?.chapters[this.chapter].pages === []
+      ) {
+        this._getPages();
+      }
+      this.isInitialized.manga = true;
       this._cdr.detectChanges();
     }
+  }
+
+  private _getPages() {
+    this.isInitialized.pages = false;
+    if (!this.manga) this.goToChapterSelect();
+    this._mangaHttp
+      .getMangaPages(this.manga!.id!, this.manga!.chapters[this.chapter])
+      .subscribe((res) => {
+        let pages = res;
+        if (pages) {
+          this.manga!.chapters[this.chapter].pages = pages;
+        } else {
+          this.goToChapterSelect();
+        }
+        this.isInitialized.pages = true;
+        this._cdr.detectChanges();
+      });
   }
 
   goToChapterSelect() {
@@ -80,6 +111,7 @@ export class MangaChapterComponent implements OnInit {
     if (this.isFirstChapter) return;
     this.chapter--;
     this._router.navigate(['/manga', this.mangaId, this.chapter]).then(() => {
+      this._getPages();
       window.scroll({ top: 0 });
     });
   }
@@ -88,6 +120,7 @@ export class MangaChapterComponent implements OnInit {
     if (this.isLastChapter) return;
     this.chapter++;
     this._router.navigate(['/manga', this.mangaId, this.chapter]).then(() => {
+      this._getPages();
       window.scroll({ top: 0 });
     });
   }

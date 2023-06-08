@@ -1,10 +1,10 @@
 
 <div class="pages-wrapper">
-  <ng-container *ngIf="!data.isInitialized; else initialized">
+  <ng-container *ngIf="!isInitialized.manga && !isInitialized.pages; else initialized">
     <mat-spinner color="accent"></mat-spinner>
   </ng-container>
   <ng-template #initialized>
-    <ng-container *ngIf="manga && manga!.chapters[chapter].pages.length > 0; else contentNotFound">
+    <ng-container *ngIf="manga && manga!.chapters[chapter].pages; else contentNotFound">
       <ng-container *ngTemplateOutlet="contentFound"></ng-container>
     </ng-container>
   </ng-template>
