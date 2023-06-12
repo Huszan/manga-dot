@@ -41,6 +41,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ForgotPasswordDialogComponent } from './components/auth/forgot-password-dialog/forgot-password-dialog.component';
 import { HomeViewComponent } from './components/views/home-view/home-view.component';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -84,6 +86,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatSliderModule,
     MatDialogModule,
     MatSelectModule,
+    MatCheckboxModule,
+    MatExpansionModule,
   ],
   providers: [MangaService, MangaHttpService],
   bootstrap: [AppComponent],

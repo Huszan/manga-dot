@@ -32,6 +32,10 @@
         margin-left: 10px;
       }
     }
+
+    button {
+      min-width: unset;
+    }
   }
 }
 
@@ -43,8 +47,24 @@
   flex-wrap: wrap;
 
   gap: 5px;
+}
 
-  animation: .5s linear;
+.genre-toggle-container {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 10px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .25s ease-out;
+  &.expanded {
+    max-height: 500px;
+    transition: max-height .25s ease-in;
+  }
+  .genre-list {
+    * {
+      width: 150px;
+    }
+  }
 }
 
 @media screen and (max-width: 800px) {

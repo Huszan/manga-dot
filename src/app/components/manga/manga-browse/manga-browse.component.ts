@@ -17,6 +17,7 @@ import {
   RepositoryFindOptions,
 } from '../../../services/http/manga-http.service';
 import { debounceTime, Subject } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 export const SortOptions: {
   display: string;
@@ -45,6 +46,48 @@ export const SortOptions: {
     value: { element: 'manga.like_count', sort: 'ASC' },
   },
 ];
+export const Tags = [
+  'action',
+  'adventure',
+  'fantasy',
+  'harem',
+  'romance',
+  'supernatural',
+  'comedy',
+  'shounen',
+  'historical',
+  'shoujo',
+  'slice of life',
+  'drama',
+  'martial arts',
+  'horror',
+  'mystery',
+  'psychological',
+  'tragedy',
+  'webtoons',
+  'school life',
+  'yaoi',
+  'isekai',
+  'seinen',
+  'pornographic',
+  'manhwa',
+  'shounen ai',
+  'cooking',
+  'manhua',
+  'josei',
+  'smut',
+  'yuri',
+  'sci fi',
+  'erotica',
+  'mature',
+  'sports',
+  'mecha',
+  'gender bender',
+  'shoujo ai',
+  'medical',
+  'one shot',
+  'doujinshi',
+];
 
 @Component({
   selector: 'app-manga-browse',
@@ -59,6 +102,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   @Input() canLoadMore: boolean = true;
   @Input() canSearch: boolean = true;
   @Input() canSort: boolean = true;
+  @Input() canSelectTags: boolean = true;
   @Input() sortBy?: any;
   @Input() elementsPerLoad: number = 12;
 
@@ -69,8 +113,12 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   sortOptions = SortOptions;
   currentLoad = 0;
   searchString = '';
+  availableTags = Tags;
   isEverythingLoaded = false;
   isLoading: boolean = false;
+  isTagSelectBoxOpen = false;
+
+  checkboxForm!: FormGroup;
 
   private inputSubject = new Subject<string>();
 
@@ -80,20 +128,30 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private _cdr: ChangeDetectorRef,
-    private store: StoreService
+    private store: StoreService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
     // Subscribe to the inputSubject and debounce the input events
-    this.inputSubject.pipe(debounceTime(500)).subscribe((inputValue) => {
+    this.inputSubject.pipe(debounceTime(1000)).subscribe((inputValue) => {
       this.searchString = inputValue.trim();
       this.getElements();
     });
+    this.checkboxForm = this.fb.group({});
+    for (let el of this.availableTags) {
+      this.checkboxForm.addControl(el, this.fb.control(false));
+    }
+  }
+
+  get checkboxFormKeys() {
+    return Object.keys(this.checkboxForm.controls);
   }
 
   ngAfterViewInit() {
     if (this.canChangeIconSize) this.initSizeSlider();
     if (this.sortQueryParam) this.initSort();
+    if (this.tagsQueryParam) this.initTagSelect();
     this.getElements();
   }
 
@@ -101,16 +159,20 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
     this.isLoading = true;
     this._cdr.detectChanges();
     let options: RepositoryFindOptions = {
+      where: [],
       take: this.elementsPerLoad,
       skip: this.currentLoad * this.elementsPerLoad,
       order: this.sortBy ? this.sortBy : undefined,
     };
     if (this.searchString.length > 0) {
-      options.where = {
+      options.where?.push({
         element: 'manga.name',
         value: this.searchString,
-        useLike: true,
-      };
+        specialType: 'like',
+      });
+    }
+    if (this.selectedTagIndexes.length > 0) {
+      options.where?.push(...this.tagOptions);
     }
     this.httpManga.getMangaList(options).subscribe((res) => {
       if (!res || res.length < this.elementsPerLoad)
@@ -170,7 +232,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
 
   onSortValueChange(event: any) {
     this.addSortToParams(event);
-    this.setTable(event);
+    this.setSort(event);
     this.getElements();
   }
 
@@ -183,7 +245,28 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
     });
   }
 
-  setTable(index: number) {
+  get selectedTagIndexes(): number[] {
+    const indexes: number[] = [];
+    this.checkboxFormKeys.forEach((key, i) => {
+      if (this.checkboxForm.controls[key].value) indexes.push(i);
+    });
+    return indexes;
+  }
+
+  addTagsToParams() {
+    let queryParams: Params = { ...this.route.snapshot.queryParams };
+    if (this.selectedTagIndexes.length > 0) {
+      queryParams = { ...queryParams, tags: String(this.selectedTagIndexes) };
+    } else {
+      delete queryParams['tags'];
+    }
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+    });
+  }
+
+  private setSort(index: number) {
     this.sortBy = this.sortOptions[index].value;
     this.reset();
   }
@@ -195,7 +278,51 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   private initSort() {
     let index = Number(this.sortQueryParam);
     this.sortSelectRef.value = index;
-    this.setTable(index);
+    this.setSort(index);
     this._cdr.detectChanges();
+  }
+
+  onTagsApply() {
+    this.isTagSelectBoxOpen = false;
+    this.addTagsToParams();
+    this.reset();
+    this.loadMore();
+  }
+
+  private get tagsQueryParam() {
+    return this.route.snapshot.queryParamMap.get('tags');
+  }
+
+  private initTagSelect() {
+    let queryValue = this.tagsQueryParam;
+    if (!queryValue) return;
+    let tags: any[] = queryValue.split(',');
+    for (let tag of tags) {
+      tag = Number(tag);
+      this.checkboxFormKeys.forEach((key, i) => {
+        if (i === tag) this.checkboxForm.controls[key].setValue(true);
+      });
+    }
+  }
+
+  get selectedTags() {
+    const selectedTags = [];
+    for (let index of this.selectedTagIndexes) {
+      selectedTags.push(this.availableTags[index]);
+    }
+    return selectedTags;
+  }
+
+  private get tagOptions() {
+    let options: any[] = [];
+    let tags = this.selectedTags;
+    for (let tag of tags) {
+      options.push({
+        element: 'manga.tags',
+        value: tag,
+        specialType: 'like',
+      });
+    }
+    return options;
   }
 }

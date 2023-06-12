@@ -14,8 +14,8 @@
         {{ author }}
       </ng-container>
     </p>
-    <p *ngIf="manga!.genres" class="mat-body-2"><b>Tags: </b>
-      <ng-container *ngFor="let genre of manga!.genres">
+    <p *ngIf="manga!.tags" class="mat-body-2"><b>Tags: </b>
+      <ng-container *ngFor="let genre of manga!.tags">
         {{ genre }}
       </ng-container>
     </p>

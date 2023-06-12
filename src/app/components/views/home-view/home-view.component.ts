@@ -8,6 +8,7 @@ export interface MangaBrowseElement {
   canLoadMore: boolean;
   canSearch: boolean;
   canSort: boolean;
+  canSelectTags: boolean;
   sortBy?: any;
   elementsPerLoad: number;
 }
@@ -32,6 +33,7 @@ export class HomeViewComponent {
       canLoadMore: false,
       canSearch: false,
       canSort: false,
+      canSelectTags: false,
       elementsPerLoad: 9,
     },
     {
@@ -47,6 +49,7 @@ export class HomeViewComponent {
       canLoadMore: false,
       canSearch: false,
       canSort: false,
+      canSelectTags: false,
       elementsPerLoad: 9,
     },
     {
@@ -62,6 +65,7 @@ export class HomeViewComponent {
       canLoadMore: false,
       canSearch: false,
       canSort: false,
+      canSelectTags: false,
       elementsPerLoad: 9,
     },
   ];

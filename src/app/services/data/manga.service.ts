@@ -19,10 +19,12 @@ export class MangaService {
   loadManga(id: number) {
     this.mangaHttp
       .getMangaList({
-        where: {
-          element: 'manga.id',
-          value: id,
-        },
+        where: [
+          {
+            element: 'manga.id',
+            value: id,
+          },
+        ],
         take: 1,
       })
       .subscribe((res) => {

@@ -21,11 +21,26 @@
         </mat-select>
       </mat-form-field>
     </ng-container>
+    <ng-container *ngIf="canSelectTags">
+      <button mat-button (click)="isTagSelectBoxOpen = !isTagSelectBoxOpen">
+        Select tags
+        <mat-icon *ngIf="!isTagSelectBoxOpen">arrow_drop_down</mat-icon>
+        <mat-icon *ngIf="isTagSelectBoxOpen">arrow_drop_up</mat-icon>
+      </button>
+    </ng-container>
     <span class="spacer"></span>
     <span *ngIf="canChangeIconSize" class="size-slider-wrapper">
       <span>Size</span>
       <mat-slider min="10" max="41" step="1" value="10" #sizeSlider (valueChange)="onSizeSliderChange()"></mat-slider>
     </span>
+  </div>
+  <div class="genre-toggle-container" [ngClass]="isTagSelectBoxOpen ? 'expanded' : ''">
+    <form [formGroup]="checkboxForm" class="genre-list">
+      <ng-container *ngFor="let key of checkboxFormKeys">
+        <mat-checkbox [formControlName]="key">{{ key }}</mat-checkbox>
+      </ng-container>
+    </form>
+    <button mat-flat-button color="accent" (click)="onTagsApply()">Apply</button>
   </div>
   <div class="manga-list-container">
     <ng-container *ngFor="let manga of mangaList; let i = index">

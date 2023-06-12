@@ -59,10 +59,12 @@ export class MangaChapterComponent implements OnInit {
     ) {
       this._mangaHttp
         .getMangaList({
-          where: {
-            element: 'id',
-            value: this.mangaId,
-          },
+          where: [
+            {
+              element: 'id',
+              value: this.mangaId,
+            },
+          ],
         })
         .subscribe((res: MangaType[]) => {
           this.manga = res.at(0);

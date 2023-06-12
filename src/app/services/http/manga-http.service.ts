@@ -22,9 +22,9 @@ enum MANGA_ROUTE {
 export interface RepositoryFindOptions {
   where?: {
     element: string;
-    value: number | string;
-    useLike?: boolean;
-  };
+    value: string | number;
+    specialType?: 'like';
+  }[];
   skip?: number;
   take?: number;
   order?: { element: string; sort: 'ASC' | 'DESC' };
