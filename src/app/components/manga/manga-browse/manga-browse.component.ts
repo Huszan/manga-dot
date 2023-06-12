@@ -12,17 +12,38 @@ import { MangaType } from '../../../types/manga.type';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { StoreItem, StoreService } from '../../../services/store.service';
 import { MatSlider } from '@angular/material/slider';
-import { MangaHttpService } from '../../../services/http/manga-http.service';
-import { debounceTime, Subject, timeout } from 'rxjs';
+import {
+  MangaHttpService,
+  RepositoryFindOptions,
+} from '../../../services/http/manga-http.service';
+import { debounceTime, Subject } from 'rxjs';
 
-export const SortOptions: { display: string; value: any }[] = [
-  { display: 'Most popular', value: { view_count: 'DESC' } },
-  { display: 'Least popular', value: { view_count: 'ASC' } },
-  { display: 'Newest', value: { added_date: 'DESC' } },
-  { display: 'Oldest', value: { added_date: 'ASC' } },
-  { display: 'Recently updated', value: { last_update_date: 'DESC' } },
-  { display: 'Best rated', value: { like_count: 'DESC' } },
-  { display: 'Worst rated', value: { like_count: 'ASC' } },
+export const SortOptions: {
+  display: string;
+  value: { element: string; sort: 'ASC' | 'DESC' };
+}[] = [
+  {
+    display: 'Most popular',
+    value: { element: 'manga.view_count', sort: 'DESC' },
+  },
+  {
+    display: 'Least popular',
+    value: { element: 'manga.view_count', sort: 'ASC' },
+  },
+  { display: 'Newest', value: { element: 'manga.added_date', sort: 'DESC' } },
+  { display: 'Oldest', value: { element: 'manga.added_date', sort: 'ASC' } },
+  {
+    display: 'Recently updated',
+    value: { element: 'last_update_date', sort: 'DESC' },
+  },
+  {
+    display: 'Best rated',
+    value: { element: 'manga.like_count', sort: 'DESC' },
+  },
+  {
+    display: 'Worst rated',
+    value: { element: 'manga.like_count', sort: 'ASC' },
+  },
 ];
 
 @Component({
@@ -79,23 +100,26 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   getElements() {
     this.isLoading = true;
     this._cdr.detectChanges();
-    this.httpManga
-      .getMangaList(
-        {
-          take: this.elementsPerLoad,
-          skip: this.currentLoad * this.elementsPerLoad,
-          order: this.sortBy ? this.sortBy : undefined,
-        },
-        this.searchString.length > 0 ? this.searchString : undefined
-      )
-      .subscribe((res) => {
-        if (!res || res.length < this.elementsPerLoad)
-          this.isEverythingLoaded = true;
-        this.mangaList.push(...res);
-        this.currentLoad++;
-        this.isLoading = false;
-        this._cdr.detectChanges();
-      });
+    let options: RepositoryFindOptions = {
+      take: this.elementsPerLoad,
+      skip: this.currentLoad * this.elementsPerLoad,
+      order: this.sortBy ? this.sortBy : undefined,
+    };
+    if (this.searchString.length > 0) {
+      options.where = {
+        element: 'manga.name',
+        value: this.searchString,
+        useLike: true,
+      };
+    }
+    this.httpManga.getMangaList(options).subscribe((res) => {
+      if (!res || res.length < this.elementsPerLoad)
+        this.isEverythingLoaded = true;
+      this.mangaList.push(...res);
+      this.currentLoad++;
+      this.isLoading = false;
+      this._cdr.detectChanges();
+    });
   }
 
   loadMore() {

@@ -20,10 +20,14 @@ enum MANGA_ROUTE {
   LIKE = 'likeManga',
 }
 export interface RepositoryFindOptions {
-  where?: any;
+  where?: {
+    element: string;
+    value: number | string;
+    useLike?: boolean;
+  };
   skip?: number;
   take?: number;
-  order?: any;
+  order?: { element: string; sort: 'ASC' | 'DESC' };
 }
 
 @Injectable({
