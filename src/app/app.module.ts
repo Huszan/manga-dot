@@ -43,6 +43,7 @@ import { HomeViewComponent } from './components/views/home-view/home-view.compon
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { AuthGuard } from './services/auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatCheckboxModule,
     MatExpansionModule,
   ],
-  providers: [MangaService, MangaHttpService],
+  providers: [MangaService, MangaHttpService, AuthGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

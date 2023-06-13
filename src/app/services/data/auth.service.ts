@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { UserType } from '../../types/user.type';
 import { AuthHttpService } from '../http/auth-http.service';
-import { BehaviorSubject, retry, take, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  retry,
+  Subscription,
+  take,
+  tap,
+} from 'rxjs';
 import { StoreItem, StoreService } from '../store.service';
 
 @Injectable({
@@ -11,9 +18,9 @@ export class AuthService {
   currentUser$ = new BehaviorSubject<UserType | null>(null);
 
   constructor(private _http: AuthHttpService, private store: StoreService) {
-    let token = store.getItem(StoreItem.AUTH_TOKEN);
-    if (token) {
-      this._loginByToken(token).subscribe();
+    let tokenAuth = this.authByToken();
+    if (tokenAuth) {
+      tokenAuth.subscribe();
     }
   }
 
@@ -30,7 +37,9 @@ export class AuthService {
     );
   }
 
-  private _loginByToken(token: string) {
+  authByToken() {
+    let token = this.store.getItem(StoreItem.AUTH_TOKEN);
+    if (!token) return null;
     return this._http.loginToken(token).pipe(
       retry(3),
       take(1),

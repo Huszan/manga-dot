@@ -29,6 +29,7 @@ export class LoginFormComponent {
     private _router: Router,
     private _dialog: MatDialog
   ) {
+    this._initAuthCheck();
     this._initForm();
   }
 
@@ -36,6 +37,23 @@ export class LoginFormComponent {
     this.form = this._fb.group({
       email: ['', Validators.required],
       password: ['', Validators.required],
+    });
+  }
+
+  private _initAuthCheck() {
+    let authCheck = this._auth.authByToken();
+    if (!authCheck) return;
+    authCheck.subscribe((res) => {
+      let user = res.data;
+      if (user) {
+        this._router.navigate(['']).then(() => {
+          this._snackbar.open(
+            'You are already logged in. Go and read some mangas!',
+            'Yay',
+            { duration: 5000 }
+          );
+        });
+      }
     });
   }
 

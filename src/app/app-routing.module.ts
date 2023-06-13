@@ -8,6 +8,10 @@ import { RegisterFormComponent } from './components/auth/register-form/register-
 import { ActivateAccountComponent } from './components/auth/activate-account/activate-account.component';
 import { HomeViewComponent } from './components/views/home-view/home-view.component';
 import { MangaBrowseComponent } from './components/manga/manga-browse/manga-browse.component';
+import { AuthGuard } from './services/auth-guard.service';
+import { AuthService } from './services/data/auth.service';
+import { UserType } from './types/user.type';
+import { BehaviorSubject } from 'rxjs';
 
 const routes: Routes = [
   {
@@ -26,6 +30,8 @@ const routes: Routes = [
     title: 'Manga dot | Add new',
     path: 'manga/add',
     pathMatch: 'full',
+    canActivate: [AuthGuard],
+    data: { roles: ['admin', 'mod'] },
     component: CreateMangaFormComponent,
   },
   {
@@ -56,22 +62,35 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class AppRoutingModule {
-  availableRoutes: Routes = [];
+  availableRoutes = new BehaviorSubject<Routes>([]);
 
   get homeRoute() {
-    return this.availableRoutes[0];
+    return this.availableRoutes.value[0];
   }
 
-  constructor() {
+  constructor(private auth: AuthService) {
     this._collectAvailableRoutes();
+    auth.currentUser$.subscribe((user) => {
+      this._collectAvailableRoutes(user ? user : undefined);
+    });
   }
 
-  private _collectAvailableRoutes() {
+  private _collectAvailableRoutes(user?: UserType) {
+    let currentAvailable: Routes = [];
     routes.forEach((el) => {
       if (el.redirectTo === undefined && el.title != undefined) {
-        this.availableRoutes.push(el);
+        if (el.data && el.data['roles']) {
+          if (el.data['roles'].includes(user?.accountType)) {
+            currentAvailable.push(el);
+          } else {
+            return;
+          }
+        } else {
+          currentAvailable.push(el);
+        }
       }
     });
+    this.availableRoutes.next(currentAvailable);
   }
 
   public getTitleDisplay(title: string): string {
