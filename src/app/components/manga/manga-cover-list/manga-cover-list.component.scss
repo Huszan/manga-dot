@@ -1,0 +1,91 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.manga-container-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+
+  padding-bottom: 5px;
+  border-bottom: #141214 1px solid;
+
+  .info-box {
+    padding: 5px 5px 5px 10px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    button {
+      border: none;
+      cursor: pointer;
+      background-color: unset;
+      color: #141214;
+      &:hover {
+        color: #ffd400;
+      }
+    }
+  }
+
+  .special-button {
+    position: absolute;
+    scale: 75%;
+    z-index: 5;
+    opacity: 50%;
+    &.edit {
+      right: 0;
+      top: 0;
+    }
+    &.remove {
+      right: 0;
+      top: 35px;
+    }
+    &:hover {
+      opacity: 100%;
+      .mat-icon {
+        scale: 110%;
+      }
+    }
+  }
+
+  button {
+    border: none;
+    cursor: pointer;
+    max-width: 100%;
+  }
+
+  .manga-container {
+    overflow: hidden;
+    border-radius: 5px;
+    cursor: pointer;
+    aspect-ratio: 2/3;
+
+    width: 80px;
+    min-width: 80px;
+    transition: 0.2s ease-out;
+
+    img {
+      width: 100%;
+      height: 100%;
+      transition: 0.2s ease-out;
+    }
+  }
+
+  .manga-container:hover,.manga-container:focus {
+    img {
+      scale: 105%;
+    }
+  }
+}
+
+.manga-title,.manga-info {
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+

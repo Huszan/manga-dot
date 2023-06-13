@@ -1,0 +1,22 @@
+
+<div class="manga-container-wrapper">
+  <button mat-mini-fab *ngIf="user && user.accountType === 'admin'" color="accent" class="special-button edit" (click)="onClickEdit()">
+    <mat-icon>edit</mat-icon>
+  </button>
+  <button mat-mini-fab *ngIf="user && user.accountType === 'admin'" color="warn" class="special-button remove" (click)="onClickRemove()">
+    <mat-icon>delete</mat-icon>
+  </button>
+  <button
+    class="manga-container"
+    (click)="onClickRead($event)"
+  >
+
+    <img [src]="manga.pic" alt="">
+  </button>
+  <div class="info-box">
+    <button class="manga-title mat-h2" (click)="onClickRead($event)"><span>{{ manga.name }}</span></button>
+    <div class="manga-info"><span><b>Chapters: </b>{{manga.chapterCount}} chapters</span></div>
+    <div *ngIf="manga.authors.length > 0" class="manga-info"><b>Authors: </b><span *ngFor="let author of manga.authors">{{ author }} </span></div>
+    <div *ngIf="manga.tags.length > 0" class="manga-info"><b>Tags: </b><span *ngFor="let tag of manga.tags">{{ tag }} </span></div>
+  </div>
+</div>

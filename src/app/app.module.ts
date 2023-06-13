@@ -18,7 +18,6 @@ import { MangaBrowseComponent } from './components/manga/manga-browse/manga-brow
 import { MangaService } from './services/data/manga.service';
 import { MangaHttpService } from './services/http/manga-http.service';
 import { HttpClientModule } from '@angular/common/http';
-import { MangaFrontDisplayComponent } from './components/manga/manga-front-display/manga-front-display.component';
 import { MatCardModule } from '@angular/material/card';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatListModule } from '@angular/material/list';
@@ -44,12 +43,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AuthGuard } from './services/auth-guard.service';
+import { MangaCoverListComponent } from './components/manga/manga-cover-list/manga-cover-list.component';
+import { MangaCoverTileComponent } from './components/manga/manga-cover-tile/manga-cover-tile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MangaBrowseComponent,
-    MangaFrontDisplayComponent,
     NavbarComponent,
     SidenavComponent,
     MangaDisplayComponent,
@@ -62,6 +62,8 @@ import { AuthGuard } from './services/auth-guard.service';
     ResendActivateFormComponent,
     ForgotPasswordDialogComponent,
     HomeViewComponent,
+    MangaCoverListComponent,
+    MangaCoverTileComponent,
   ],
   imports: [
     BrowserModule,

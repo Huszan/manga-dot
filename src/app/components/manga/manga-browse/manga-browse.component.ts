@@ -88,6 +88,15 @@ export const Tags = [
   'one shot',
   'doujinshi',
 ];
+export interface MangaBrowseOptions {
+  all?: boolean;
+  canChangeIconSize?: boolean;
+  canChangeDisplayType?: boolean;
+  canLoadMore?: boolean;
+  canSearch?: boolean;
+  canSort?: boolean;
+  canSelectTags?: boolean;
+}
 
 @Component({
   selector: 'app-manga-browse',
@@ -98,11 +107,8 @@ export const Tags = [
 export class MangaBrowseComponent implements OnInit, AfterViewInit {
   @Input() title?: string;
   @Input() titleNav?: { link: string; queryParams: any };
-  @Input() canChangeIconSize: boolean = true;
-  @Input() canLoadMore: boolean = true;
-  @Input() canSearch: boolean = true;
-  @Input() canSort: boolean = true;
-  @Input() canSelectTags: boolean = true;
+  @Input() actionsAllowed: MangaBrowseOptions = { all: true };
+  @Input() displayType: 'tiles' | 'list' = 'tiles';
   @Input() sortBy?: any;
   @Input() elementsPerLoad: number = 12;
 
@@ -114,6 +120,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   currentLoad = 0;
   searchString = '';
   availableTags = Tags;
+
   isEverythingLoaded = false;
   isLoading: boolean = false;
   isTagSelectBoxOpen = false;
@@ -149,7 +156,10 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.canChangeIconSize) this.initSizeSlider();
+    if (this.actionsAllowed.all || this.actionsAllowed.canChangeIconSize)
+      this.initSizeSlider();
+    if (this.actionsAllowed.all || this.actionsAllowed.canChangeDisplayType)
+      this.initDisplayType();
     if (this.sortQueryParam) this.initSort();
     if (this.tagsQueryParam) this.initTagSelect();
     this.getElements();
@@ -185,7 +195,12 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   }
 
   loadMore() {
-    if (this.isEverythingLoaded || !this.canLoadMore) return;
+    if (
+      this.isEverythingLoaded ||
+      !this.actionsAllowed.all ||
+      !this.actionsAllowed.canLoadMore
+    )
+      return;
     this.getElements();
   }
 
@@ -324,5 +339,22 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
       });
     }
     return options;
+  }
+
+  private initDisplayType() {
+    let displayType: 'tiles' | 'list' = this.store.getItem(
+      StoreItem.MANGA_DISPLAY_TYPE
+    ) as 'tiles' | 'list';
+    if ((displayType && displayType === 'tiles') || displayType === 'list') {
+      this.displayType = displayType;
+    } else {
+      this.store.setItem(StoreItem.MANGA_DISPLAY_TYPE, this.displayType);
+    }
+    this._cdr.detectChanges();
+  }
+
+  onDisplayTypeChange(event: any) {
+    this.displayType = event.value;
+    this.store.setItem(StoreItem.MANGA_DISPLAY_TYPE, this.displayType);
   }
 }

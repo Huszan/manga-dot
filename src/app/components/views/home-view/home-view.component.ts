@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { SortOptions } from '../../manga/manga-browse/manga-browse.component';
+import {
+  MangaBrowseOptions,
+  SortOptions,
+} from '../../manga/manga-browse/manga-browse.component';
 
 export interface MangaBrowseElement {
   title?: string;
   titleNav?: { link: string; queryParams: any };
-  canChangeIconSize: boolean;
-  canLoadMore: boolean;
-  canSearch: boolean;
-  canSort: boolean;
-  canSelectTags: boolean;
+  options: MangaBrowseOptions;
   sortBy?: any;
   elementsPerLoad: number;
 }
@@ -29,11 +28,7 @@ export class HomeViewComponent {
         },
       },
       sortBy: SortOptions[2].value,
-      canChangeIconSize: false,
-      canLoadMore: false,
-      canSearch: false,
-      canSort: false,
-      canSelectTags: false,
+      options: { all: false },
       elementsPerLoad: 9,
     },
     {
@@ -45,11 +40,7 @@ export class HomeViewComponent {
         },
       },
       sortBy: SortOptions[0].value,
-      canChangeIconSize: false,
-      canLoadMore: false,
-      canSearch: false,
-      canSort: false,
-      canSelectTags: false,
+      options: { all: false },
       elementsPerLoad: 9,
     },
     {
@@ -61,11 +52,7 @@ export class HomeViewComponent {
         },
       },
       sortBy: SortOptions[5].value,
-      canChangeIconSize: false,
-      canLoadMore: false,
-      canSearch: false,
-      canSort: false,
-      canSelectTags: false,
+      options: { all: false },
       elementsPerLoad: 9,
     },
   ];

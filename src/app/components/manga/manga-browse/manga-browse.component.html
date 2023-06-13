@@ -6,14 +6,14 @@
     <div class="divider"></div>
   </ng-container>
 
-  <div class="action-bar">
-    <ng-container *ngIf="canSearch">
+  <div *ngIf="actionsAllowed.all != false" class="action-bar">
+    <ng-container *ngIf="actionsAllowed.all || actionsAllowed.canSearch">
       <mat-form-field color="primary" class="search-input-field">
         <mat-label>Search</mat-label>
         <input matInput (input)="onSearchInput($event)">
       </mat-form-field>
     </ng-container>
-    <ng-container *ngIf="canSort">
+    <ng-container *ngIf="actionsAllowed.all || actionsAllowed.canSort">
       <mat-form-field>
         <mat-label>Sort by</mat-label>
         <mat-select disableOptionCentering (valueChange)="onSortValueChange($event)" #sortSelect>
@@ -21,7 +21,7 @@
         </mat-select>
       </mat-form-field>
     </ng-container>
-    <ng-container *ngIf="canSelectTags">
+    <ng-container *ngIf="actionsAllowed.all || actionsAllowed.canSelectTags">
       <button mat-button (click)="isTagSelectBoxOpen = !isTagSelectBoxOpen">
         Select tags
         <mat-icon *ngIf="!isTagSelectBoxOpen">arrow_drop_down</mat-icon>
@@ -29,12 +29,26 @@
       </button>
     </ng-container>
     <span class="spacer"></span>
-    <span *ngIf="canChangeIconSize" class="size-slider-wrapper">
+    <span *ngIf="actionsAllowed.all || actionsAllowed.canChangeIconSize" class="size-slider-wrapper" [ngClass]="{'disabled': displayType!=='tiles'}">
       <span>Size</span>
-      <mat-slider min="10" max="41" step="1" value="10" #sizeSlider (valueChange)="onSizeSliderChange()"></mat-slider>
+      <mat-slider
+        #sizeSlider
+        [disabled]='displayType != "tiles"'
+        min="10" max="41" step="1" value="10"
+        (valueChange)="onSizeSliderChange()"></mat-slider>
+    </span>
+    <span *ngIf="actionsAllowed.all || actionsAllowed.canChangeDisplayType">
+      <mat-button-toggle-group [value]="displayType" (change)="onDisplayTypeChange($event)">
+        <mat-button-toggle value="tiles" aria-label="Tile display">
+          <mat-icon>view_module</mat-icon>
+        </mat-button-toggle>
+        <mat-button-toggle value="list" aria-label="List display">
+          <mat-icon>view_list</mat-icon>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
     </span>
   </div>
-  <div class="genre-toggle-container" [ngClass]="isTagSelectBoxOpen ? 'expanded' : ''">
+  <div *ngIf="actionsAllowed.all != false" class="genre-toggle-container" [ngClass]="isTagSelectBoxOpen ? 'expanded' : ''">
     <form [formGroup]="checkboxForm" class="genre-list">
       <ng-container *ngFor="let key of checkboxFormKeys">
         <mat-checkbox [formControlName]="key">{{ key }}</mat-checkbox>
@@ -44,11 +58,12 @@
   </div>
   <div class="manga-list-container">
     <ng-container *ngFor="let manga of mangaList; let i = index">
-      <app-manga-front-display [manga]="manga" (onRead)="onMangaSelect(i)" [size]="sizeSlider ? sizeSlider.value : undefined"></app-manga-front-display>
+      <app-manga-cover-tile *ngIf="displayType === 'tiles'" [manga]="manga" (onRead)="onMangaSelect(i)" [size]="sizeSlider ? sizeSlider.value : undefined"></app-manga-cover-tile>
+      <app-manga-cover-list *ngIf="displayType === 'list'" [manga]="manga" (onRead)="onMangaSelect(i)"></app-manga-cover-list>
     </ng-container>
     <span *ngIf="mangaList.length == 0 && !isLoading" class="mat-card-subtitle">Sorry, it looks like nothing was found.</span>
   </div>
   <mat-spinner color="accent" *ngIf="isLoading"></mat-spinner>
-  <button *ngIf="!isEverythingLoaded && canLoadMore && !isLoading" mat-flat-button color="primary" (click)="loadMore()">Load more...</button>
+  <button *ngIf="!isEverythingLoaded && actionsAllowed.all || actionsAllowed.canLoadMore && !isLoading" mat-flat-button color="primary" (click)="loadMore()">Load more...</button>
 
 </section>

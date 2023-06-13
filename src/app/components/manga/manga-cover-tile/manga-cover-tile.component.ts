@@ -9,21 +9,21 @@ import {
   Output,
 } from '@angular/core';
 import { MangaType } from '../../../types/manga.type';
-import { MangaHttpService } from '../../../services/http/manga-http.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MangaService } from '../../../services/data/manga.service';
-import { AuthService } from '../../../services/data/auth.service';
 import { UserType } from '../../../types/user.type';
 import { Subscription } from 'rxjs';
+import { MangaService } from '../../../services/data/manga.service';
+import { MangaHttpService } from '../../../services/http/manga-http.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../../services/data/auth.service';
 import { AccountType } from '../../../services/http/auth-http.service';
 
 @Component({
-  selector: 'app-manga-front-display',
-  templateUrl: './manga-front-display.component.html',
-  styleUrls: ['./manga-front-display.component.scss'],
+  selector: 'app-manga-cover-tile',
+  templateUrl: './manga-cover-tile.component.html',
+  styleUrls: ['./manga-cover-tile.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MangaFrontDisplayComponent implements OnInit, OnDestroy {
+export class MangaCoverTileComponent implements OnInit, OnDestroy {
   @Input() manga!: MangaType;
   @Input() size?: number;
   @Output() onRead = new EventEmitter();
@@ -73,6 +73,10 @@ export class MangaFrontDisplayComponent implements OnInit, OnDestroy {
         });
       }
     });
+  }
+
+  onClickEdit() {
+    // TODO: Not implemented yet
   }
 
   ngOnDestroy() {
