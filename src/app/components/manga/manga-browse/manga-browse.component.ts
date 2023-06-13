@@ -197,8 +197,8 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   loadMore() {
     if (
       this.isEverythingLoaded ||
-      !this.actionsAllowed.all ||
-      !this.actionsAllowed.canLoadMore
+      this.actionsAllowed.all === false ||
+      this.actionsAllowed.canLoadMore === false
     )
       return;
     this.getElements();
