@@ -64,6 +64,10 @@
     <span *ngIf="mangaList.length == 0 && !isLoading" class="mat-card-subtitle">Sorry, it looks like nothing was found.</span>
   </div>
   <mat-spinner color="accent" *ngIf="isLoading"></mat-spinner>
-  <button *ngIf="!isEverythingLoaded && actionsAllowed.all || actionsAllowed.canLoadMore && !isLoading" mat-flat-button color="primary" (click)="loadMore()">Load more...</button>
+  <button *ngIf="
+  !isEverythingLoaded
+  && !isLoading
+  && actionsAllowed.all
+  || actionsAllowed.canLoadMore " mat-flat-button color="primary" (click)="loadMore()">Load more...</button>
 
 </section>

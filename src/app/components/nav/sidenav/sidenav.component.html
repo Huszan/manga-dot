@@ -13,6 +13,7 @@
         mat-list-item
         [routerLinkActive]="'active'"
         [routerLinkActiveOptions]="{ exact: true }"
+        queryParamsHandling="merge"
         [routerLink]="route.path"
         (click)="onRouteClick()"
       >
