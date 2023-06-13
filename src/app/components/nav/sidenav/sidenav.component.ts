@@ -7,7 +7,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { AppRoutingModule } from '../../../app-routing.module';
-import { Router, Routes } from '@angular/router';
+import { Route, Router, Routes } from '@angular/router';
 import { AuthService } from '../../../services/data/auth.service';
 import { UserType } from '../../../types/user.type';
 import { Subscription } from 'rxjs';
@@ -68,7 +68,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
   }
 
-  onRouteClick() {
+  onRouteClick(route?: Route) {
+    if (route) {
+      this._router.navigate([route.path]);
+    }
     this.drawer.close();
   }
 

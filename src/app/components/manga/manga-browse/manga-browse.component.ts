@@ -35,7 +35,7 @@ export const SortOptions: {
   { display: 'Oldest', value: { element: 'manga.added_date', sort: 'ASC' } },
   {
     display: 'Recently updated',
-    value: { element: 'last_update_date', sort: 'DESC' },
+    value: { element: 'manga.last_update_date', sort: 'DESC' },
   },
   {
     display: 'Best rated',
@@ -112,8 +112,8 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   @Input() sortBy?: any;
   @Input() elementsPerLoad: number = 12;
 
-  @ViewChild('sortSelect') sortSelectRef!: any;
-  @ViewChild('sizeSlider') sizeSlider!: MatSlider;
+  @ViewChild('sortSelect') sortSelectRef: any | undefined;
+  @ViewChild('sizeSlider') sizeSlider: MatSlider | undefined;
 
   mangaList: MangaType[] = [];
   sortOptions = SortOptions;
@@ -222,6 +222,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   }
 
   private initSizeSlider() {
+    if (!this.sizeSlider) return;
     let savedSize = Number(this.store.getItem(StoreItem.MANGA_BROWSE_SIZE));
     if (
       savedSize &&
@@ -241,7 +242,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   onSizeSliderChange() {
     this.store.setItem(
       StoreItem.MANGA_BROWSE_SIZE,
-      String(this.sizeSlider.value)
+      String(this.sizeSlider!.value)
     );
   }
 
@@ -291,6 +292,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   }
 
   private initSort() {
+    if (!this.sortSelectRef) return;
     let index = Number(this.sortQueryParam);
     this.sortSelectRef.value = index;
     this.setSort(index);

@@ -8,7 +8,7 @@
 
   <div *ngIf="actionsAllowed.all != false" class="action-bar">
     <ng-container *ngIf="actionsAllowed.all || actionsAllowed.canSearch">
-      <mat-form-field color="primary" class="search-input-field">
+      <mat-form-field color="primary">
         <mat-label>Search</mat-label>
         <input matInput (input)="onSearchInput($event)">
       </mat-form-field>
@@ -39,10 +39,10 @@
     </span>
     <span *ngIf="actionsAllowed.all || actionsAllowed.canChangeDisplayType">
       <mat-button-toggle-group [value]="displayType" (change)="onDisplayTypeChange($event)">
-        <mat-button-toggle value="tiles" aria-label="Tile display">
+        <mat-button-toggle value="tiles">
           <mat-icon>view_module</mat-icon>
         </mat-button-toggle>
-        <mat-button-toggle value="list" aria-label="List display">
+        <mat-button-toggle value="list">
           <mat-icon>view_list</mat-icon>
         </mat-button-toggle>
       </mat-button-toggle-group>
@@ -68,6 +68,6 @@
   !isEverythingLoaded
   && !isLoading
   && actionsAllowed.all
-  || actionsAllowed.canLoadMore " mat-flat-button color="primary" (click)="loadMore()">Load more...</button>
+  || actionsAllowed.canLoadMore" mat-flat-button color="primary" (click)="loadMore()">Load more...</button>
 
 </section>

@@ -9,16 +9,15 @@
   </div>
   <mat-nav-list>
     <ng-container *ngFor="let route of routes; let i = index">
-      <a
-        mat-list-item
+      <mat-list-item
+        (click)="onRouteClick(route)"
+        [routerLink]="route.path"
         [routerLinkActive]="'active'"
         [routerLinkActiveOptions]="{ exact: true }"
         queryParamsHandling="merge"
-        [routerLink]="route.path"
-        (click)="onRouteClick()"
       >
         {{ getDisplay(i) }}
-      </a>
+      </mat-list-item>
     </ng-container>
   </mat-nav-list>
 </div>

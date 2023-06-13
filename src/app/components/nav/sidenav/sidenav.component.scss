@@ -4,11 +4,11 @@
   height: 100%;
 }
 
-a {
+mat-list-item {
   box-sizing: border-box;
 }
 
-a.active {
+mat-list-item.active {
   border-left: #ffc300 6px solid;
   background-color: #fafafa;
 }
