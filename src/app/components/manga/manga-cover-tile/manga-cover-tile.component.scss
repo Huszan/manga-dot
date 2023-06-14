@@ -6,6 +6,7 @@
     scale: 75%;
     z-index: 5;
     opacity: 50%;
+    display: none;
     &.edit {
       right: 0;
       top: 33%;
@@ -16,11 +17,17 @@
       top: 54%;
       transform: translateY(-100%) translateX(10%);
     }
-    &:hover {
+    &:hover,&:focus {
       opacity: 100%;
       .mat-icon {
         scale: 110%;
       }
+    }
+  }
+
+  &:hover, &:focus {
+    .special-button {
+      display: inline;
     }
   }
 

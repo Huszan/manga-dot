@@ -49,12 +49,14 @@
     </span>
   </div>
   <div *ngIf="actionsAllowed.all != false" class="genre-toggle-container" [ngClass]="isTagSelectBoxOpen ? 'expanded' : ''">
-    <form [formGroup]="checkboxForm" class="genre-list">
-      <ng-container *ngFor="let key of checkboxFormKeys">
-        <mat-checkbox [formControlName]="key">{{ key }}</mat-checkbox>
-      </ng-container>
-    </form>
-    <button mat-flat-button color="accent" (click)="onTagsApply()">Apply</button>
+    <ng-container *ngIf="isTagSelectBoxOpen">
+      <form [formGroup]="checkboxForm" class="genre-list">
+        <ng-container *ngFor="let key of checkboxFormKeys">
+          <mat-checkbox [formControlName]="key">{{ key }}</mat-checkbox>
+        </ng-container>
+      </form>
+      <button mat-flat-button color="accent" (click)="onTagsApply()">Apply</button>
+    </ng-container>
   </div>
   <div class="manga-list-container">
     <ng-container *ngFor="let manga of mangaList; let i = index">
