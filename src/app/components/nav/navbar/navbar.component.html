@@ -1,13 +1,36 @@
+<ng-container *ngIf="isMobile else desktop">
+  <p class="mat-toolbar mat-primary">
+    <mat-toolbar color="primary" class="site-content-width">
+      <span class="main-content-wrapper">
+        <a class="logo" [routerLink]="homeRoute.path">
+          <img src="assets/mdot-logo-3.svg" alt="">
+        </a>
+        <span class="spacer"></span>
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="toggleSidenav()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </span>
+      <span class="search-bar-wrapper">
+        <app-manga-search-bar></app-manga-search-bar>
+      </span>
+    </mat-toolbar>
+  </p>
+</ng-container>
 
-<p class="mat-toolbar mat-primary">
-  <mat-toolbar color="primary" class="site-content-width">
-    <a class="logo" [routerLink]="homeRoute.path">
-      <img src="assets/mdot-logo-3.svg" alt="">
-    </a>
-    <span class="spacer"></span>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="toggleSidenav()">
-      <mat-icon>menu</mat-icon>
-    </button>
-  </mat-toolbar>
-</p>
-
+<ng-template #desktop>
+  <p class="mat-toolbar mat-primary">
+    <mat-toolbar color="primary" class="site-content-width">
+      <a class="logo" [routerLink]="homeRoute.path">
+        <img src="assets/mdot-logo-3.svg" alt="">
+      </a>
+      <span class="spacer"></span>
+      <span class="search-bar-wrapper">
+        <app-manga-search-bar></app-manga-search-bar>
+      </span>
+      <span class="spacer"></span>
+      <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="toggleSidenav()">
+        <mat-icon>menu</mat-icon>
+      </button>
+    </mat-toolbar>
+  </p>
+</ng-template>

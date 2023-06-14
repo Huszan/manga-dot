@@ -47,6 +47,7 @@ import { MangaCoverListComponent } from './components/manga/manga-cover-list/man
 import { MangaCoverTileComponent } from './components/manga/manga-cover-tile/manga-cover-tile.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
+import { MangaSearchBarComponent } from './components/manga/manga-search-bar/manga-search-bar.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
     HomeViewComponent,
     MangaCoverListComponent,
     MangaCoverTileComponent,
+    MangaSearchBarComponent,
   ],
   imports: [
     BrowserModule,
