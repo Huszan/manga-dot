@@ -30,7 +30,7 @@ export class HomeViewComponent {
       },
       sortBy: SortOptions[2].value,
       options: { all: false },
-      itemsPerPage: 12,
+      itemsPerPage: 9,
     },
     {
       title: 'Popular',
@@ -42,7 +42,7 @@ export class HomeViewComponent {
       },
       sortBy: SortOptions[0].value,
       options: { all: false },
-      itemsPerPage: 12,
+      itemsPerPage: 9,
     },
     {
       title: 'Best rated',
@@ -54,7 +54,7 @@ export class HomeViewComponent {
       },
       sortBy: SortOptions[5].value,
       options: { all: false },
-      itemsPerPage: 12,
+      itemsPerPage: 9,
     },
   ];
 }

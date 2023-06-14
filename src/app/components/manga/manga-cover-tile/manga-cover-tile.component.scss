@@ -51,6 +51,7 @@
       padding: 5px;
 
       width: inherit;
+      min-width: 80px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -89,8 +90,16 @@
   .manga-container-wrapper {
     .manga-container {
       width: 13vw;
-      max-width: 95vw;
     }
   }
 }
 
+::ng-deep {
+  ngx-skeleton-loader {
+    display: block;
+    .loader {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+}

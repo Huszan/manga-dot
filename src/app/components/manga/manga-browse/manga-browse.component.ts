@@ -99,7 +99,7 @@ export interface MangaBrowseOptions {
   canSelectTags?: boolean;
   canPaginate?: boolean;
 }
-export type ItemPerPage = 6 | 12 | 24 | 36 | 48;
+export type ItemPerPage = 6 | 9 | 12 | 18 | 24 | 36 | 48;
 
 @Component({
   selector: 'app-manga-browse',
@@ -170,6 +170,10 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
     )
       this.initTagSelect();
     this.getElements();
+  }
+
+  fakeArray(length: number): number[] {
+    return Array.from({ length }, (_, index) => index + 1);
   }
 
   onPageChange(event: any) {

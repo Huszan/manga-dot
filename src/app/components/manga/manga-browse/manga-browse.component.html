@@ -61,9 +61,14 @@
       <app-manga-cover-tile *ngIf="displayType === 'tiles'" [manga]="manga" (onRead)="onMangaSelect(i)" [size]="sizeSlider ? sizeSlider.value : undefined"></app-manga-cover-tile>
       <app-manga-cover-list *ngIf="displayType === 'list'" [manga]="manga" (onRead)="onMangaSelect(i)"></app-manga-cover-list>
     </ng-container>
+    <ng-container *ngIf="isLoading">
+      <ng-container *ngFor="let i of fakeArray(itemsPerPage)">
+        <app-manga-cover-tile *ngIf="displayType === 'tiles'" [size]="sizeSlider ? sizeSlider.value : undefined"></app-manga-cover-tile>
+        <app-manga-cover-list *ngIf="displayType === 'list'"></app-manga-cover-list>
+      </ng-container>
+    </ng-container>
     <span *ngIf="mangaList.length == 0 && !isLoading" class="mat-card-subtitle">Sorry, it looks like nothing was found.</span>
   </div>
-  <mat-spinner color="accent" *ngIf="isLoading"></mat-spinner>
   <mat-paginator
     *ngIf="actionsAllowed.all || actionsAllowed.canPaginate"
     #paginator

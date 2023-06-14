@@ -46,6 +46,7 @@ import { AuthGuard } from './services/auth-guard.service';
 import { MangaCoverListComponent } from './components/manga/manga-cover-list/manga-cover-list.component';
 import { MangaCoverTileComponent } from './components/manga/manga-cover-tile/manga-cover-tile.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 @NgModule({
   declarations: [
@@ -93,6 +94,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatCheckboxModule,
     MatExpansionModule,
     MatPaginatorModule,
+    NgxSkeletonLoaderModule,
   ],
   providers: [MangaService, MangaHttpService, AuthGuard],
   bootstrap: [AppComponent],

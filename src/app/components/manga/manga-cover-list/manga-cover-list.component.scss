@@ -89,3 +89,15 @@
   box-sizing: border-box;
 }
 
+::ng-deep {
+  ngx-skeleton-loader {
+    display: block;
+    &.manga-container{
+      .loader {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+

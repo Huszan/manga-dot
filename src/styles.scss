@@ -290,6 +290,11 @@ $altTheme: (
   flex-grow: 1;
 }
 
+.not-intractable {
+  pointer-events: none;
+  cursor: default;
+}
+
 // Form
 
 .form-group {
