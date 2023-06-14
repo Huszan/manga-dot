@@ -66,8 +66,8 @@ export class MangaChapterComponent implements OnInit {
             },
           ],
         })
-        .subscribe((res: MangaType[]) => {
-          this.manga = res.at(0);
+        .subscribe((res: { list: MangaType[]; count: number }) => {
+          this.manga = res.list.at(0);
           if (!this.isChapterValid) this.goToChapterSelect();
           if (
             !this.manga?.chapters[this.chapter].pages ||

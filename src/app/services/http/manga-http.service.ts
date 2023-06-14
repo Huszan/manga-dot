@@ -51,7 +51,7 @@ export class MangaHttpService {
   getMangaList(
     options?: RepositoryFindOptions,
     bigSearch?: string
-  ): Observable<any> {
+  ): Observable<{ list: MangaType[]; count: number }> {
     let route = this._routeUrl(MANGA_ROUTE.GET_MANGAS);
     return this.http
       .post(route.toString(), {
@@ -60,7 +60,7 @@ export class MangaHttpService {
       })
       .pipe(
         map((response: any) => {
-          for (let manga of response) {
+          for (let manga of response.list) {
             manga.addedDate = new Date(manga.addedDate);
             manga.lastUpdateDate = new Date(manga.lastUpdateDate);
           }

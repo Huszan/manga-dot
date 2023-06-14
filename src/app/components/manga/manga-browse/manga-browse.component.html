@@ -10,7 +10,7 @@
     <ng-container *ngIf="actionsAllowed.all || actionsAllowed.canSearch">
       <mat-form-field color="primary">
         <mat-label>Search</mat-label>
-        <input matInput (input)="onSearchInput($event)">
+        <input matInput [value]="searchString" (input)="onSearchInput($event)">
       </mat-form-field>
     </ng-container>
     <ng-container *ngIf="actionsAllowed.all || actionsAllowed.canSort">
@@ -64,10 +64,15 @@
     <span *ngIf="mangaList.length == 0 && !isLoading" class="mat-card-subtitle">Sorry, it looks like nothing was found.</span>
   </div>
   <mat-spinner color="accent" *ngIf="isLoading"></mat-spinner>
-  <button *ngIf="
-  !isEverythingLoaded
-  && !isLoading
-  && actionsAllowed.all
-  || actionsAllowed.canLoadMore" mat-flat-button color="primary" (click)="loadMore()">Load more...</button>
+  <mat-paginator
+    *ngIf="actionsAllowed.all || actionsAllowed.canPaginate"
+    #paginator
+    [length]="mangaCount ? mangaCount : itemsPerPage"
+    [pageSize]="itemsPerPage"
+    [pageIndex]="currentPage"
+    [pageSizeOptions]="[6, 12, 24, 36, 48]"
+    (page)="onPageChange($event)"
+    aria-label="Select page"
+  ></mat-paginator>
 
 </section>

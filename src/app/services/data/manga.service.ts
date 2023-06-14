@@ -28,8 +28,8 @@ export class MangaService {
         take: 1,
       })
       .subscribe((res) => {
-        if (!res[0]) return;
-        this.selectedManga$.next(res[0]);
+        if (!res.list[0]) return;
+        this.selectedManga$.next(res.list[0]);
       });
   }
 }

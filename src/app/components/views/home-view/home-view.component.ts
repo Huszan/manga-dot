@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {
+  ItemPerPage,
   MangaBrowseOptions,
   SortOptions,
 } from '../../manga/manga-browse/manga-browse.component';
@@ -9,7 +10,7 @@ export interface MangaBrowseElement {
   titleNav?: { link: string; queryParams: any };
   options: MangaBrowseOptions;
   sortBy?: any;
-  elementsPerLoad: number;
+  itemsPerPage: ItemPerPage;
 }
 
 @Component({
@@ -29,7 +30,7 @@ export class HomeViewComponent {
       },
       sortBy: SortOptions[2].value,
       options: { all: false },
-      elementsPerLoad: 9,
+      itemsPerPage: 12,
     },
     {
       title: 'Popular',
@@ -41,7 +42,7 @@ export class HomeViewComponent {
       },
       sortBy: SortOptions[0].value,
       options: { all: false },
-      elementsPerLoad: 9,
+      itemsPerPage: 12,
     },
     {
       title: 'Best rated',
@@ -53,7 +54,7 @@ export class HomeViewComponent {
       },
       sortBy: SortOptions[5].value,
       options: { all: false },
-      elementsPerLoad: 9,
+      itemsPerPage: 12,
     },
   ];
 }

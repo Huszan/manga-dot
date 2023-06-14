@@ -6,6 +6,10 @@
 
   gap: 10px;
 
+  mat-paginator {
+    align-self: end;
+  }
+
   a {
     &:hover {
       opacity: 80%;
