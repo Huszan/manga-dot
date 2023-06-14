@@ -17,18 +17,20 @@ const routes: Routes = [
   {
     title: 'Manga dot | Home',
     path: '',
+    data: { icon: 'home' },
     component: HomeViewComponent,
   },
   {
     title: 'Manga dot | Browse',
     path: 'manga/browse',
+    data: { icon: 'manage_search' },
     component: MangaBrowseComponent,
   },
   {
     title: 'Manga dot | Add new',
     path: 'manga/add',
     canActivate: [AuthGuard],
-    data: { roles: ['admin', 'mod'] },
+    data: { roles: ['admin', 'mod'], icon: 'add' },
     component: CreateMangaFormComponent,
   },
   {

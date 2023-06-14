@@ -16,6 +16,7 @@
         [routerLinkActiveOptions]="{ exact: true }"
         queryParamsHandling="merge"
       >
+        <mat-icon *ngIf="route.data && route.data['icon']" style="margin-right: 10px">{{ route.data['icon'] }}</mat-icon>
         {{ getDisplay(i) }}
       </mat-list-item>
     </ng-container>
