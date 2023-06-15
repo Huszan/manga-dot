@@ -12,6 +12,7 @@ import { AuthGuard } from './services/auth-guard.service';
 import { AuthService } from './services/data/auth.service';
 import { UserType } from './types/user.type';
 import { BehaviorSubject } from 'rxjs';
+import { ContactFormComponent } from './components/views/contact-form/contact-form.component';
 
 const routes: Routes = [
   {
@@ -32,6 +33,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: { roles: ['admin', 'mod'], icon: 'add' },
     component: CreateMangaFormComponent,
+  },
+  {
+    title: 'Manga dot | Contact',
+    path: 'contact',
+    data: { icon: 'email' },
+    component: ContactFormComponent,
   },
   {
     path: 'manga/:id',

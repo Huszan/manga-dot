@@ -1,0 +1,50 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-group">
+
+  <img src="../../../../assets/letter.png">
+
+  <div class="form-title mat-display-2">Contact us</div>
+
+  <p class="mat-body">
+    Did you come across any missing chapters or pages? Do you have any questions or ideas to help us
+    enhance your experience on our website? If your answer is 'yes' to any of these, we would love to
+    hear from you!
+  </p>
+
+  <mat-form-field>
+    <input matInput
+           formControlName="name"
+           placeholder="Name">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput
+           type="email"
+           formControlName="email"
+           placeholder="Email">
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Subject</mat-label>
+    <mat-select formControlName="subject">
+      <mat-option *ngFor="let availableSubject of availableSubjects" [value]="availableSubject">
+        {{ availableSubject }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <textarea
+      matInput
+      cdkTextareaAutosize
+      cdkAutosizeMinRows="5"
+      formControlName="message"
+      placeholder="Message"
+    >
+    </textarea>
+  </mat-form-field>
+
+  <button mat-raised-button color="accent" [disabled]="!form.valid">Send</button>
+
+</form>
+
+<app-full-screen-loader *ngIf="isLoading"></app-full-screen-loader>
