@@ -26,8 +26,9 @@ button {
 
 a {
   cursor: pointer;
-  text-decoration: none;
-  color: inherit;
+  text-decoration: underline 2px var(--accent-darker-color);
+  font-weight: 700;
+  color: var(--text-accent-color);
 }
 
 .sticky {

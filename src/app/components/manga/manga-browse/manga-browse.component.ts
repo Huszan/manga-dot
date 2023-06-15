@@ -113,6 +113,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   @Input() actionsAllowed: MangaBrowseOptions = { all: true };
   @Input() displayType: 'tiles' | 'list' = 'tiles';
   @Input() sortBy?: any;
+  @Input() tags: number[] = [];
   @Input() itemsPerPage: ItemPerPage = 12;
 
   @ViewChild('sortSelect') sortSelectRef: any | undefined;
@@ -165,8 +166,9 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
     )
       this.initSort();
     if (
-      (this.actionsAllowed.all || this.actionsAllowed.canSelectTags) &&
-      this.tagsQueryParam
+      ((this.actionsAllowed.all || this.actionsAllowed.canSelectTags) &&
+        this.tagsQueryParam) ||
+      this.tags.length > 0
     )
       this.initTagSelect();
     this.getElements();
@@ -408,9 +410,15 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   }
 
   private initTagSelect() {
-    let queryValue = this.tagsQueryParam;
-    if (!queryValue) return;
-    let tags: any[] = queryValue.split(',');
+    let tags: any[] = [];
+    if (this.tags.length > 0) {
+      tags = this.tags;
+    } else {
+      let queryValue = this.tagsQueryParam;
+      if (!queryValue) return;
+      tags = queryValue.split(',');
+    }
+
     for (let tag of tags) {
       tag = Number(tag);
       this.checkboxFormKeys.forEach((key, i) => {
