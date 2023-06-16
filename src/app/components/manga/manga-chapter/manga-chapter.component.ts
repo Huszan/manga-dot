@@ -24,8 +24,10 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   chapter: number = 0;
   mangaId: number = 0;
   isInitialized: boolean = false;
+  optionsExtended: boolean = false;
 
   mangaSub!: Subscription;
+  paramsSub!: Subscription;
 
   constructor(
     private _cdr: ChangeDetectorRef,
@@ -39,25 +41,27 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.initMangaSub();
-    this._getChapter();
-    this._getMangaId();
-    this._getManga();
+    this._initMangaSub();
+    this._initSubToParams();
   }
 
-  private _getMangaId() {
-    this.mangaId = Number(this.route.snapshot.paramMap.get('id'));
+  private _initSubToParams() {
+    this.paramsSub = this._subToParams();
   }
 
-  private _getChapter() {
-    this.chapter = Number(this.route.snapshot.paramMap.get('chapter'));
+  private _subToParams() {
+    return this.route.params.subscribe((params) => {
+      this.mangaId = Number(params['id']);
+      this.chapter = Number(params['chapter']);
+      this._getManga();
+      this._cdr.detectChanges();
+    });
   }
 
-  private initMangaSub() {
+  private _initMangaSub() {
     this.mangaSub = this._mangaService.selectedManga$.subscribe((manga) => {
       this.manga = manga;
       this.checkIfMangaIsInitialized();
-      console.log(this.manga, this.isInitialized);
       if (this.isInitialized) this._cdr.detectChanges();
     });
   }
@@ -103,20 +107,26 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   navigateToPreviousChapter() {
     if (this.isFirstChapter) return;
-    this.chapter--;
+    this.navigateToChapter(this.chapter - 1);
+  }
+
+  navigateToNextChapter() {
+    if (this.isLastChapter) return;
+    this.navigateToChapter(this.chapter + 1);
+  }
+
+  navigateToChapter(chapter: number) {
+    this.chapter = chapter;
+    if (!this.isChapterValid) return;
     this._router.navigate(['/manga', this.mangaId, this.chapter]).then(() => {
       this._mangaService.requestPages(this.chapter);
       window.scroll({ top: 0 });
     });
   }
 
-  navigateToNextChapter() {
-    if (this.isLastChapter) return;
-    this.chapter++;
-    this._router.navigate(['/manga', this.mangaId, this.chapter]).then(() => {
-      this._mangaService.requestPages(this.chapter);
-      window.scroll({ top: 0 });
-    });
+  onChapterSelect(event: any) {
+    const chapter = event.value;
+    this.navigateToChapter(chapter);
   }
 
   get isFirstChapter() {
@@ -138,7 +148,13 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     return this._sanitizer.bypassSecurityTrustUrl(url);
   }
 
+  onOptionsExtendClick() {
+    this.optionsExtended = !this.optionsExtended;
+    this._cdr.detectChanges();
+  }
+
   ngOnDestroy(): void {
     this.mangaSub.unsubscribe();
+    this._subToParams().unsubscribe();
   }
 }

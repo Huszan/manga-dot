@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -16,7 +17,7 @@ import {
   MangaHttpService,
   RepositoryFindOptions,
 } from '../../../services/http/manga-http.service';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 
@@ -107,7 +108,7 @@ export type ItemPerPage = 6 | 9 | 12 | 18 | 24 | 36 | 48;
   styleUrls: ['./manga-browse.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MangaBrowseComponent implements OnInit, AfterViewInit {
+export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() title?: string;
   @Input() titleNav?: { link: string; queryParams: any };
   @Input() actionsAllowed: MangaBrowseOptions = { all: true };
@@ -123,17 +124,18 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   mangaList: MangaType[] = [];
   mangaCount: number | null = null;
   sortOptions = SortOptions;
+
   currentPage = 0;
   searchString = '';
+
   availableTags = Tags;
   itemPerPageValues: ItemPerPage[] = [6, 9, 12, 18, 24, 36, 48];
-
   isLoading: boolean = false;
   isTagSelectBoxOpen = false;
-
   checkboxForm!: FormGroup;
 
   private inputSubject = new Subject<string>();
+  private paramSub!: Subscription;
 
   constructor(
     private httpManga: MangaHttpService,
@@ -146,11 +148,14 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.initCheckboxForm();
     this.initSearchDebounce();
   }
 
   ngAfterViewInit() {
+    this.initSubToParams();
+  }
+
+  private initializeComponent() {
     if (this.actionsAllowed.all || this.actionsAllowed.canChangeIconSize)
       this.initSizeSlider();
     if (this.actionsAllowed.all || this.actionsAllowed.canChangeDisplayType)
@@ -167,12 +172,25 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
     )
       this.initSort();
     if (
-      ((this.actionsAllowed.all || this.actionsAllowed.canSelectTags) &&
-        this.tagsQueryParam) ||
-      this.tags.length > 0
+      (this.actionsAllowed.all || this.actionsAllowed.canSelectTags) &&
+      this.tagsQueryParam
     )
       this.initTagSelect();
     this.getElements();
+  }
+
+  private initSubToParams() {
+    this.paramSub = this.subToParams();
+  }
+
+  private subToParams() {
+    return this.route.queryParamMap.subscribe(() => {
+      this.tags = [];
+      this.searchString = '';
+      this.initCheckboxForm();
+      this.initializeComponent();
+      this._cdr.detectChanges();
+    });
   }
 
   fakeArray(length: number): number[] {
@@ -467,5 +485,9 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   onDisplayTypeChange(event: any) {
     this.displayType = event.value;
     this.store.setItem(StoreItem.MANGA_DISPLAY_TYPE, this.displayType);
+  }
+
+  ngOnDestroy() {
+    this.paramSub.unsubscribe();
   }
 }

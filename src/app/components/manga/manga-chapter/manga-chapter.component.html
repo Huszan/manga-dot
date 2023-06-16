@@ -1,4 +1,32 @@
 
+
+<div class="manga-browse-options">
+  <div class="disable-action-box" [ngClass]="{'extended': optionsExtended}">
+    <div class="expandable-box" [ngClass]="{'extended': optionsExtended}">
+      <div class="extend-button-wrapper">
+        <button (click)="onOptionsExtendClick()">
+          <mat-icon>settings</mat-icon>
+        </button>
+      </div>
+      <div class="content-wrapper">
+        <div *ngIf="manga" class="mat-body-2 content-el"><b>{{ manga.name }}</b></div>
+        <div class="change-chapter-wrapper content-el">
+          <button mat-flat-button color="accent" [disabled]="isFirstChapter" (click)="navigateToPreviousChapter()">Previous</button>
+          <button mat-flat-button color="accent" [disabled]="isLastChapter" (click)="navigateToNextChapter()">Next</button>
+        </div>
+        <div *ngIf="manga && manga.chapters" class="select-chapter-wrapper content-el">
+          <mat-form-field appearance="fill" color="accent">
+            <mat-label>Select chapter..</mat-label>
+            <mat-select [value]="chapter" (selectionChange)="onChapterSelect($event)">
+              <mat-option *ngFor="let chapter of manga.chapters; let i = index" [value]="i">{{ chapter.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="pages-wrapper">
   <ng-container *ngIf='!isInitialized; else initialized'>
     <app-full-screen-loader [displayText]="'Manga is loading, please be patient.'"></app-full-screen-loader>

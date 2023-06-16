@@ -1,6 +1,6 @@
 
 <span class="input-wrapper">
-  <input [value]="searchString" (input)="searchValueChange($event)" (keyup.enter)="onSearch()">
+  <input placeholder="Search..." [value]="searchString" (input)="searchValueChange($event)" (keyup.enter)="onSearch()">
   <button (click)="onSearch()">
     <mat-icon color="primary">search</mat-icon>
   </button>
