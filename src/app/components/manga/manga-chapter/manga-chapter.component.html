@@ -1,10 +1,10 @@
 
 <div class="pages-wrapper">
-  <ng-container *ngIf="!isInitialized.manga || !isInitialized.pages; else initialized">
+  <ng-container *ngIf='!isInitialized; else initialized'>
     <app-full-screen-loader [displayText]="'Manga is loading, please be patient.'"></app-full-screen-loader>
   </ng-container>
   <ng-template #initialized>
-    <ng-container *ngIf="manga && manga!.chapters[chapter].pages && manga!.chapters[chapter].pages.length > 0; else contentNotFound">
+    <ng-container *ngIf="manga && manga!.chapters![chapter].pages && manga!.chapters![chapter].pages.length > 0; else contentNotFound">
       <ng-container *ngTemplateOutlet="contentFound"></ng-container>
     </ng-container>
   </ng-template>
@@ -13,9 +13,9 @@
 <ng-template #contentFound>
   <ng-container *ngTemplateOutlet="floatingActions"></ng-container>
   <span class="mat-display-2">
-    <a (click)="goToChapterSelect()">{{ manga!.name }}</a>: {{ manga!.chapters[chapter].name }}
+    <a (click)="goToChapterSelect()">{{ manga!.name }}</a>: {{ manga!.chapters![chapter].name }}
   </span>
-  <ng-container *ngFor="let page of manga!.chapters[chapter].pages">
+  <ng-container *ngFor="let page of manga!.chapters![chapter].pages!">
     <img [src]="sanitizeUrl(page.url)" alt="no image">
   </ng-container>
 </ng-template>

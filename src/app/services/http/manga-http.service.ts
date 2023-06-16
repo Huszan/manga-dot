@@ -11,11 +11,12 @@ const MANGA_DOMAIN = {
   Development: 'http://localhost:3000/',
 };
 enum MANGA_ROUTE {
-  GET_PAGES = 'getMangaPages',
   TEST_FORM = 'testMangaForm',
   TEST_CHAPTER = 'testMangaChapter',
   POST = 'createManga',
   GET_MANGAS = 'getMangaList',
+  GET_CHAPTERS = 'getMangaChapters',
+  GET_PAGES = 'getMangaPages',
   REMOVE = 'removeManga',
   LIKE = 'likeManga',
 }
@@ -69,10 +70,16 @@ export class MangaHttpService {
       );
   }
 
-  getMangaPages(mangaId: number, chapter: ChapterType): Observable<any> {
+  getMangaChapters(mangaId: number): Observable<any> {
+    return this.http.post(this._routeUrl(MANGA_ROUTE.GET_CHAPTERS).toString(), {
+      mangaId: mangaId,
+    });
+  }
+
+  getMangaPages(mangaId: number, chapterId: number): Observable<any> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.GET_PAGES).toString(), {
       mangaId: mangaId,
-      chapter: chapter,
+      chapterId: chapterId,
     });
   }
 

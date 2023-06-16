@@ -1,5 +1,5 @@
 
-<ng-container *ngIf="manga === null; else mangaFound">
+<ng-container *ngIf="!manga; else mangaFound">
   <app-full-screen-loader displayText="Your manga is loading."></app-full-screen-loader>
 </ng-container>
 
