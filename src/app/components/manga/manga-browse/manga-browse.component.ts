@@ -388,7 +388,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
     let perPage: any = Number(this.route.snapshot.queryParamMap.get('perPage'));
     return this.itemPerPageValues.includes(perPage)
       ? perPage
-      : this.itemPerPageValues[0];
+      : this.itemsPerPage;
   }
 
   private get tagsQueryParam() {
