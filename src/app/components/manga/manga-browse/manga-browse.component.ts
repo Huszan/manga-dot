@@ -126,6 +126,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   currentPage = 0;
   searchString = '';
   availableTags = Tags;
+  itemPerPageValues: ItemPerPage[] = [6, 9, 12, 18, 24, 36, 48];
 
   isLoading: boolean = false;
   isTagSelectBoxOpen = false;
@@ -384,7 +385,10 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   }
 
   private get perPageQueryParam() {
-    return this.route.snapshot.queryParamMap.get('perPage');
+    let perPage: any = Number(this.route.snapshot.queryParamMap.get('perPage'));
+    return this.itemPerPageValues.includes(perPage)
+      ? perPage
+      : this.itemPerPageValues[0];
   }
 
   private get tagsQueryParam() {

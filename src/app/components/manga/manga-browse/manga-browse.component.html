@@ -77,7 +77,7 @@
     [length]="mangaCount ? mangaCount : itemsPerPage"
     [pageSize]="itemsPerPage"
     [pageIndex]="currentPage"
-    [pageSizeOptions]="[6, 12, 24, 36, 48]"
+    [pageSizeOptions]="itemPerPageValues"
     (page)="onPageChange($event)"
     aria-label="Select page"
   ></mat-paginator>
