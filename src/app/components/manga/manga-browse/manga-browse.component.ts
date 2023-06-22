@@ -4,6 +4,7 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -12,18 +13,94 @@ import { MangaType } from '../../../types/manga.type';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { StoreItem, StoreService } from '../../../services/store.service';
 import { MatSlider } from '@angular/material/slider';
-import { MangaHttpService } from '../../../services/http/manga-http.service';
-import { debounceTime, Subject, timeout } from 'rxjs';
+import {
+  MangaHttpService,
+  RepositoryFindOptions,
+} from '../../../services/http/manga-http.service';
+import { debounceTime, Subject, Subscription } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
 
-export const SortOptions: { display: string; value: any }[] = [
-  { display: 'Most popular', value: { view_count: 'DESC' } },
-  { display: 'Least popular', value: { view_count: 'ASC' } },
-  { display: 'Newest', value: { added_date: 'DESC' } },
-  { display: 'Oldest', value: { added_date: 'ASC' } },
-  { display: 'Recently updated', value: { last_update_date: 'DESC' } },
-  { display: 'Best rated', value: { like_count: 'DESC' } },
-  { display: 'Worst rated', value: { like_count: 'ASC' } },
+export const SortOptions: {
+  display: string;
+  value: { element: string; sort: 'ASC' | 'DESC' };
+}[] = [
+  {
+    display: 'Most popular',
+    value: { element: 'manga.view_count', sort: 'DESC' },
+  },
+  {
+    display: 'Least popular',
+    value: { element: 'manga.view_count', sort: 'ASC' },
+  },
+  { display: 'Newest', value: { element: 'manga.added_date', sort: 'DESC' } },
+  { display: 'Oldest', value: { element: 'manga.added_date', sort: 'ASC' } },
+  {
+    display: 'Recently updated',
+    value: { element: 'manga.last_update_date', sort: 'DESC' },
+  },
+  {
+    display: 'Best rated',
+    value: { element: 'manga.like_count', sort: 'DESC' },
+  },
+  {
+    display: 'Worst rated',
+    value: { element: 'manga.like_count', sort: 'ASC' },
+  },
 ];
+export const Tags = [
+  'action',
+  'adventure',
+  'fantasy',
+  'harem',
+  'romance',
+  'supernatural',
+  'comedy',
+  'shounen',
+  'historical',
+  'shoujo',
+  'slice of life',
+  'drama',
+  'martial arts',
+  'horror',
+  'mystery',
+  'psychological',
+  'tragedy',
+  'webtoons',
+  'school life',
+  'yaoi',
+  'isekai',
+  'seinen',
+  'pornographic',
+  'manhwa',
+  'shounen ai',
+  'cooking',
+  'manhua',
+  'josei',
+  'smut',
+  'yuri',
+  'sci fi',
+  'erotica',
+  'mature',
+  'sports',
+  'mecha',
+  'gender bender',
+  'shoujo ai',
+  'medical',
+  'one shot',
+  'doujinshi',
+];
+export interface MangaBrowseOptions {
+  all?: boolean;
+  canChangeIconSize?: boolean;
+  canChangeDisplayType?: boolean;
+  canLoadMore?: boolean;
+  canSearch?: boolean;
+  canSort?: boolean;
+  canSelectTags?: boolean;
+  canPaginate?: boolean;
+}
+export type ItemPerPage = 6 | 9 | 12 | 18 | 24 | 36 | 48;
 
 @Component({
   selector: 'app-manga-browse',
@@ -31,27 +108,34 @@ export const SortOptions: { display: string; value: any }[] = [
   styleUrls: ['./manga-browse.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MangaBrowseComponent implements OnInit, AfterViewInit {
+export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() title?: string;
   @Input() titleNav?: { link: string; queryParams: any };
-  @Input() canChangeIconSize: boolean = true;
-  @Input() canLoadMore: boolean = true;
-  @Input() canSearch: boolean = true;
-  @Input() canSort: boolean = true;
+  @Input() actionsAllowed: MangaBrowseOptions = { all: true };
+  @Input() displayType: 'tiles' | 'list' = 'tiles';
   @Input() sortBy?: any;
-  @Input() elementsPerLoad: number = 12;
+  @Input() tags: number[] = [];
+  @Input() itemsPerPage: ItemPerPage = 12;
 
-  @ViewChild('sortSelect') sortSelectRef!: any;
-  @ViewChild('sizeSlider') sizeSlider!: MatSlider;
+  @ViewChild('sortSelect') sortSelectRef: any | undefined;
+  @ViewChild('sizeSlider') sizeSlider: MatSlider | undefined;
+  @ViewChild('paginator') paginator: MatPaginator | undefined;
 
   mangaList: MangaType[] = [];
+  mangaCount: number | null = null;
   sortOptions = SortOptions;
-  currentLoad = 0;
+
+  currentPage = 0;
   searchString = '';
-  isEverythingLoaded = false;
+
+  availableTags = Tags;
+  itemPerPageValues: ItemPerPage[] = [6, 9, 12, 18, 24, 36, 48];
   isLoading: boolean = false;
+  isTagSelectBoxOpen = false;
+  checkboxForm!: FormGroup;
 
   private inputSubject = new Subject<string>();
+  private paramSub!: Subscription;
 
   constructor(
     private httpManga: MangaHttpService,
@@ -59,60 +143,127 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
     private _cdr: ChangeDetectorRef,
-    private store: StoreService
+    private store: StoreService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
-    // Subscribe to the inputSubject and debounce the input events
-    this.inputSubject.pipe(debounceTime(500)).subscribe((inputValue) => {
-      this.searchString = inputValue.trim();
-      this.getElements();
-    });
+    this.initSearchDebounce();
   }
 
   ngAfterViewInit() {
-    if (this.canChangeIconSize) this.initSizeSlider();
-    if (this.sortQueryParam) this.initSort();
+    this.initSubToParams();
+  }
+
+  private initializeComponent() {
+    if (this.actionsAllowed.all || this.actionsAllowed.canChangeIconSize)
+      this.initSizeSlider();
+    if (this.actionsAllowed.all || this.actionsAllowed.canChangeDisplayType)
+      this.initDisplayType();
+    if (this.actionsAllowed.all || this.actionsAllowed.canSearch)
+      this.initSearch();
+    if (this.actionsAllowed.all || this.actionsAllowed.canPaginate)
+      this.initPage();
+    if (this.actionsAllowed.all || this.actionsAllowed.canPaginate)
+      this.initPerPage();
+    if (
+      (this.actionsAllowed.all || this.actionsAllowed.canSort) &&
+      this.sortQueryParam
+    )
+      this.initSort();
+    if (
+      (this.actionsAllowed.all || this.actionsAllowed.canSelectTags) &&
+      this.tagsQueryParam
+    )
+      this.initTagSelect();
     this.getElements();
+  }
+
+  private initSubToParams() {
+    this.paramSub = this.subToParams();
+  }
+
+  private subToParams() {
+    return this.route.queryParamMap.subscribe(() => {
+      this.tags = [];
+      this.searchString = '';
+      this.initCheckboxForm();
+      this.initializeComponent();
+      this._cdr.detectChanges();
+    });
+  }
+
+  fakeArray(length: number): number[] {
+    return Array.from({ length }, (_, index) => index + 1);
+  }
+
+  onPageChange(event: any) {
+    this.itemsPerPage = event.pageSize as ItemPerPage;
+    this.currentPage = event.pageIndex;
+    this.addPageToParams().then(() => {
+      this.addPerPageToParams();
+    });
+    this.getElements();
+  }
+
+  private initSearchDebounce() {
+    this.inputSubject.pipe(debounceTime(1000)).subscribe((inputValue) => {
+      this.searchString = inputValue.trim();
+      this.addSearchToParams();
+      if (this.currentPage > 0) this.reset();
+      else this.getElements();
+    });
+  }
+
+  private initCheckboxForm() {
+    this.checkboxForm = this.fb.group({});
+    for (let el of this.availableTags) {
+      this.checkboxForm.addControl(el, this.fb.control(false));
+    }
+  }
+
+  get checkboxFormKeys() {
+    return Object.keys(this.checkboxForm.controls);
   }
 
   getElements() {
+    this.mangaList = [];
     this.isLoading = true;
     this._cdr.detectChanges();
-    this.httpManga
-      .getMangaList(
-        {
-          take: this.elementsPerLoad,
-          skip: this.currentLoad * this.elementsPerLoad,
-          order: this.sortBy ? this.sortBy : undefined,
-        },
-        this.searchString.length > 0 ? this.searchString : undefined
-      )
-      .subscribe((res) => {
-        if (!res || res.length < this.elementsPerLoad)
-          this.isEverythingLoaded = true;
-        this.mangaList.push(...res);
-        this.currentLoad++;
-        this.isLoading = false;
-        this._cdr.detectChanges();
+    let options: RepositoryFindOptions = {
+      where: [],
+      take: this.itemsPerPage,
+      skip: this.currentPage * this.itemsPerPage,
+      order: this.sortBy ? this.sortBy : undefined,
+    };
+    if (this.searchString.length > 0) {
+      options.where?.push({
+        element: 'manga.name',
+        value: this.searchString,
+        specialType: 'like',
       });
-  }
-
-  loadMore() {
-    if (this.isEverythingLoaded || !this.canLoadMore) return;
-    this.getElements();
+    }
+    if (this.selectedTagIndexes.length > 0) {
+      options.where?.push(...this.tagOptions);
+    }
+    this.httpManga.getMangaList(options).subscribe((res) => {
+      this.mangaList = res.list;
+      this.mangaCount = res.count;
+      this.isLoading = false;
+      this._cdr.detectChanges();
+    });
   }
 
   onSearchInput(event: any) {
-    this.reset();
+    this.mangaList = [];
     this.isLoading = true;
     this.inputSubject.next(event.target.value);
   }
 
   private reset() {
-    this.isEverythingLoaded = false;
-    this.mangaList = [];
-    this.currentLoad = 0;
+    this.currentPage = 0;
+    if (this.paginator) this.paginator?.firstPage();
+    this._cdr.detectChanges();
   }
 
   onMangaSelect(index: number) {
@@ -121,6 +272,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   }
 
   private initSizeSlider() {
+    if (!this.sizeSlider) return;
     let savedSize = Number(this.store.getItem(StoreItem.MANGA_BROWSE_SIZE));
     if (
       savedSize &&
@@ -140,13 +292,13 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   onSizeSliderChange() {
     this.store.setItem(
       StoreItem.MANGA_BROWSE_SIZE,
-      String(this.sizeSlider.value)
+      String(this.sizeSlider!.value)
     );
   }
 
   onSortValueChange(event: any) {
     this.addSortToParams(event);
-    this.setTable(event);
+    this.setSort(event);
     this.getElements();
   }
 
@@ -159,9 +311,68 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
     });
   }
 
-  setTable(index: number) {
+  get selectedTagIndexes(): number[] {
+    const indexes: number[] = [];
+    this.checkboxFormKeys.forEach((key, i) => {
+      if (this.checkboxForm.controls[key].value) indexes.push(i);
+    });
+    return indexes;
+  }
+
+  addSearchToParams() {
+    let queryParams: Params = { ...this.route.snapshot.queryParams };
+    if (this.searchString.length > 0) {
+      queryParams = { ...queryParams, search: this.searchString };
+    } else {
+      delete queryParams['search'];
+    }
+    return this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+    });
+  }
+
+  addPageToParams() {
+    let queryParams: Params = { ...this.route.snapshot.queryParams };
+    if (this.currentPage > 0) {
+      queryParams = { ...queryParams, page: String(this.currentPage) };
+    } else {
+      delete queryParams['page'];
+    }
+    return this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+    });
+  }
+
+  addPerPageToParams() {
+    let queryParams: Params = { ...this.route.snapshot.queryParams };
+    if (this.itemsPerPage) {
+      queryParams = { ...queryParams, perPage: String(this.itemsPerPage) };
+    } else {
+      delete queryParams['perPage'];
+    }
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+    });
+  }
+
+  addTagsToParams() {
+    let queryParams: Params = { ...this.route.snapshot.queryParams };
+    if (this.selectedTagIndexes.length > 0) {
+      queryParams = { ...queryParams, tags: String(this.selectedTagIndexes) };
+    } else {
+      delete queryParams['tags'];
+    }
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+    });
+  }
+
+  private setSort(index: number) {
     this.sortBy = this.sortOptions[index].value;
-    this.reset();
   }
 
   get sortQueryParam() {
@@ -169,9 +380,114 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit {
   }
 
   private initSort() {
+    if (!this.sortSelectRef) return;
     let index = Number(this.sortQueryParam);
     this.sortSelectRef.value = index;
-    this.setTable(index);
+    this.setSort(index);
     this._cdr.detectChanges();
+  }
+
+  onTagsApply() {
+    this.isTagSelectBoxOpen = false;
+    this.addTagsToParams();
+    if (this.currentPage > 0) this.reset();
+    else this.getElements();
+  }
+
+  private get searchQueryParam() {
+    return this.route.snapshot.queryParamMap.get('search');
+  }
+
+  private get pageQueryParam() {
+    return this.route.snapshot.queryParamMap.get('page');
+  }
+
+  private get perPageQueryParam() {
+    let perPage: any = Number(this.route.snapshot.queryParamMap.get('perPage'));
+    return this.itemPerPageValues.includes(perPage)
+      ? perPage
+      : this.itemsPerPage;
+  }
+
+  private get tagsQueryParam() {
+    return this.route.snapshot.queryParamMap.get('tags');
+  }
+
+  private initSearch() {
+    let queryValue = this.searchQueryParam;
+    if (!queryValue) return;
+    this.searchString = queryValue;
+  }
+
+  private initPage() {
+    let queryValue = Number(this.pageQueryParam);
+    if (!queryValue) return;
+    this.currentPage = queryValue;
+  }
+
+  private initPerPage() {
+    let queryValue = Number(this.perPageQueryParam) as ItemPerPage;
+    if (!queryValue) return;
+    this.itemsPerPage = queryValue;
+  }
+
+  private initTagSelect() {
+    let tags: any[] = [];
+    if (this.tags.length > 0) {
+      tags = this.tags;
+    } else {
+      let queryValue = this.tagsQueryParam;
+      if (!queryValue) return;
+      tags = queryValue.split(',');
+    }
+
+    for (let tag of tags) {
+      tag = Number(tag);
+      this.checkboxFormKeys.forEach((key, i) => {
+        if (i === tag) this.checkboxForm.controls[key].setValue(true);
+      });
+    }
+  }
+
+  get selectedTags() {
+    const selectedTags = [];
+    for (let index of this.selectedTagIndexes) {
+      selectedTags.push(this.availableTags[index]);
+    }
+    return selectedTags;
+  }
+
+  private get tagOptions() {
+    let options: any[] = [];
+    let tags = this.selectedTags;
+    for (let tag of tags) {
+      options.push({
+        element: 'manga.tags',
+        value: tag,
+        specialType: 'like',
+      });
+    }
+    return options;
+  }
+
+  private initDisplayType() {
+    let displayType: 'tiles' | 'list' = this.store.getItem(
+      StoreItem.MANGA_DISPLAY_TYPE
+    ) as 'tiles' | 'list';
+    if ((displayType && displayType === 'tiles') || displayType === 'list') {
+      this.displayType = displayType;
+    } else {
+      this.store.setItem(StoreItem.MANGA_DISPLAY_TYPE, this.displayType);
+    }
+    this._cdr.detectChanges();
+  }
+
+  onDisplayTypeChange(event: any) {
+    this.displayType = event.value;
+    this.store.setItem(StoreItem.MANGA_DISPLAY_TYPE, this.displayType);
+  }
+
+  ngOnDestroy() {
+    this.paramSub.unsubscribe();
   }
 }

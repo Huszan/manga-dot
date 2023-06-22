@@ -4,8 +4,26 @@
   height: 100%;
 }
 
+app-navbar {
+  margin-bottom: 12px;
+}
+app-footer {
+  margin-top: 24px;
+}
+
 mat-drawer-container {
   background: transparent;
+
+  mat-drawer-content {
+    display: flex;
+    flex-direction: column;
+    .content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      flex: 1;
+    }
+  }
 
   .background {
     position: fixed;
@@ -14,6 +32,6 @@ mat-drawer-container {
   }
 
   mat-card {
-    margin: 12px auto 12px auto;
+    margin: 0 auto 0 auto;
   }
 }

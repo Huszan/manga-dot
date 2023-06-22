@@ -1,15 +1,17 @@
 import { Component } from '@angular/core';
-import { SortOptions } from '../../manga/manga-browse/manga-browse.component';
+import {
+  ItemPerPage,
+  MangaBrowseOptions,
+  SortOptions,
+} from '../../manga/manga-browse/manga-browse.component';
 
 export interface MangaBrowseElement {
   title?: string;
   titleNav?: { link: string; queryParams: any };
-  canChangeIconSize: boolean;
-  canLoadMore: boolean;
-  canSearch: boolean;
-  canSort: boolean;
+  options: MangaBrowseOptions;
   sortBy?: any;
-  elementsPerLoad: number;
+  tags?: number[];
+  itemsPerPage: ItemPerPage;
 }
 
 @Component({
@@ -18,7 +20,7 @@ export interface MangaBrowseElement {
   styleUrls: ['./home-view.component.scss'],
 })
 export class HomeViewComponent {
-  browseElements: MangaBrowseElement[] = [
+  browseElementsBasic: MangaBrowseElement[] = [
     {
       title: 'New titles',
       titleNav: {
@@ -28,11 +30,8 @@ export class HomeViewComponent {
         },
       },
       sortBy: SortOptions[2].value,
-      canChangeIconSize: false,
-      canLoadMore: false,
-      canSearch: false,
-      canSort: false,
-      elementsPerLoad: 9,
+      options: { all: false },
+      itemsPerPage: 18,
     },
     {
       title: 'Popular',
@@ -43,11 +42,8 @@ export class HomeViewComponent {
         },
       },
       sortBy: SortOptions[0].value,
-      canChangeIconSize: false,
-      canLoadMore: false,
-      canSearch: false,
-      canSort: false,
-      elementsPerLoad: 9,
+      options: { all: false },
+      itemsPerPage: 18,
     },
     {
       title: 'Best rated',
@@ -58,11 +54,66 @@ export class HomeViewComponent {
         },
       },
       sortBy: SortOptions[5].value,
-      canChangeIconSize: false,
-      canLoadMore: false,
-      canSearch: false,
-      canSort: false,
-      elementsPerLoad: 9,
+      options: { all: false },
+      itemsPerPage: 18,
+    },
+  ];
+  browseElementsGenre: MangaBrowseElement[] = [
+    {
+      title: 'Action',
+      titleNav: {
+        link: 'manga/browse',
+        queryParams: {
+          sort: '2',
+          tags: '0',
+        },
+      },
+      sortBy: SortOptions[2].value,
+      tags: [0],
+      options: { all: false },
+      itemsPerPage: 18,
+    },
+    {
+      title: 'Fantasy',
+      titleNav: {
+        link: 'manga/browse',
+        queryParams: {
+          sort: '2',
+          tags: '2',
+        },
+      },
+      sortBy: SortOptions[2].value,
+      tags: [2],
+      options: { all: false },
+      itemsPerPage: 18,
+    },
+    {
+      title: 'Romance',
+      titleNav: {
+        link: 'manga/browse',
+        queryParams: {
+          sort: '2',
+          tags: '4',
+        },
+      },
+      sortBy: SortOptions[2].value,
+      tags: [4],
+      options: { all: false },
+      itemsPerPage: 18,
+    },
+    {
+      title: 'Comedy',
+      titleNav: {
+        link: 'manga/browse',
+        queryParams: {
+          sort: '2',
+          tags: '6',
+        },
+      },
+      sortBy: SortOptions[2].value,
+      tags: [6],
+      options: { all: false },
+      itemsPerPage: 18,
     },
   ];
 }

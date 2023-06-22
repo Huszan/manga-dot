@@ -1,0 +1,23 @@
+.footer-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 25px;
+
+  background-color: #221e22;
+  color: var(--text-primary-color);
+  padding: 20px;
+
+  .link-wrapper {
+    a {
+      color: var(--text-primary-color);
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+  }
+
+  .low-op-text {
+    opacity: 60%;
+  }
+}

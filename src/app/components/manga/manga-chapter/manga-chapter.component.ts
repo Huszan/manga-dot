@@ -2,14 +2,16 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MangaService } from '../../../services/data/manga.service';
 import { MangaType } from '../../../types/manga.type';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-manga-chapter',
@@ -17,16 +19,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./manga-chapter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MangaChapterComponent implements OnInit {
-  manga: MangaType | undefined = undefined;
+export class MangaChapterComponent implements OnInit, OnDestroy {
+  manga: MangaType | null = null;
   chapter: number = 0;
   mangaId: number = 0;
-  data = {
-    isFirstChapter: false,
-    isLastChapter: false,
-    isInitialized: false,
-  };
-  pages: SafeUrl[] = [];
+  isInitialized: boolean = false;
+  optionsExtended: boolean = false;
+
+  mangaSub!: Subscription;
+  paramsSub!: Subscription;
 
   constructor(
     private _cdr: ChangeDetectorRef,
@@ -40,17 +41,29 @@ export class MangaChapterComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._getChapter();
-    this._getMangaId();
-    this._getManga();
+    this._initMangaSub();
+    this._initSubToParams();
   }
 
-  private _getMangaId() {
-    this.mangaId = Number(this.route.snapshot.paramMap.get('id'));
+  private _initSubToParams() {
+    this.paramsSub = this._subToParams();
   }
 
-  private _getChapter() {
-    this.chapter = Number(this.route.snapshot.paramMap.get('chapter'));
+  private _subToParams() {
+    return this.route.params.subscribe((params) => {
+      this.mangaId = Number(params['id']);
+      this.chapter = Number(params['chapter']);
+      this._getManga();
+      this._cdr.detectChanges();
+    });
+  }
+
+  private _initMangaSub() {
+    this.mangaSub = this._mangaService.selectedManga$.subscribe((manga) => {
+      this.manga = manga;
+      this.checkIfMangaIsInitialized();
+      if (this.isInitialized) this._cdr.detectChanges();
+    });
   }
 
   private _getManga() {
@@ -58,30 +71,34 @@ export class MangaChapterComponent implements OnInit {
       !this._mangaService.selectedManga$.value ||
       this._mangaService.selectedManga$.value?.id !== this.mangaId
     ) {
-      this._mangaHttp
-        .getMangaList({
-          where: { id: this.mangaId },
-        })
-        .subscribe((res: MangaType[]) => {
-          this.manga = res.at(0);
-          this._getPages();
+      this._mangaService.requestManga(this.mangaId, () => {
+        if (!this.isChapterValid) this.goToChapterSelect();
+        this._mangaService.requestChapters(() => {
+          this._mangaService.requestPages(this.chapter);
         });
+      });
     } else {
       this.manga = this._mangaService.selectedManga$.value;
-      this._getPages();
+      if (!this.isChapterValid) this.goToChapterSelect();
+      if (!this.manga.chapters || this.manga.chapters.length <= 0) {
+        this._mangaService.requestChapters(() => {
+          this._mangaService.requestPages(this.chapter);
+        });
+      } else if (
+        !this.manga?.chapters![this.chapter].pages ||
+        this.manga?.chapters![this.chapter].pages === []
+      ) {
+        this._mangaService.requestPages(this.chapter);
+      }
     }
   }
 
-  private _getPages() {
-    this._mangaHttpService
-      .getMangaPages(this.manga!, this.chapter)
-      .subscribe((res) => {
-        if (res || res.length > 0) {
-          this.pages = this.sanitizePages(res);
-        }
-        this.data.isInitialized = true;
-        this._cdr.detectChanges();
-      });
+  checkIfMangaIsInitialized() {
+    this.isInitialized = !!(
+      this.manga &&
+      this.manga.chapters &&
+      this.manga.chapters[this.chapter].pages
+    );
   }
 
   goToChapterSelect() {
@@ -89,29 +106,55 @@ export class MangaChapterComponent implements OnInit {
   }
 
   navigateToPreviousChapter() {
-    if (this.data.isFirstChapter) return;
-
-    this._router
-      .navigate(['/manga', this.mangaId, this.chapter - 1])
-      .then(() => {
-        window.location.reload();
-      });
+    if (this.isFirstChapter) return;
+    this.navigateToChapter(this.chapter - 1);
   }
 
   navigateToNextChapter() {
-    if (this.data.isLastChapter) return;
-    this._router
-      .navigate(['/manga', this.mangaId, this.chapter + 1])
-      .then(() => {
-        window.location.reload();
-      });
+    if (this.isLastChapter) return;
+    this.navigateToChapter(this.chapter + 1);
   }
 
-  sanitizePages(pages: []) {
-    let sanitizedPages: SafeUrl[] = [];
-    pages.forEach((el) => {
-      sanitizedPages.push(this._sanitizer.bypassSecurityTrustUrl(el));
+  navigateToChapter(chapter: number) {
+    this.chapter = chapter;
+    if (!this.isChapterValid) return;
+    this._router.navigate(['/manga', this.mangaId, this.chapter]).then(() => {
+      this._mangaService.requestPages(this.chapter);
+      window.scroll({ top: 0 });
     });
-    return sanitizedPages;
+  }
+
+  onChapterSelect(event: any) {
+    const chapter = event.value;
+    this.navigateToChapter(chapter);
+  }
+
+  get isFirstChapter() {
+    if (!this.manga) return false;
+    return this.chapter === 0;
+  }
+
+  get isLastChapter() {
+    if (!this.manga) return false;
+    return this.chapter === this.manga.chapterCount - 1;
+  }
+
+  get isChapterValid() {
+    if (!this.manga) return true;
+    return this.chapter >= 0 && this.chapter <= this.manga.chapterCount - 1;
+  }
+
+  sanitizeUrl(url: string) {
+    return this._sanitizer.bypassSecurityTrustUrl(url);
+  }
+
+  onOptionsExtendClick() {
+    this.optionsExtended = !this.optionsExtended;
+    this._cdr.detectChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.mangaSub.unsubscribe();
+    this._subToParams().unsubscribe();
   }
 }

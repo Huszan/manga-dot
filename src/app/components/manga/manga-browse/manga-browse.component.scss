@@ -1,10 +1,20 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 
 .manga-browse-section {
   display: flex;
   flex-direction: column;
+  flex: 1;
   align-items: center;
 
   gap: 10px;
+
+  mat-paginator {
+    align-self: end;
+  }
 
   a {
     &:hover {
@@ -18,33 +28,55 @@
     flex-direction: row;
     gap: 0 10px;
 
-    .search-input-field {
-      width: 400px;
-    }
-
     .size-slider-wrapper {
       display: flex;
       flex-wrap: nowrap;
       justify-content: center;
       align-items: center;
       width: 200px;
+      &.disabled {
+        color: #bdbcbd;
+      }
       span + mat-slider {
         margin-left: 10px;
       }
+    }
+
+    button {
+      min-width: unset;
     }
   }
 }
 
 .manga-list-container {
   display: flex;
-  flex-grow: inherit;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   flex-wrap: wrap;
+  width: 100%;
+
+  max-height: 475px;
+  overflow-y: auto;
 
   gap: 5px;
+}
 
-  animation: .5s linear;
+.genre-toggle-container {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 10px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .25s ease-out;
+  &.expanded {
+    max-height: 500px;
+    transition: max-height .25s ease-in;
+  }
+  .genre-list {
+    * {
+      width: 150px;
+    }
+  }
 }
 
 @media screen and (max-width: 800px) {

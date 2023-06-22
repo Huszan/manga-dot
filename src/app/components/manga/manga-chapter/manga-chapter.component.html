@@ -1,10 +1,38 @@
 
+
+<div class="manga-browse-options">
+  <div class="disable-action-box" [ngClass]="{'extended': optionsExtended}">
+    <div class="expandable-box" [ngClass]="{'extended': optionsExtended}">
+      <div class="extend-button-wrapper">
+        <button (click)="onOptionsExtendClick()">
+          <mat-icon>settings</mat-icon>
+        </button>
+      </div>
+      <div class="content-wrapper">
+        <div *ngIf="manga" class="mat-body-2 content-el"><b>{{ manga.name }}</b></div>
+        <div class="change-chapter-wrapper content-el">
+          <button mat-flat-button color="accent" [disabled]="isFirstChapter" (click)="navigateToPreviousChapter()">Previous</button>
+          <button mat-flat-button color="accent" [disabled]="isLastChapter" (click)="navigateToNextChapter()">Next</button>
+        </div>
+        <div *ngIf="manga && manga.chapters" class="select-chapter-wrapper content-el">
+          <mat-form-field appearance="fill" color="accent">
+            <mat-label>Select chapter..</mat-label>
+            <mat-select [value]="chapter" (selectionChange)="onChapterSelect($event)">
+              <mat-option *ngFor="let chapter of manga.chapters; let i = index" [value]="i">{{ chapter.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="pages-wrapper">
-  <ng-container *ngIf="!data.isInitialized; else initialized">
-    <mat-spinner color="accent"></mat-spinner>
+  <ng-container *ngIf='!isInitialized; else initialized'>
+    <app-full-screen-loader [displayText]="'Manga is loading, please be patient.'"></app-full-screen-loader>
   </ng-container>
   <ng-template #initialized>
-    <ng-container *ngIf="pages.length > 0; else contentNotFound">
+    <ng-container *ngIf="manga && manga!.chapters![chapter].pages && manga!.chapters![chapter].pages.length > 0; else contentNotFound">
       <ng-container *ngTemplateOutlet="contentFound"></ng-container>
     </ng-container>
   </ng-template>
@@ -13,10 +41,10 @@
 <ng-template #contentFound>
   <ng-container *ngTemplateOutlet="floatingActions"></ng-container>
   <span class="mat-display-2">
-    <a (click)="goToChapterSelect()">{{ manga!.name }}</a>: chapter {{ chapter }}
+    <a (click)="goToChapterSelect()">{{ manga!.name }}</a>: {{ manga!.chapters![chapter].name }}
   </span>
-  <ng-container *ngFor="let page of pages">
-    <img [src]="page" alt="no image">
+  <ng-container *ngFor="let page of manga!.chapters![chapter].pages!">
+    <img [src]="sanitizeUrl(page.url)" alt="no image">
   </ng-container>
 </ng-template>
 
@@ -29,10 +57,10 @@
 
 <ng-template #floatingActions>
   <div class="floating-actions-wrapper">
-    <button mat-icon-button class="previous-button" *ngIf="!data.isFirstChapter" (click)="navigateToPreviousChapter()">
+    <button mat-icon-button class="previous-button" *ngIf="!isFirstChapter" (click)="navigateToPreviousChapter()">
       <mat-icon>keyboard_arrow_left</mat-icon>
     </button>
-    <button mat-icon-button class="next-button" *ngIf="!data.isLastChapter" (click)="navigateToNextChapter()">
+    <button mat-icon-button class="next-button" *ngIf="!isLastChapter" (click)="navigateToNextChapter()">
       <mat-icon>keyboard_arrow_right</mat-icon>
     </button>
   </div>

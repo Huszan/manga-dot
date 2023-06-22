@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  gaTrackingId: 'YOUR_TRACKING_ID',
 };

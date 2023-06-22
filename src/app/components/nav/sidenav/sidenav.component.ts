@@ -7,7 +7,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { AppRoutingModule } from '../../../app-routing.module';
-import { Router, Routes } from '@angular/router';
+import { Route, Router, Routes } from '@angular/router';
 import { AuthService } from '../../../services/data/auth.service';
 import { UserType } from '../../../types/user.type';
 import { Subscription } from 'rxjs';
@@ -22,10 +22,11 @@ import { MatDrawer } from '@angular/material/sidenav';
 })
 export class SidenavComponent implements OnInit, OnDestroy {
   @Input() drawer!: MatDrawer;
-  routes: Routes = this._routingModule.availableRoutes;
+  routes: Routes = this._routingModule.availableRoutes.value;
   user: UserType | null = null;
 
   userSub!: Subscription;
+  routesSub!: Subscription;
 
   constructor(
     private _routingModule: AppRoutingModule,
@@ -36,7 +37,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.userSub = this._userManager.currentUser$.subscribe((user) => {
+    this.userSub = this.subscribeToUser();
+    this.routesSub = this.subscribeToRoutes();
+  }
+
+  private subscribeToRoutes() {
+    return this._routingModule.availableRoutes.subscribe((routes) => {
+      this.routes = routes;
+      this._cdr.detectChanges();
+    });
+  }
+
+  private subscribeToUser() {
+    return this._userManager.currentUser$.subscribe((user) => {
       this.user = user;
       this._cdr.detectChanges();
     });
@@ -55,11 +68,15 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
   }
 
-  onRouteClick() {
+  onRouteClick(route?: Route) {
+    if (route) {
+      this._router.navigate([route.path]);
+    }
     this.drawer.close();
   }
 
   ngOnDestroy() {
     this.userSub.unsubscribe();
+    this.routesSub.unsubscribe();
   }
 }

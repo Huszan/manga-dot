@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 import { LikeType } from '../../../types/like.type';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
+import { ChapterType } from '../../../types/chapter.type';
 
 @Component({
   selector: 'app-manga-display',
@@ -43,10 +44,7 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this._initializeManga();
-    this._userSub = this._auth.currentUser$.subscribe((user) => {
-      this.user = user;
-      this._cdr.detectChanges();
-    });
+    this._initializeUser();
   }
 
   get mangaId(): number {
@@ -55,16 +53,22 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
 
   private _initializeManga() {
     if (!this.mangaService.selectedManga$.value) {
-      this._loadManga();
+      this.mangaService.requestManga(this.mangaId);
     }
     this._mangaSub = this.mangaService.selectedManga$.subscribe((manga) => {
+      if (!manga) return;
       this.manga = manga;
       this._cdr.detectChanges();
+      if (!this.manga.chapters || this.manga.chapters.length <= 0)
+        this.mangaService.requestChapters();
     });
   }
 
-  private _loadManga() {
-    this.mangaService.loadManga(this.mangaId);
+  private _initializeUser() {
+    this._userSub = this._auth.currentUser$.subscribe((user) => {
+      this.user = user;
+      this._cdr.detectChanges();
+    });
   }
 
   get isLikedByUser() {
@@ -92,7 +96,7 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
     };
     this.mangaHttp.likeManga(like).subscribe((res) => {
       if (res.status === 1) {
-        this._loadManga();
+        this.mangaService.requestManga(this.mangaId);
       } else {
         this._snackbar.open(res.message, 'Close', { duration: 8000 });
       }

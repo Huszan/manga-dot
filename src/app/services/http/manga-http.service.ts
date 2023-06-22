@@ -4,25 +4,31 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { MangaType } from '../../types/manga.type';
 import { LikeType } from '../../types/like.type';
+import { ChapterType } from '../../types/chapter.type';
 
 const MANGA_DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
   Development: 'http://localhost:3000/',
 };
 enum MANGA_ROUTE {
-  GET_PAGES = 'getMangaPages',
   TEST_FORM = 'testMangaForm',
   TEST_CHAPTER = 'testMangaChapter',
   POST = 'createManga',
   GET_MANGAS = 'getMangaList',
+  GET_CHAPTERS = 'getMangaChapters',
+  GET_PAGES = 'getMangaPages',
   REMOVE = 'removeManga',
   LIKE = 'likeManga',
 }
 export interface RepositoryFindOptions {
-  where?: any;
+  where?: {
+    element: string;
+    value: string | number;
+    specialType?: 'like';
+  }[];
   skip?: number;
   take?: number;
-  order?: any;
+  order?: { element: string; sort: 'ASC' | 'DESC' };
 }
 
 @Injectable({
@@ -46,7 +52,7 @@ export class MangaHttpService {
   getMangaList(
     options?: RepositoryFindOptions,
     bigSearch?: string
-  ): Observable<any> {
+  ): Observable<{ list: MangaType[]; count: number }> {
     let route = this._routeUrl(MANGA_ROUTE.GET_MANGAS);
     return this.http
       .post(route.toString(), {
@@ -55,7 +61,7 @@ export class MangaHttpService {
       })
       .pipe(
         map((response: any) => {
-          for (let manga of response) {
+          for (let manga of response.list) {
             manga.addedDate = new Date(manga.addedDate);
             manga.lastUpdateDate = new Date(manga.lastUpdateDate);
           }
@@ -64,10 +70,16 @@ export class MangaHttpService {
       );
   }
 
-  getMangaPages(manga: MangaType, chapter: number): Observable<any> {
+  getMangaChapters(mangaId: number): Observable<any> {
+    return this.http.post(this._routeUrl(MANGA_ROUTE.GET_CHAPTERS).toString(), {
+      mangaId: mangaId,
+    });
+  }
+
+  getMangaPages(mangaId: number, chapterId: number): Observable<any> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.GET_PAGES).toString(), {
-      manga: manga,
-      chapter: chapter,
+      mangaId: mangaId,
+      chapterId: chapterId,
     });
   }
 

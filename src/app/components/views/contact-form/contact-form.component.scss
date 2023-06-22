@@ -1,0 +1,40 @@
+
+.form-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 200px;
+    opacity: 70%;
+    transform: translateX(-50%);
+    z-index: 0;
+  }
+  mat-form-field, p, .form-title {
+    z-index: 1;
+  }
+  mat-form-field {
+    width: 100%;
+  }
+  p {
+    padding: 20px;
+    text-align: center;
+    text-indent: 2rem;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .form-group {
+    img {
+      width: 100px;
+    }
+    p {
+      padding: 0;
+    }
+  }
+}

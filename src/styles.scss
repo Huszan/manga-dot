@@ -9,10 +9,31 @@
   padding: 0;
 }
 
-a {
+button {
+  /* Resetting default styles */
+  appearance: none;
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
   text-decoration: none;
+  font-family: inherit;
+  font-size: inherit;
   color: inherit;
+}
+
+a {
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+  color: inherit;
+  transition: .15s ease-in-out;
+
+  &:hover {
+    opacity: 85%;
+  }
 }
 
 .sticky {
@@ -290,6 +311,11 @@ $altTheme: (
   flex-grow: 1;
 }
 
+.not-intractable {
+  pointer-events: none;
+  cursor: default;
+}
+
 // Form
 
 .form-group {
@@ -325,4 +351,20 @@ $altTheme: (
 
 }
 
+//Custom scroll
+/* Webkit (Chrome, Safari, Opera) */
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #e7e7e7;
+  border-radius: 4px;
+
+  &-thumb {
+    background-color: #999999;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: #777777;
+    }
+  }
+}
 

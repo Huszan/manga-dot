@@ -8,16 +8,18 @@
     </ng-container>
   </div>
   <mat-nav-list>
-    <a
-      *ngFor="let route of routes; let i = index"
-      mat-list-item
-      [routerLinkActive]="'active'"
-      [routerLinkActiveOptions]="{ exact: true }"
-      [routerLink]="route.path"
-      (click)="onRouteClick()"
-    >
-      {{ getDisplay(i) }}
-    </a>
+    <ng-container *ngFor="let route of routes; let i = index">
+      <mat-list-item
+        (click)="onRouteClick(route)"
+        [routerLink]="route.path"
+        [routerLinkActive]="'active'"
+        [routerLinkActiveOptions]="{ exact: true }"
+        queryParamsHandling="merge"
+      >
+        <mat-icon *ngIf="route.data && route.data['icon']" style="margin-right: 10px">{{ route.data['icon'] }}</mat-icon>
+        {{ getDisplay(i) }}
+      </mat-list-item>
+    </ng-container>
   </mat-nav-list>
 </div>
 
