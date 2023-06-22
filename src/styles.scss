@@ -26,9 +26,14 @@ button {
 
 a {
   cursor: pointer;
-  text-decoration: underline 2px var(--accent-darker-color);
   font-weight: 700;
-  color: var(--text-accent-color);
+  text-decoration: none;
+  color: inherit;
+  transition: .15s ease-in-out;
+
+  &:hover {
+    opacity: 85%;
+  }
 }
 
 .sticky {
@@ -346,4 +351,20 @@ $altTheme: (
 
 }
 
+//Custom scroll
+/* Webkit (Chrome, Safari, Opera) */
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #e7e7e7;
+  border-radius: 4px;
+
+  &-thumb {
+    background-color: #999999;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: #777777;
+    }
+  }
+}
 

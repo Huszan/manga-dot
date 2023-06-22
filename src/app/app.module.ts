@@ -49,6 +49,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { MangaSearchBarComponent } from './components/manga/manga-search-bar/manga-search-bar.component';
 import { ContactFormComponent } from './components/views/contact-form/contact-form.component';
+import { FooterComponent } from './components/nav/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { ContactFormComponent } from './components/views/contact-form/contact-fo
     MangaCoverTileComponent,
     MangaSearchBarComponent,
     ContactFormComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
