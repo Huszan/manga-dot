@@ -12,7 +12,10 @@
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2R2XQJE42H"></script>
   <script>
-    if (document.location.hostname.search("mangadot.com") !== -1) {
+    if (
+      document.location.hostname.search("mangadot.com") !== -1 ||
+      document.location.hostname.search("huszan.github.io/manga-dot/") !== -1
+    ) {
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
