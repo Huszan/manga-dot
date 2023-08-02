@@ -50,7 +50,7 @@
     hear from you! Visit our <a [routerLink]="'contact'">contact section</a> or reach out to us directly via email at <b>mangadot.contact@gmail.com</b>.
     We value your feedback and look forward to hearing from you!
   </p>
-  <div class="contact-section-background"></div>
+  <div class="contact-section-background" [ngStyle]="{ 'background': 'url(assets/letter.png) no-repeat left', 'background-size': 'contain' }"></div>
 </section>
 
 <ng-container *ngFor="let el of browseElementsGenre">
