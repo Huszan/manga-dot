@@ -29,10 +29,10 @@ a {
   font-weight: 700;
   text-decoration: none;
   color: inherit;
-  transition: .15s ease-in-out;
+  transition: .1s ease-in-out;
 
   &:hover {
-    opacity: 85%;
+    color: #ffd400;
   }
 }
 
@@ -366,5 +366,9 @@ $altTheme: (
       background-color: #777777;
     }
   }
+}
+
+.mat-card {
+  padding: 0 !important;
 }
 

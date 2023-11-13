@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import {
   ItemPerPage,
   MangaBrowseOptions,
@@ -20,8 +20,15 @@ export interface MangaBrowseElement {
   styleUrls: ['./home-view.component.scss'],
 })
 export class HomeViewComponent {
-  browseElementsBasic: MangaBrowseElement[] = [
-    {
+  isMobile = window.innerWidth < 800;
+
+  @HostListener('window:resize', [`$event`])
+  onWindowResize(event: any) {
+    this.isMobile = event.target.innerWidth < 800;
+  }
+
+  browseElements = {
+    new: {
       title: 'New titles',
       titleNav: {
         link: 'manga/browse',
@@ -31,9 +38,9 @@ export class HomeViewComponent {
       },
       sortBy: SortOptions[2].value,
       options: { all: false },
-      itemsPerPage: 18,
+      itemsPerPage: 63,
     },
-    {
+    popular: {
       title: 'Popular',
       titleNav: {
         link: 'manga/browse',
@@ -43,9 +50,9 @@ export class HomeViewComponent {
       },
       sortBy: SortOptions[0].value,
       options: { all: false },
-      itemsPerPage: 18,
+      itemsPerPage: 63,
     },
-    {
+    bestRated: {
       title: 'Best rated',
       titleNav: {
         link: 'manga/browse',
@@ -55,65 +62,7 @@ export class HomeViewComponent {
       },
       sortBy: SortOptions[5].value,
       options: { all: false },
-      itemsPerPage: 18,
+      itemsPerPage: 63,
     },
-  ];
-  browseElementsGenre: MangaBrowseElement[] = [
-    {
-      title: 'Action',
-      titleNav: {
-        link: 'manga/browse',
-        queryParams: {
-          sort: '2',
-          tags: '0',
-        },
-      },
-      sortBy: SortOptions[2].value,
-      tags: [0],
-      options: { all: false },
-      itemsPerPage: 18,
-    },
-    {
-      title: 'Fantasy',
-      titleNav: {
-        link: 'manga/browse',
-        queryParams: {
-          sort: '2',
-          tags: '2',
-        },
-      },
-      sortBy: SortOptions[2].value,
-      tags: [2],
-      options: { all: false },
-      itemsPerPage: 18,
-    },
-    {
-      title: 'Romance',
-      titleNav: {
-        link: 'manga/browse',
-        queryParams: {
-          sort: '2',
-          tags: '4',
-        },
-      },
-      sortBy: SortOptions[2].value,
-      tags: [4],
-      options: { all: false },
-      itemsPerPage: 18,
-    },
-    {
-      title: 'Comedy',
-      titleNav: {
-        link: 'manga/browse',
-        queryParams: {
-          sort: '2',
-          tags: '6',
-        },
-      },
-      sortBy: SortOptions[2].value,
-      tags: [6],
-      options: { all: false },
-      itemsPerPage: 18,
-    },
-  ];
+  }
 }

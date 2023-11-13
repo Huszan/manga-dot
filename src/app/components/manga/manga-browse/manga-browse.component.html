@@ -58,7 +58,7 @@
       <button mat-flat-button color="accent" (click)="onTagsApply()">Apply</button>
     </ng-container>
   </div>
-  <div class="manga-list-container">
+  <div [ngClass]="isStaticHeight ? 'manga-list-container static' : 'manga-list-container'">
     <ng-container *ngFor="let manga of mangaList; let i = index">
       <app-manga-cover-tile *ngIf="displayType === 'tiles'" [manga]="manga" (onRead)="onMangaSelect(i)" [size]="sizeSlider ? sizeSlider.value : undefined"></app-manga-cover-tile>
       <app-manga-cover-list *ngIf="displayType === 'list'" [manga]="manga" (onRead)="onMangaSelect(i)"></app-manga-cover-list>

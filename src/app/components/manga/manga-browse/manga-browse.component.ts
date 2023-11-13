@@ -100,7 +100,7 @@ export interface MangaBrowseOptions {
   canSelectTags?: boolean;
   canPaginate?: boolean;
 }
-export type ItemPerPage = 6 | 9 | 12 | 18 | 24 | 36 | 48;
+export type ItemPerPage = 6 | 9 | 12 | 18 | 24 | 36 | 48 | 64;
 
 @Component({
   selector: 'app-manga-browse',
@@ -114,8 +114,9 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() actionsAllowed: MangaBrowseOptions = { all: true };
   @Input() displayType: 'tiles' | 'list' = 'tiles';
   @Input() sortBy?: any;
+  @Input() isStaticHeight?: boolean = true;
   @Input() tags: number[] = [];
-  @Input() itemsPerPage: ItemPerPage = 12;
+  @Input() itemsPerPage: ItemPerPage | number = 12;
 
   @ViewChild('sortSelect') sortSelectRef: any | undefined;
   @ViewChild('sizeSlider') sizeSlider: MatSlider | undefined;
@@ -129,7 +130,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   searchString = '';
 
   availableTags = Tags;
-  itemPerPageValues: ItemPerPage[] = [6, 9, 12, 18, 24, 36, 48];
+  itemPerPageValues: ItemPerPage[] = [6, 9, 12, 18, 24, 36, 48, 64];
   isLoading: boolean = false;
   isTagSelectBoxOpen = false;
   checkboxForm!: FormGroup;
