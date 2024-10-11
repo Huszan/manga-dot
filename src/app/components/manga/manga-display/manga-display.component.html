@@ -1,46 +1,90 @@
-
 <ng-container *ngIf="!manga; else mangaFound">
-  <app-full-screen-loader displayText="Your manga is loading."></app-full-screen-loader>
+  <app-full-screen-loader
+    displayText="Your manga is loading."
+  ></app-full-screen-loader>
 </ng-container>
 
 <ng-template #mangaFound>
-
   <div class="display-container cf">
-    <img class="logo" [src]="manga!.pic">
-    <p class="mat-display-3"><span><b>{{ manga!.name.toUpperCase() }}</b></span></p>
+    <img class="logo" [src]="manga!.pic" />
+    <p class="mat-display-3">
+      <span
+        ><b>{{ manga!.name.toUpperCase() }}</b></span
+      >
+    </p>
 
-    <p *ngIf="manga!.authors" class="mat-body-2"><b>Authors: </b>
+    <p *ngIf="manga!.authors && manga!.authors.length > 0" class="mat-body-2">
+      <b>Authors: </b>
       <ng-container *ngFor="let author of manga!.authors">
         {{ author }}
       </ng-container>
     </p>
-    <p *ngIf="manga!.tags" class="mat-body-2"><b>Tags: </b>
-      <ng-container *ngFor="let genre of manga!.tags">
-        {{ genre }}
+    <p *ngIf="manga!.tags" class="mat-body-2">
+      <b>Tags: </b>
+      <ng-container *ngFor="let genre of manga!.tags; let last = last">
+        <ng-container *ngIf="allTags.includes(genre.toLowerCase())">
+          <a
+            [routerLink]="['/manga/browse']"
+            [queryParams]="{ tags: allTags.indexOf(genre.toLowerCase()) }"
+          >
+            {{ genre }}
+          </a>
+          <span *ngIf="!last">, </span>
+        </ng-container>
       </ng-container>
     </p>
-    <p class="mat-body"><b>Added: </b>{{ manga!.addedDate.toLocaleDateString() }}</p>
-    <p class="mat-body"><b>Last update: </b>{{ manga!.lastUpdateDate.toLocaleDateString() }}</p>
-    <p *ngIf="manga!.description" class="mat-body"><b>Description: </b>{{ manga!.description }}</p>
+    <p class="mat-body">
+      <b>Added: </b>{{ manga!.addedDate.toLocaleDateString() }}
+    </p>
+    <p class="mat-body">
+      <b>Last update: </b>{{ manga!.lastUpdateDate.toLocaleDateString() }}
+    </p>
+    <p *ngIf="manga!.description" class="mat-body">
+      <b>Description: </b>{{ manga!.description }}
+    </p>
 
     <div class="button-panel">
       <div class="mat-button" style="cursor: default">
         <span class="mat-button-wrapper">
-          <mat-icon style="margin-right: 8px">remove_red_eye</mat-icon> {{ manga!.viewCount }}
+          <mat-icon style="margin-right: 8px">remove_red_eye</mat-icon>
+          {{ manga!.viewCount }}
         </span>
       </div>
-              <button mat-button color="primary" (click)="onLike()">
-                <mat-icon *ngIf="!isLikedByUser" style="margin-right: 8px" color="primary">thumb_up</mat-icon>
-                <mat-icon *ngIf="isLikedByUser" style="margin-right: 8px" color="accent">thumb_up</mat-icon>
-                {{ manga!.likes.length }}
-              </button>
+      <button mat-button color="primary" (click)="onLike()">
+        <mat-icon
+          *ngIf="!isLikedByUser"
+          style="margin-right: 8px"
+          color="primary"
+          >thumb_up</mat-icon
+        >
+        <mat-icon *ngIf="isLikedByUser" style="margin-right: 8px" color="accent"
+          >thumb_up</mat-icon
+        >
+        {{ manga!.likes.length }}
+      </button>
     </div>
   </div>
 
-  <section class="chapter-list-wrapper">
-    <ng-container *ngFor="let chapter of manga!.chapters; let i = index">
-      <button mat-stroked-button style="text-align: left" (click)="onChapterSelect(i)">{{ chapter.name }}</button>
+  <section class="chapter-list-wrapper p-8">
+    <ng-container *ngIf="manga && manga.chapters; else skeleton">
+      <ng-container *ngFor="let chapter of manga!.chapters; let i = index">
+        <button
+          mat-stroked-button
+          style="text-align: left"
+          (click)="onChapterSelect(i)"
+        >
+          {{ chapter.name }}
+        </button>
+      </ng-container>
     </ng-container>
+    <ng-template #skeleton>
+      <ngx-skeleton-loader
+        count="15"
+        class="skeleton not-intractable"
+        [style]="{ width: '100%' }"
+        [theme]="{ height: '36px', 'margin-bottom': '0' }"
+      >
+      </ngx-skeleton-loader>
+    </ng-template>
   </section>
-
 </ng-template>

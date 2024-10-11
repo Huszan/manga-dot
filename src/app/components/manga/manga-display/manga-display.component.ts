@@ -16,6 +16,7 @@ import { LikeType } from '../../../types/like.type';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { ChapterType } from '../../../types/chapter.type';
+import { Tags } from '../manga-browse/manga-browse.component';
 
 @Component({
   selector: 'app-manga-display',
@@ -24,12 +25,14 @@ import { ChapterType } from '../../../types/chapter.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MangaDisplayComponent implements OnInit, OnDestroy {
+  [x: string]: any;
   manga: MangaType | null = null;
   user: UserType | null = null;
 
   private _userSub!: Subscription;
   private _mangaSub!: Subscription;
 
+  allTags = Tags;
   fakeArray = FakeArray;
 
   constructor(
