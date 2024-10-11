@@ -1,25 +1,78 @@
-# MangaDot
+<img src="./src/assets/mdot-logo-3.svg" alt="logo" width="250px">
+<br /><br />
 
-This project will allow to browse and read scrapped manga from web. <b>WIP</b>.
+Manga dot is a web application that allows users to browse through a vast selection of manga and comics for free. The site offers features such as filtering, sorting, and the ability to read and like your favorite titles.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.0.
+## Technologies Used
 
-## Development server
+- **Angular**: A platform for building mobile and desktop web applications.
+- **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript.
+- **HTML/CSS**: The standard markup language and style sheet language for creating web pages.
+- **ESLint**: A linter for identifying and reporting on patterns in JavaScript and TypeScript.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+- Comprehensive collection of manga and comics
+- Searching, filtering and sorting options for easy navigation
+- Free online reading of all titles
+- Ability to like your favorite titles
+- Fast development server powered by Angular
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Getting Started
 
-## Build
+To run this project locally, follow these steps:
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+1. Clone the repository:
 
-## Running unit tests
+   ```bash
+   git clone https://github.com/Huszan/manga-dot.git
+   cd manga-dot
+   ```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+2. Install the dependencies:
 
-## Running end-to-end tests
+   ```bash
+   npm install
+   ```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+3. Run the development server:
+
+   ```bash
+   npm start
+   ```
+
+   Alternatively, you can run the development server on a specific host to test the app on mobile:
+
+   ```bash
+   npm run serve-mobile
+   ```
+
+## Available Scripts
+
+This project includes several scripts for development and maintenance:
+
+- ng: Command to run Angular CLI commands.
+- start: Start the Angular development server.
+- serve-mobile: Start the Angular development server with a custom host for mobile testing.
+- build: Compile the project for production with the specified base href.
+- watch: Build the project in watch mode for development.
+- test: Run unit tests for the application.
+- deploy: Deploy the application with the specified base href.
+
+## Roadmap
+
+- Improve the UI/UX design
+- Support website growth
+- Fix bugs
+
+## FAQs
+
+Q: What can I do to contribute? <br />
+A: You can open issues, submit pull requests, or help with documentation.
+
+## Contact
+
+If you have any questions or feedback, feel free to reach out:
+
+Email: [mateuszjacenty1@gmail.com](mailto:mateuszjacenty1@gmail.com) <br />
+LinkedIn: [Visit My Profile](https://www.linkedin.com/in/mateusz-jacenty-895917186/)
