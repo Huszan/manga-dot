@@ -1,0 +1,11 @@
+.manga-carousel {
+  .carousel {
+    display: flex;
+    flex-direction: row;
+    padding: 1rem;
+    box-sizing: border-box;
+    gap: 0.2rem;
+
+    overflow-y: auto;
+  }
+}

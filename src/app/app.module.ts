@@ -50,6 +50,7 @@ import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { MangaSearchBarComponent } from './components/manga/manga-search-bar/manga-search-bar.component';
 import { ContactFormComponent } from './components/views/contact-form/contact-form.component';
 import { FooterComponent } from './components/nav/footer/footer.component';
+import { MangaCarouselComponent } from './components/manga/manga-carousel/manga-carousel.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { FooterComponent } from './components/nav/footer/footer.component';
     MangaSearchBarComponent,
     ContactFormComponent,
     FooterComponent,
+    MangaCarouselComponent,
   ],
   imports: [
     BrowserModule,

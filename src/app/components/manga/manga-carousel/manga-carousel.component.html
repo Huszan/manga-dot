@@ -1,0 +1,20 @@
+<div class="manga-carousel">
+  <a
+    class="mat-h2"
+    style="align-self: start"
+    [routerLink]="titleNav.link"
+    [queryParams]="titleNav.queryParams"
+    >{{ title }}</a
+  >
+  <div class="divider"></div>
+
+  <div class="carousel">
+    <ng-container *ngFor="let manga of mangaList; let i = index">
+      <app-manga-cover-tile
+        [manga]="manga"
+        (onRead)="onMangaSelect(i)"
+        [size]="size"
+      ></app-manga-cover-tile>
+    </ng-container>
+  </div>
+</div>

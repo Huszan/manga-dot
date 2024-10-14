@@ -1,13 +1,19 @@
-<div class="br-emo-line" [ngStyle]="{ 'background': 'url(assets/emoji-pattern-dy.png)', 'background-size': 'cover' }"></div>
+<div
+  class="br-emo-line"
+  [ngStyle]="{
+    background: 'url(assets/emoji-pattern-dy.png)',
+    'background-size': 'cover'
+  }"
+></div>
 <section class="welcome-section">
-  <!-- <img class="wave-bg" src="assets/wave.svg"> -->
-  <!-- <img class="main-img" src="assets/manga_dot_anime_girl.png" /> -->
   <div class="text-box">
     <h1 class="mat-display-3">Welcome to Manga dot!</h1>
     <div class="mat-body-2">
-      Immerse yourself in the captivating world
-      of manga and comic books. Whether you're a passionate manga enthusiast or a comic
-      book aficionado, we've prepared a <a [routerLink]="'/manga/browse'"><b>vast collection of titles</b></a> for you to explore and enjoy.
+      Immerse yourself in the captivating world of manga and comic books.
+      Whether you're a passionate manga enthusiast or a comic book aficionado,
+      we've prepared a
+      <a [routerLink]="'/manga/browse'"><b>vast collection of titles</b></a> for
+      you to explore and enjoy.
     </div>
     <p class="mat-body-2" style="text-align: center">
       <b>Happy reading everyone!</b>
@@ -16,15 +22,21 @@
 </section>
 
 <section class="browse-container">
-  <app-manga-browse
+  <app-manga-carousel
+    [title]="browseElements.popular.title"
+    [titleNav]="browseElements.popular.titleNav"
+    [sortBy]="browseElements.popular.sortBy"
+    [itemsPerPage]="browseElements.new.itemsPerPage"
+  ></app-manga-carousel>
+</section>
+
+<section class="browse-container">
+  <app-manga-carousel
     [title]="browseElements.new.title"
     [titleNav]="browseElements.new.titleNav"
-    [actionsAllowed]="browseElements.new.options"
     [sortBy]="browseElements.new.sortBy"
     [itemsPerPage]="browseElements.new.itemsPerPage"
-    [displayType]="isMobile ? 'list' : 'tiles'"
-  >
-  </app-manga-browse>
+  ></app-manga-carousel>
 </section>
 
 <section class="contact-section">
@@ -32,36 +44,28 @@
     <a [routerLink]="'contact'">Contact us</a>
   </h2>
   <span class="mat-body description">
-    Did you come across any missing chapters or pages? Do you have any questions or ideas to help us
-    enhance your experience on our website? If your answer is 'yes' to any of these, we would love to
-    hear from you! Visit our <a [routerLink]="'contact'">contact section</a> or reach out to us directly via email at <b>mangadot.contact@gmail.com</b>.
-    We value your feedback and look forward to hearing from you!
+    Did you come across any missing chapters or pages? Do you have any questions
+    or ideas to help us enhance your experience on our website? If your answer
+    is 'yes' to any of these, we would love to hear from you! Visit our
+    <a [routerLink]="'contact'">contact section</a> or reach out to us directly
+    via email at <b>mangadot.contact@gmail.com</b>. We value your feedback and
+    look forward to hearing from you!
   </span>
-  <div class="contact-section-background" [ngStyle]="{ 'background': 'url(assets/letter.png) no-repeat left', 'background-size': 'contain' }"></div>
+  <div
+    class="contact-section-background"
+    [ngStyle]="{
+      background: 'url(assets/pica_bg.jpg) no-repeat center',
+      'background-size': 'cover'
+    }"
+  ></div>
 </section>
 
 <section class="browse-container">
-  <app-manga-browse
-    [title]="browseElements.popular.title"
-    [titleNav]="browseElements.popular.titleNav"
-    [actionsAllowed]="browseElements.popular.options"
-    [sortBy]="browseElements.popular.sortBy"
-    [itemsPerPage]="browseElements.new.itemsPerPage"
-    [displayType]="isMobile ? 'list' : 'tiles'"
-  >
-  </app-manga-browse>
+  <app-manga-carousel
+    [title]="browseElements.bestRated.title"
+    [titleNav]="browseElements.bestRated.titleNav"
+    [sortBy]="browseElements.bestRated.sortBy"
+    [itemsPerPage]="browseElements.bestRated.itemsPerPage"
+    [size]="16"
+  ></app-manga-carousel>
 </section>
-
-<!--<ng-container *ngFor="let el of browseElementsGenre">-->
-<!--  <div class="browse-container">-->
-<!--    <app-manga-browse-->
-<!--      [title]="el.title"-->
-<!--      [titleNav]="el.titleNav"-->
-<!--      [actionsAllowed]="el.options"-->
-<!--      [sortBy]="el.sortBy"-->
-<!--      [tags]="el.tags ? el.tags : []"-->
-<!--      [itemsPerPage]="el.itemsPerPage"-->
-<!--    >-->
-<!--    </app-manga-browse>-->
-<!--  </div>-->
-<!--</ng-container>-->

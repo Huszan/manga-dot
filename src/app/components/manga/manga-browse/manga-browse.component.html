@@ -1,8 +1,14 @@
-
 <section class="manga-browse-section">
   <ng-container *ngIf="title">
     <h2 *ngIf="!titleNav" style="align-self: start">{{ title }}</h2>
-    <a *ngIf="titleNav" class="mat-h2" style="align-self: start" [routerLink]="titleNav.link" [queryParams]="titleNav.queryParams">{{ title }}</a>
+    <a
+      *ngIf="titleNav"
+      class="mat-h2"
+      style="align-self: start"
+      [routerLink]="titleNav.link"
+      [queryParams]="titleNav.queryParams"
+      >{{ title }}</a
+    >
     <div class="divider"></div>
   </ng-container>
 
@@ -10,17 +16,31 @@
     <ng-container *ngIf="actionsAllowed.all || actionsAllowed.canSearch">
       <mat-form-field color="primary">
         <mat-label>Search</mat-label>
-        <input matInput [value]="searchString" (input)="onSearchInput($event)">
+        <input
+          matInput
+          [value]="searchString"
+          (input)="onSearchInput($event)"
+        />
       </mat-form-field>
     </ng-container>
+
     <ng-container *ngIf="actionsAllowed.all || actionsAllowed.canSort">
       <mat-form-field>
         <mat-label>Sort by</mat-label>
-        <mat-select disableOptionCentering (valueChange)="onSortValueChange($event)" #sortSelect>
-          <mat-option *ngFor="let option of sortOptions; let i = index" [value]="i">{{option.display}}</mat-option>
+        <mat-select
+          disableOptionCentering
+          (valueChange)="onSortValueChange($event)"
+          #sortSelect
+        >
+          <mat-option
+            *ngFor="let option of sortOptions; let i = index"
+            [value]="i"
+            >{{ option.display }}</mat-option
+          >
         </mat-select>
       </mat-form-field>
     </ng-container>
+
     <ng-container *ngIf="actionsAllowed.all || actionsAllowed.canSelectTags">
       <button mat-button (click)="isTagSelectBoxOpen = !isTagSelectBoxOpen">
         Select tags
@@ -28,17 +48,31 @@
         <mat-icon *ngIf="isTagSelectBoxOpen">arrow_drop_up</mat-icon>
       </button>
     </ng-container>
+
     <span class="spacer"></span>
-    <span *ngIf="actionsAllowed.all || actionsAllowed.canChangeIconSize" class="size-slider-wrapper" [ngClass]="{'disabled': displayType!=='tiles'}">
+
+    <span
+      *ngIf="actionsAllowed.all || actionsAllowed.canChangeIconSize"
+      class="size-slider-wrapper"
+      [ngClass]="{ disabled: displayType !== 'tiles' }"
+    >
       <span>Size</span>
       <mat-slider
         #sizeSlider
-        [disabled]='displayType != "tiles"'
-        min="10" max="41" step="1" value="10"
-        (valueChange)="onSizeSliderChange()"></mat-slider>
+        [disabled]="displayType != 'tiles'"
+        min="10"
+        max="41"
+        step="1"
+        value="10"
+        (valueChange)="onSizeSliderChange()"
+      ></mat-slider>
     </span>
+
     <span *ngIf="actionsAllowed.all || actionsAllowed.canChangeDisplayType">
-      <mat-button-toggle-group [value]="displayType" (change)="onDisplayTypeChange($event)">
+      <mat-button-toggle-group
+        [value]="displayType"
+        (change)="onDisplayTypeChange($event)"
+      >
         <mat-button-toggle value="tiles">
           <mat-icon>view_module</mat-icon>
         </mat-button-toggle>
@@ -48,30 +82,62 @@
       </mat-button-toggle-group>
     </span>
   </div>
-  <div *ngIf="actionsAllowed.all != false" class="genre-toggle-container" [ngClass]="isTagSelectBoxOpen ? 'expanded' : ''">
+
+  <div
+    *ngIf="actionsAllowed.all != false"
+    class="genre-toggle-container"
+    [ngClass]="isTagSelectBoxOpen ? 'expanded' : ''"
+  >
     <ng-container *ngIf="isTagSelectBoxOpen">
       <form [formGroup]="checkboxForm" class="genre-list">
         <ng-container *ngFor="let key of checkboxFormKeys">
           <mat-checkbox [formControlName]="key">{{ key }}</mat-checkbox>
         </ng-container>
       </form>
-      <button mat-flat-button color="accent" (click)="onTagsApply()">Apply</button>
+      <button mat-flat-button color="accent" (click)="onTagsApply()">
+        Apply
+      </button>
     </ng-container>
   </div>
-  <div [ngClass]="isStaticHeight ? 'manga-list-container static' : 'manga-list-container'">
+
+  <div
+    [ngClass]="
+      isStaticHeight ? 'manga-list-container static' : 'manga-list-container'
+    "
+  >
     <ng-container *ngFor="let manga of mangaList; let i = index">
-      <app-manga-cover-tile *ngIf="displayType === 'tiles'" [manga]="manga" (onRead)="onMangaSelect(i)" [size]="sizeSlider ? sizeSlider.value : undefined"></app-manga-cover-tile>
-      <app-manga-cover-list *ngIf="displayType === 'list'" [manga]="manga" (onRead)="onMangaSelect(i)"></app-manga-cover-list>
+      <app-manga-cover-tile
+        *ngIf="displayType === 'tiles'"
+        [manga]="manga"
+        (onRead)="onMangaSelect(i)"
+        [size]="sizeSlider ? sizeSlider.value : undefined"
+      ></app-manga-cover-tile>
+      <app-manga-cover-list
+        *ngIf="displayType === 'list'"
+        [manga]="manga"
+        (onRead)="onMangaSelect(i)"
+      ></app-manga-cover-list>
     </ng-container>
+
     <ng-container *ngIf="isLoading">
       <ng-container *ngFor="let i of fakeArray(itemsPerPage)">
-        <app-manga-cover-tile *ngIf="displayType === 'tiles'" [size]="sizeSlider ? sizeSlider.value : undefined"></app-manga-cover-tile>
-        <app-manga-cover-list *ngIf="displayType === 'list'"></app-manga-cover-list>
+        <app-manga-cover-tile
+          *ngIf="displayType === 'tiles'"
+          [size]="sizeSlider ? sizeSlider.value : undefined"
+        ></app-manga-cover-tile>
+        <app-manga-cover-list
+          *ngIf="displayType === 'list'"
+        ></app-manga-cover-list>
       </ng-container>
     </ng-container>
-    <span *ngIf="mangaList.length == 0 && !isLoading" class="mat-card-subtitle">Sorry, it looks like nothing was found.</span>
+
+    <span *ngIf="mangaList.length == 0 && !isLoading" class="mat-card-subtitle"
+      >Sorry, it looks like nothing was found.</span
+    >
   </div>
+
   <div class="spacer"></div>
+
   <mat-paginator
     *ngIf="actionsAllowed.all || actionsAllowed.canPaginate"
     #paginator
@@ -82,5 +148,4 @@
     (page)="onPageChange($event)"
     aria-label="Select page"
   ></mat-paginator>
-
 </section>

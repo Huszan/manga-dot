@@ -5,6 +5,7 @@ import { map, Observable } from 'rxjs';
 import { MangaType } from '../../types/manga.type';
 import { LikeType } from '../../types/like.type';
 import { ChapterType } from '../../types/chapter.type';
+import { SortData } from 'src/app/components/manga/manga-browse/manga-browse.component';
 
 const MANGA_DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
@@ -28,7 +29,7 @@ export interface RepositoryFindOptions {
   }[];
   skip?: number;
   take?: number;
-  order?: { element: string; sort: 'ASC' | 'DESC' };
+  order?: SortData;
 }
 
 @Injectable({

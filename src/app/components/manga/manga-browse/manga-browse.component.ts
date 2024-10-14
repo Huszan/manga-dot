@@ -21,9 +21,14 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 
+export interface SortData {
+  element: string;
+  sort: 'ASC' | 'DESC';
+}
+
 export const SortOptions: {
   display: string;
-  value: { element: string; sort: 'ASC' | 'DESC' };
+  value: SortData;
 }[] = [
   {
     display: 'Most popular',
@@ -33,8 +38,14 @@ export const SortOptions: {
     display: 'Least popular',
     value: { element: 'manga.view_count', sort: 'ASC' },
   },
-  { display: 'Newest', value: { element: 'manga.added_date', sort: 'DESC' } },
-  { display: 'Oldest', value: { element: 'manga.added_date', sort: 'ASC' } },
+  {
+    display: 'Newest',
+    value: { element: 'manga.added_date', sort: 'DESC' },
+  },
+  {
+    display: 'Oldest',
+    value: { element: 'manga.added_date', sort: 'ASC' },
+  },
   {
     display: 'Recently updated',
     value: { element: 'manga.last_update_date', sort: 'DESC' },
@@ -48,6 +59,7 @@ export const SortOptions: {
     value: { element: 'manga.like_count', sort: 'ASC' },
   },
 ];
+
 export const Tags = [
   'action',
   'adventure',
@@ -90,6 +102,7 @@ export const Tags = [
   'one shot',
   'doujinshi',
 ];
+
 export interface MangaBrowseOptions {
   all?: boolean;
   canChangeIconSize?: boolean;
@@ -100,6 +113,7 @@ export interface MangaBrowseOptions {
   canSelectTags?: boolean;
   canPaginate?: boolean;
 }
+
 export type ItemPerPage = 6 | 9 | 12 | 18 | 24 | 36 | 48 | 64;
 
 @Component({
@@ -113,7 +127,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() titleNav?: { link: string; queryParams: any };
   @Input() actionsAllowed: MangaBrowseOptions = { all: true };
   @Input() displayType: 'tiles' | 'list' = 'tiles';
-  @Input() sortBy?: any;
+  @Input() sortBy?: SortData;
   @Input() isStaticHeight?: boolean = true;
   @Input() tags: number[] = [];
   @Input() itemsPerPage: ItemPerPage | number = 12;
