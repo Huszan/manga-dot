@@ -35,14 +35,32 @@
   }
 }
 
-.chapter-list-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.chapters-section {
   margin: 0 25px 25px 25px;
-  padding: 5px;
-  box-shadow: 3px 3px 5px #00000070 inset;
-  max-height: 300px;
-  overflow-y: scroll;
-  overflow-x: hidden;
+
+  .chapter-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 5px;
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    .chapter-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 15px;
+      column-gap: 0.5rem;
+
+      .name-wrapper {
+        width: 100%;
+      }
+
+      &:nth-child(even) {
+        background-color: #f0f0f0;
+      }
+    }
+  }
 }

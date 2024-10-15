@@ -65,26 +65,32 @@
     </div>
   </div>
 
-  <section class="chapter-list-wrapper p-8">
-    <ng-container *ngIf="manga && manga.chapters; else skeleton">
-      <ng-container *ngFor="let chapter of manga!.chapters; let i = index">
-        <button
-          mat-stroked-button
-          style="text-align: left"
-          (click)="onChapterSelect(i)"
-        >
-          {{ chapter.name }}
-        </button>
+  <section class="chapters-section">
+    <h2>Chapters:</h2>
+    <ul class="chapter-list-wrapper p-8">
+      <ng-container *ngIf="manga && manga.chapters; else skeleton">
+        <ng-container *ngFor="let chapter of manga!.chapters; let i = index">
+          <li class="chapter-wrapper" (click)="onChapterSelect(i)">
+            <span mat-button class="name-wrapper">
+              {{ chapter.name }}
+            </span>
+            <button mat-icon-button color="primary" class="read-button">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </li>
+        </ng-container>
       </ng-container>
-    </ng-container>
-    <ng-template #skeleton>
-      <ngx-skeleton-loader
-        count="15"
-        class="skeleton not-intractable"
-        [style]="{ width: '100%' }"
-        [theme]="{ height: '36px', 'margin-bottom': '0' }"
-      >
-      </ngx-skeleton-loader>
-    </ng-template>
+      <ng-template #skeleton>
+        <li>
+          <ngx-skeleton-loader
+            count="15"
+            class="skeleton not-intractable"
+            [style]="{ width: '100%' }"
+            [theme]="{ height: '36px', 'margin-bottom': '0' }"
+          >
+          </ngx-skeleton-loader>
+        </li>
+      </ng-template>
+    </ul>
   </section>
 </ng-template>
