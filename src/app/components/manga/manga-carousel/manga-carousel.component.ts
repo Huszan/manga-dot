@@ -1,14 +1,19 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  ViewChild,
+} from '@angular/core';
+import { Router } from '@angular/router';
 import { MangaService } from 'src/app/services/data/manga.service';
 import {
   MangaHttpService,
   RepositoryFindOptions,
 } from 'src/app/services/http/manga-http.service';
-import { StoreService } from 'src/app/services/store.service';
 import { MangaType } from 'src/app/types/manga.type';
 import { ItemPerPage, SortData } from '../manga-browse/manga-browse.component';
+import { fakeArray } from 'src/app/utils/base';
 
 @Component({
   selector: 'app-manga-carousel',
@@ -22,8 +27,11 @@ export class MangaCarouselComponent {
   @Input() itemsPerPage: ItemPerPage | number = 12;
   @Input() size: number = 20;
 
+  @ViewChild('carouselWrapperRef') carouselWrapperRef!: ElementRef;
+
   mangaList: MangaType[] = [];
   mangaCount: number | null = null;
+  fakeArray = fakeArray;
 
   constructor(
     private httpManga: MangaHttpService,
@@ -50,6 +58,34 @@ export class MangaCarouselComponent {
   onMangaSelect(index: number) {
     this.mangaService.selectedManga$.next(this.mangaList[index]);
     this.router.navigate(['manga', this.mangaList[index].id]);
+  }
+
+  isScrollMaxLeft = true;
+  isScrollMaxRight = false;
+
+  onScroll() {
+    if (!this.carouselWrapperRef) return;
+    let el = this.carouselWrapperRef.nativeElement;
+    this.isScrollMaxLeft = el.scrollLeft === 0;
+    this.isScrollMaxRight = el.scrollLeft + el.offsetWidth >= el.scrollWidth;
+  }
+
+  goNext() {
+    if (!this.carouselWrapperRef) return;
+    let el = this.carouselWrapperRef.nativeElement;
+    el.scrollBy({
+      left: el.offsetWidth,
+      behavior: 'smooth',
+    });
+  }
+
+  goPrev() {
+    if (!this.carouselWrapperRef) return;
+    let el = this.carouselWrapperRef.nativeElement;
+    el.scrollBy({
+      left: -el.offsetWidth,
+      behavior: 'smooth',
+    });
   }
 
   ngAfterViewInit() {

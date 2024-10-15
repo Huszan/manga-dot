@@ -1,5 +1,6 @@
 .manga-container-wrapper {
   position: relative;
+  height: 100%;
 
   .special-button {
     position: absolute;
@@ -7,6 +8,7 @@
     z-index: 5;
     opacity: 50%;
     display: none;
+
     &.edit {
       right: 0;
       top: 33%;
@@ -17,7 +19,8 @@
       top: 54%;
       transform: translateY(-100%) translateX(10%);
     }
-    &:hover,&:focus {
+    &:hover,
+    &:focus {
       opacity: 100%;
       .mat-icon {
         scale: 110%;
@@ -25,7 +28,8 @@
     }
   }
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     .special-button {
       display: inline;
     }
@@ -36,7 +40,6 @@
   }
 
   .manga-container {
-    position: relative;
     overflow: hidden;
     border-radius: 5px;
     cursor: pointer;
@@ -52,7 +55,8 @@
       transition: 0.2s ease-out;
     }
 
-    .manga-title,.manga-info {
+    .manga-title,
+    .manga-info {
       position: absolute;
       left: 0;
       padding: 5px;
@@ -80,20 +84,21 @@
       color: var(--text-primary-color);
       background-color: var(--primary-color);
     }
-
   }
 
-  .manga-container:hover,.manga-container:focus {
+  .manga-container:hover,
+  .manga-container:focus {
     img {
       scale: 105%;
     }
-    .manga-title,.manga-info {
+    .manga-title,
+    .manga-info {
       opacity: 100%;
     }
   }
 }
 
-@media screen and (max-width: 1300px){
+@media screen and (max-width: 1300px) {
   .manga-container-wrapper {
     .manga-container {
       width: 13vw;
