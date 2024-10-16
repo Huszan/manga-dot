@@ -8,9 +8,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { MangaService } from '../../../services/data/manga.service';
 import { MangaType } from '../../../types/manga.type';
-import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -24,7 +22,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   chapter: number = 0;
   mangaId: number = 0;
   isInitialized: boolean = false;
-  optionsExtended: boolean = false;
+  isChapterAccesible: boolean = true;
 
   mangaSub!: Subscription;
   paramsSub!: Subscription;
@@ -33,11 +31,8 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     private _cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private _router: Router,
-    private _mangaHttp: MangaHttpService,
     private _mangaService: MangaService,
-    private _mangaHttpService: MangaHttpService,
-    private _sanitizer: DomSanitizer,
-    private _snackBar: MatSnackBar
+    private _sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -82,13 +77,17 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
       if (!this.isChapterValid) this.goToChapterSelect();
       if (!this.manga.chapters || this.manga.chapters.length <= 0) {
         this._mangaService.requestChapters(() => {
-          this._mangaService.requestPages(this.chapter);
+          this._mangaService.requestPages(this.chapter, (status) => {
+            this.isChapterAccesible = status !== 'error';
+          });
         });
       } else if (
         !this.manga?.chapters![this.chapter].pages ||
-        this.manga?.chapters![this.chapter].pages === []
+        this.manga?.chapters![this.chapter].pages.length === 0
       ) {
-        this._mangaService.requestPages(this.chapter);
+        this._mangaService.requestPages(this.chapter, (status) => {
+          this.isChapterAccesible = status !== 'error';
+        });
       }
     }
   }
@@ -146,11 +145,6 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   sanitizeUrl(url: string) {
     return this._sanitizer.bypassSecurityTrustUrl(url);
-  }
-
-  onOptionsExtendClick() {
-    this.optionsExtended = !this.optionsExtended;
-    this._cdr.detectChanges();
   }
 
   ngOnDestroy(): void {

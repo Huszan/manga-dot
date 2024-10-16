@@ -15,6 +15,7 @@ import {
 import { MangaType } from '../../types/manga.type';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LikeType } from '../../types/like.type';
+import { Status } from 'src/app/types/status.type';
 
 @Injectable({
   providedIn: 'root',
@@ -53,17 +54,24 @@ export class MangaService {
     });
   }
 
-  requestPages(chapter: number, callback?: any) {
+  requestPages(chapter: number, callback?: (status: Status) => void) {
     const manga = this.selectedManga$.value;
-    if (!manga || !manga.id || !manga.chapters || !manga.chapters[chapter])
+    if (!manga || !manga.id || !manga.chapters || !manga.chapters[chapter]) {
+      if (callback) callback('error');
       return;
+    }
+
     this.mangaHttp
       .getMangaPages(manga.id, manga.chapters[chapter].id!)
       .subscribe((pages) => {
-        if (!pages || pages.length <= 0) return;
+        if (!pages || pages.length <= 0) {
+          if (callback) callback('error');
+          return;
+        }
         manga.chapters![chapter].pages = pages;
         this.selectedManga$.next(manga);
-        if (callback) callback();
       });
+
+    if (callback) callback('success');
   }
 }
