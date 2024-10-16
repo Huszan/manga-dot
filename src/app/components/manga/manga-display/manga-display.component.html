@@ -7,7 +7,7 @@
 <ng-template #mangaFound>
   <div class="display-container cf">
     <img class="logo" [src]="manga!.pic" />
-    <p class="mat-display-3">
+    <p class="mat-display-3 title">
       <span
         ><b>{{ manga!.name.toUpperCase() }}</b></span
       >
@@ -21,17 +21,20 @@
     </p>
     <p *ngIf="manga!.tags" class="mat-body-2">
       <b>Tags: </b>
-      <ng-container *ngFor="let genre of manga!.tags; let last = last">
-        <ng-container *ngIf="allTags.includes(genre.toLowerCase())">
-          <a
-            [routerLink]="['/manga/browse']"
-            [queryParams]="{ tags: allTags.indexOf(genre.toLowerCase()) }"
-          >
-            {{ genre }}
-          </a>
-          <span *ngIf="!last">, </span>
+      <span class="tag-wrapper">
+        <ng-container *ngFor="let genre of manga!.tags; let last = last">
+          <ng-container *ngIf="allTags.includes(genre.toLowerCase())">
+            <a
+              mat-flat-button
+              color="accent"
+              [routerLink]="['/manga/browse']"
+              [queryParams]="{ tags: allTags.indexOf(genre.toLowerCase()) }"
+            >
+              {{ genre }}
+            </a>
+          </ng-container>
         </ng-container>
-      </ng-container>
+      </span>
     </p>
     <p class="mat-body">
       <b>Added: </b>{{ manga!.addedDate.toLocaleDateString() }}

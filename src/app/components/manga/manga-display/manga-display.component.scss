@@ -1,37 +1,36 @@
-@media screen and (max-width: 720px) {
-  .display-container {
-    display: flex;
-    flex-direction: column;
-    .logo {
-      align-self: center;
-    }
-  }
-}
-@media screen and (min-width: 721px) {
-  .display-container {
-    .logo {
-      margin-right: 25px;
-    }
-  }
-}
+$logo-w: 200px;
 
 .display-container {
   margin: 25px 25px 5px 25px;
 
   .logo {
     float: left;
-    width: 100%;
-    max-width: 400px;
-    margin-bottom: 24px;
+    width: $logo-w;
+    margin: 24px 48px 24px 24px;
+    box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
   }
+
+  .title {
+    overflow-wrap: break-word;
+  }
+
   .nowrap {
     white-space: nowrap;
   }
+
   .button-panel {
     display: flex;
     flex-direction: row;
     margin: 24px;
     gap: 10px;
+  }
+
+  .tag-wrapper {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+    max-width: calc(100% - $logo-w - 100px);
   }
 }
 
@@ -61,6 +60,30 @@
       &:nth-child(even) {
         background-color: #f0f0f0;
       }
+    }
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .display-container {
+    display: flex;
+    flex-direction: column;
+
+    .logo {
+      align-self: center;
+      width: 100%;
+      max-width: 220px;
+      height: unset;
+      margin: 0 0 24px 0;
+    }
+
+    .button-panel {
+      margin: unset;
+      flex-wrap: wrap;
+    }
+
+    .tag-wrapper {
+      max-width: unset;
     }
   }
 }
