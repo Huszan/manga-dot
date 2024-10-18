@@ -62,12 +62,9 @@ export class MangaCoverListComponent implements OnInit, OnDestroy {
       return;
     }
     this._mangaHttpService.removeManga(this.manga).subscribe((res) => {
-      if ('success' in res && res.success) {
-        this._snackbar.open('Successfully removed manga', 'Close', {
-          duration: 8000,
-        });
-      } else {
-        this._snackbar.open('Something went wrong. Try again later.', 'Close', {
+      if (res) {
+        const message = res.message ? res.message : 'Something went wrong...';
+        this._snackbar.open(message, 'Close', {
           duration: 8000,
         });
       }

@@ -26,8 +26,10 @@ export class ActivateAccountComponent implements OnInit {
       this.message = 'No activation code given';
     } else {
       this._auth.activate(this.code).subscribe((res) => {
-        this._goBackWithMessage(res.message);
-        this.message = res.message;
+        this._goBackWithMessage(
+          res.message ? res.message : 'Something went wrong.'
+        );
+        this.message = res.message ? res.message : 'Something went wrong.';
       });
     }
   }

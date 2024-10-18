@@ -98,9 +98,9 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
       userId: this.user?.id!,
     };
     this.mangaHttp.likeManga(like).subscribe((res) => {
-      if (res.status === 1) {
+      if (res.status === 'success') {
         this.mangaService.requestManga(this.mangaId);
-      } else {
+      } else if (res.message) {
         this._snackbar.open(res.message, 'Close', { duration: 8000 });
       }
     });

@@ -87,12 +87,20 @@ export class ContactFormComponent {
       message: this.message.value,
     };
     this.contactHttpService.sendMail(info).subscribe((res) => {
-      if (res.accepted.length > 0)
-        this._snackbar.open('Email sent successfully!', '', { duration: 3000 });
+      if (res.status === 'success')
+        this._snackbar.open(
+          res.message ? res.message : 'Email sent successfully!',
+          '',
+          { duration: 3000 }
+        );
       else
-        this._snackbar.open('Something went wrong. Try again later', '', {
-          duration: 5000,
-        });
+        this._snackbar.open(
+          res.message ? res.message : 'Something went wrong. Try again later',
+          '',
+          {
+            duration: 5000,
+          }
+        );
       this.resetForm();
       this.isLoading = false;
       this._cdr.detectChanges();

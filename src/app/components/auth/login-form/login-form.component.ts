@@ -75,12 +75,18 @@ export class LoginFormComponent {
     this._auth
       .loginUser(this.email.value, this.password.value)
       .subscribe((res) => {
-        if (res.status === 0) {
-          this._snackbar.open(res.message, 'Close', {
-            duration: 8000,
-          });
+        if (res.status === 'error') {
+          this._snackbar.open(
+            res.message
+              ? res.message
+              : 'Something went wrong. Try again later.',
+            'Close',
+            {
+              duration: 8000,
+            }
+          );
         } else {
-          this._snackbar.open(res.message, 'Close', {
+          this._snackbar.open(res.message ? res.message : 'Success!', 'Close', {
             duration: 8000,
           });
           this.resetForm();

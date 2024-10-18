@@ -3,13 +3,16 @@ import { UserType } from '../../types/user.type';
 import { AuthHttpService } from '../http/auth-http.service';
 import {
   BehaviorSubject,
+  catchError,
   Observable,
+  of,
   retry,
   Subscription,
   take,
   tap,
 } from 'rxjs';
 import { StoreItem, StoreService } from '../store.service';
+import { ServerResponse } from 'src/app/types/server-response.type';
 
 @Injectable({
   providedIn: 'root',
@@ -28,8 +31,11 @@ export class AuthService {
     return this._http.login(email, password).pipe(
       retry(3),
       take(1),
+      catchError((err) => {
+        return of(err.error as ServerResponse);
+      }),
       tap((res) => {
-        if (res.status === 1 && res.data) {
+        if (res.status === 'success' && res.data) {
           this.currentUser$.next(res.data);
           this._setAuthToken();
         }
@@ -44,15 +50,23 @@ export class AuthService {
       retry(3),
       take(1),
       tap((res) => {
-        if (res.status === 1) {
+        if (res.status === 'success') {
           this.currentUser$.next(res.data);
         }
+      }),
+      catchError((err) => {
+        return of(err.error as ServerResponse);
       })
     );
   }
 
   registerUser(user: UserType) {
-    return this._http.register(user).pipe(retry(3));
+    return this._http.register(user).pipe(
+      retry(3),
+      catchError((err) => {
+        return of(err.error as ServerResponse);
+      })
+    );
   }
 
   logout() {
@@ -60,24 +74,39 @@ export class AuthService {
     return this._http.logout(this.currentUser$.value?.id).pipe(
       retry(3),
       tap((res) => {
-        if (res.status === 1) {
+        if (res.status === 'success') {
           this.currentUser$.next(null);
           this.store.removeItem(StoreItem.AUTH_TOKEN);
         }
+      }),
+      catchError((err) => {
+        return of(err.error as ServerResponse);
       })
     );
   }
 
   activate(code: string) {
-    return this._http.activate(code);
+    return this._http.activate(code).pipe(
+      catchError((err) => {
+        return of(err.error as ServerResponse);
+      })
+    );
   }
 
   resend(email: string, url: string) {
-    return this._http.resend(email, url);
+    return this._http.resend(email, url).pipe(
+      catchError((err) => {
+        return of(err.error as ServerResponse);
+      })
+    );
   }
 
   forgotPassword(email: string, password: string) {
-    return this._http.forgotPassword(email, password);
+    return this._http.forgotPassword(email, password).pipe(
+      catchError((err) => {
+        return of(err.error as ServerResponse);
+      })
+    );
   }
 
   private _setAuthToken() {

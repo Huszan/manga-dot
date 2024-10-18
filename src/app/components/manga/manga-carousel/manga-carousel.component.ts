@@ -30,7 +30,7 @@ export class MangaCarouselComponent {
   @ViewChild('carouselWrapperRef') carouselWrapperRef!: ElementRef;
 
   mangaList: MangaType[] = [];
-  mangaCount: number | null = null;
+  mangaCount: number | undefined;
   fakeArray = fakeArray;
 
   constructor(
@@ -48,9 +48,9 @@ export class MangaCarouselComponent {
       take: this.itemsPerPage,
       order: this.sortBy ? this.sortBy : undefined,
     };
-    this.httpManga.getMangaList(options).subscribe((res) => {
-      this.mangaList = res.list;
-      this.mangaCount = res.count;
+    this.httpManga.getManga(undefined, options).subscribe((res) => {
+      this.mangaList = res.data && res.data.list ? res.data.list : [];
+      this.mangaCount = res.data && res.data.count ? res.data.count : undefined;
       this._cdr.detectChanges();
     });
   }

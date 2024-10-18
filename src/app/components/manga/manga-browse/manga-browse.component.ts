@@ -137,7 +137,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('paginator') paginator: MatPaginator | undefined;
 
   mangaList: MangaType[] = [];
-  mangaCount: number | null = null;
+  mangaCount: number | undefined;
   sortOptions = SortOptions;
 
   currentPage = 0;
@@ -261,9 +261,9 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.selectedTagIndexes.length > 0) {
       options.where?.push(...this.tagOptions);
     }
-    this.httpManga.getMangaList(options).subscribe((res) => {
-      this.mangaList = res.list;
-      this.mangaCount = res.count;
+    this.httpManga.getManga(undefined, options).subscribe((res) => {
+      this.mangaList = res.data && res.data.list ? res.data.list : [];
+      this.mangaCount = res.data && res.data.count ? res.data.count : undefined;
       this.isLoading = false;
       this._cdr.detectChanges();
     });

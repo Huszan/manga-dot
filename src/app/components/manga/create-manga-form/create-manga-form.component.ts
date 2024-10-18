@@ -204,35 +204,35 @@ export class CreateMangaFormComponent {
   }
 
   onTest() {
-    this.isLoading = true;
-    this.testFormLocally().then((res) => {
-      this.isLoading = false;
-      this._cdr.detectChanges();
-      this.displayTestSnackbar(res);
-    });
+    // this.isLoading = true;
+    // this.testFormLocally().then((res) => {
+    //   this.isLoading = false;
+    //   this._cdr.detectChanges();
+    //   this.displayTestSnackbar(res);
+    // });
   }
 
   async testFormLocally() {
-    let failedOn = [];
-    this.lastTestedForm = this.formData;
-    for (
-      let i = this.startingChapter.value;
-      i <= this.chapterCount.value;
-      i++
-    ) {
-      this.currentlyTestingChapter = i;
-      const response = await firstValueFrom(
-        this._mangaHttpService.testMangaChapter(this.formData, i)
-      );
-      if (!response) {
-        failedOn.push(i);
-      }
-      this._cdr.detectChanges();
-    }
-    return {
-      success: failedOn.length === 0,
-      failedOn: failedOn,
-    };
+    // let failedOn = [];
+    // this.lastTestedForm = this.formData;
+    // for (
+    //   let i = this.startingChapter.value;
+    //   i <= this.chapterCount.value;
+    //   i++
+    // ) {
+    //   this.currentlyTestingChapter = i;
+    //   const response = await firstValueFrom(
+    //     this._mangaHttpService.testMangaChapter(this.formData, i)
+    //   );
+    //   if (!response) {
+    //     failedOn.push(i);
+    //   }
+    //   this._cdr.detectChanges();
+    // }
+    // return {
+    //   success: failedOn.length === 0,
+    //   failedOn: failedOn,
+    // };
   }
 
   displayTestSnackbar(data: any) {
@@ -262,7 +262,7 @@ export class CreateMangaFormComponent {
     }
     this.isLoading = true;
     this._mangaHttpService.postManga(this.lastTestedForm).subscribe((res) => {
-      if (res.success) {
+      if (res.status === 'success') {
         this._snackbar.open('Successfully added manga to database!', 'Close', {
           duration: 8000,
         });

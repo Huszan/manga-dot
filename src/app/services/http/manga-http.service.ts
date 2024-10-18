@@ -2,24 +2,21 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { MangaType } from '../../types/manga.type';
 import { LikeType } from '../../types/like.type';
-import { ChapterType } from '../../types/chapter.type';
 import { SortData } from 'src/app/components/manga/manga-browse/manga-browse.component';
+import { ServerResponse } from 'src/app/types/server-response.type';
 
 const MANGA_DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
   Development: 'http://localhost:3000/',
 };
 enum MANGA_ROUTE {
-  TEST_FORM = 'testMangaForm',
-  TEST_CHAPTER = 'testMangaChapter',
-  POST = 'createManga',
-  GET_MANGAS = 'getMangaList',
-  GET_CHAPTERS = 'getMangaChapters',
-  GET_PAGES = 'getMangaPages',
-  REMOVE = 'removeManga',
-  LIKE = 'likeManga',
+  POST = 'manga',
+  GET_MANGAS = 'manga/:mangaId',
+  GET_CHAPTERS = 'manga/:mangaId/chapters',
+  GET_PAGES = 'manga/:mangaId/chapters/:chapterId/pages',
+  REMOVE = 'manga/:mangaId',
+  LIKE = 'manga/like',
 }
 export interface RepositoryFindOptions {
   where?: {
@@ -46,73 +43,76 @@ export class MangaHttpService {
     }
   }
 
-  private _routeUrl(route: MANGA_ROUTE): URL {
+  private _routeUrl(route: MANGA_ROUTE | string): URL {
     return new URL(this._domain + route);
   }
 
-  getMangaList(
+  getManga(
+    id?: string,
     options?: RepositoryFindOptions,
     bigSearch?: string
-  ): Observable<{ list: MangaType[]; count: number }> {
-    let route = this._routeUrl(MANGA_ROUTE.GET_MANGAS);
+  ): Observable<ServerResponse> {
+    let route = this._routeUrl(
+      `${MANGA_ROUTE.GET_MANGAS.replace('/:mangaId', id ? `/${id}` : '')}`
+    );
+
+    const addDate = (res: ServerResponse) => {
+      if (res.data && res.data.manga) {
+        res.data.manga.addedDate = new Date(res.data.manga.addedDate);
+        res.data.manga.lastUpdateDate = new Date(res.data.manga.lastUpdateDate);
+      }
+      if (!res.data && !res.data.list) return res;
+      for (let manga of res.data.list) {
+        manga.addedDate = new Date(manga.addedDate);
+        manga.lastUpdateDate = new Date(manga.lastUpdateDate);
+      }
+      return res;
+    };
+
+    if (options) route.searchParams.append('options', JSON.stringify(options));
+    if (bigSearch) route.searchParams.append('search', bigSearch);
+
     return this.http
-      .post(route.toString(), {
-        options: options,
-        bigSearch: bigSearch,
-      })
-      .pipe(
-        map((response: any) => {
-          for (let manga of response.list) {
-            manga.addedDate = new Date(manga.addedDate);
-            manga.lastUpdateDate = new Date(manga.lastUpdateDate);
-          }
-          return response;
-        })
-      );
+      .get<ServerResponse>(route.toString())
+      .pipe(map((res) => addDate(res))) as Observable<ServerResponse>;
   }
 
-  getMangaChapters(mangaId: number): Observable<any> {
-    return this.http.post(this._routeUrl(MANGA_ROUTE.GET_CHAPTERS).toString(), {
-      mangaId: mangaId,
-    });
+  getMangaChapters(mangaId: number): Observable<ServerResponse> {
+    const path = MANGA_ROUTE.GET_CHAPTERS.replace('/:mangaId', `/${mangaId}`);
+    return this.http.get(
+      this._routeUrl(path).toString()
+    ) as Observable<ServerResponse>;
   }
 
-  getMangaPages(mangaId: number, chapterId: number): Observable<any> {
-    return this.http.post(this._routeUrl(MANGA_ROUTE.GET_PAGES).toString(), {
-      mangaId: mangaId,
-      chapterId: chapterId,
-    });
+  getMangaPages(
+    mangaId: number,
+    chapterId: number
+  ): Observable<ServerResponse> {
+    const path = MANGA_ROUTE.GET_PAGES.replace(
+      '/:mangaId',
+      `/${mangaId}`
+    ).replace('/:chapterId', `/${chapterId}`);
+    return this.http.get(
+      this._routeUrl(path).toString()
+    ) as Observable<ServerResponse>;
   }
 
-  testMangaForm(mangaForm: any, testId?: number | undefined): Observable<any> {
-    return this.http.post(this._routeUrl(MANGA_ROUTE.TEST_FORM).toString(), {
-      manga: mangaForm,
-      testId: testId,
-    });
-  }
-
-  testMangaChapter(mangaForm: any, chapter: number): Observable<any> {
-    return this.http.post(this._routeUrl(MANGA_ROUTE.TEST_CHAPTER).toString(), {
-      manga: mangaForm,
-      chapter: chapter,
-    });
-  }
-
-  postManga(mangaForm: any): Observable<any> {
+  postManga(mangaForm: any): Observable<ServerResponse> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.POST).toString(), {
       manga: mangaForm,
-    });
+    }) as Observable<ServerResponse>;
   }
 
-  removeManga(manga: any): Observable<any> {
-    return this.http.post(this._routeUrl(MANGA_ROUTE.REMOVE).toString(), {
-      manga: manga,
-    });
+  removeManga(manga: any): Observable<ServerResponse> {
+    const path = MANGA_ROUTE.REMOVE.replace('/:mangaId', `/${manga.id}`);
+    return this.http.delete(
+      this._routeUrl(path).toString()
+    ) as Observable<ServerResponse>;
   }
 
-  likeManga(like: LikeType): Observable<any> {
+  likeManga(like: LikeType): Observable<ServerResponse> {
     return this.http.post(this._routeUrl(MANGA_ROUTE.LIKE).toString(), {
       like: like,
-    });
+    }) as Observable<ServerResponse>;
   }
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { UserType } from '../../types/user.type';
 import { Observable } from 'rxjs';
+import { ServerResponse } from 'src/app/types/server-response.type';
 
 const DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
@@ -37,9 +37,9 @@ export class ContactHttpService {
     return new URL(this._domain + route);
   }
 
-  sendMail(info: ContactInfo): Observable<any> {
+  sendMail(info: ContactInfo): Observable<ServerResponse> {
     return this.http.post(this._routeUrl(ROUTE.SEND_MAIL).toString(), {
       info: info,
-    });
+    }) as Observable<ServerResponse>;
   }
 }

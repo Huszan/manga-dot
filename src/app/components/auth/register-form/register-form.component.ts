@@ -80,12 +80,16 @@ export class RegisterFormComponent {
       isVerified: false,
     };
     this._auth.registerUser(user).subscribe((res) => {
-      if (res.status === 0) {
-        this._snackbar.open(res.message, 'Close', {
-          duration: 8000,
-        });
+      if (res.status === 'error') {
+        this._snackbar.open(
+          res.message ? res.message : 'Something went wrong. Try again later.',
+          'Close',
+          {
+            duration: 8000,
+          }
+        );
       } else {
-        this._snackbar.open(res.message, 'Close', {
+        this._snackbar.open(res.message ? res.message : 'Success!', 'Close', {
           duration: 8000,
         });
         this.resetForm();
