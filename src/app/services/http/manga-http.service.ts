@@ -61,7 +61,7 @@ export class MangaHttpService {
         res.data.manga.addedDate = new Date(res.data.manga.addedDate);
         res.data.manga.lastUpdateDate = new Date(res.data.manga.lastUpdateDate);
       }
-      if (!res.data && !res.data.list) return res;
+      if (!res.data || !res.data.list) return res;
       for (let manga of res.data.list) {
         manga.addedDate = new Date(manga.addedDate);
         manga.lastUpdateDate = new Date(manga.lastUpdateDate);
