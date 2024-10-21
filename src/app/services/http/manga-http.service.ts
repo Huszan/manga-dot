@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { LikeType } from '../../types/like.type';
 import { SortData } from 'src/app/components/manga/manga-browse/manga-browse.component';
 import { ServerResponse } from 'src/app/types/server-response.type';
+import { AuthService } from '../data/auth.service';
+import { generateGenericHeaders } from 'src/app/utils/route.utils';
 
 const MANGA_DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
@@ -35,7 +37,7 @@ export interface RepositoryFindOptions {
 export class MangaHttpService {
   private readonly _domain;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private _authService: AuthService) {
     if (environment.production) {
       this._domain = MANGA_DOMAIN.Production;
     } else {
@@ -72,15 +74,20 @@ export class MangaHttpService {
     if (options) route.searchParams.append('options', JSON.stringify(options));
     if (bigSearch) route.searchParams.append('search', bigSearch);
 
-    return this.http
-      .get<ServerResponse>(route.toString())
-      .pipe(map((res) => addDate(res))) as Observable<ServerResponse>;
+    return this.http.get<ServerResponse>(route.toString()).pipe(
+      map((res) => addDate(res)),
+      catchError((err) => {
+        return of(err.error as ServerResponse);
+      })
+    ) as Observable<ServerResponse>;
   }
 
   getMangaChapters(mangaId: number): Observable<ServerResponse> {
     const path = MANGA_ROUTE.GET_CHAPTERS.replace('/:mangaId', `/${mangaId}`);
-    return this.http.get(
-      this._routeUrl(path).toString()
+    return this.http.get<ServerResponse>(this._routeUrl(path).toString()).pipe(
+      catchError((err) => {
+        return of(err.error as ServerResponse);
+      })
     ) as Observable<ServerResponse>;
   }
 
@@ -92,27 +99,55 @@ export class MangaHttpService {
       '/:mangaId',
       `/${mangaId}`
     ).replace('/:chapterId', `/${chapterId}`);
-    return this.http.get(
-      this._routeUrl(path).toString()
+    return this.http.get<ServerResponse>(this._routeUrl(path).toString()).pipe(
+      catchError((err) => {
+        return of(err.error as ServerResponse);
+      })
     ) as Observable<ServerResponse>;
   }
 
   postManga(mangaForm: any): Observable<ServerResponse> {
-    return this.http.post(this._routeUrl(MANGA_ROUTE.POST).toString(), {
-      manga: mangaForm,
-    }) as Observable<ServerResponse>;
+    return this.http
+      .post<ServerResponse>(
+        this._routeUrl(MANGA_ROUTE.POST).toString(),
+        {
+          manga: mangaForm,
+        },
+        {
+          headers: generateGenericHeaders(this._authService),
+        }
+      )
+      .pipe(
+        catchError((err) => {
+          return of(err.error as ServerResponse);
+        })
+      ) as Observable<ServerResponse>;
   }
 
   removeManga(manga: any): Observable<ServerResponse> {
     const path = MANGA_ROUTE.REMOVE.replace('/:mangaId', `/${manga.id}`);
-    return this.http.delete(
-      this._routeUrl(path).toString()
-    ) as Observable<ServerResponse>;
+    let headers = generateGenericHeaders(this._authService);
+
+    return this.http
+      .delete<ServerResponse>(this._routeUrl(path).toString(), {
+        headers,
+      })
+      .pipe(
+        catchError((err) => {
+          return of(err.error as ServerResponse);
+        })
+      ) as Observable<ServerResponse>;
   }
 
   likeManga(like: LikeType): Observable<ServerResponse> {
-    return this.http.post(this._routeUrl(MANGA_ROUTE.LIKE).toString(), {
-      like: like,
-    }) as Observable<ServerResponse>;
+    return this.http
+      .post<ServerResponse>(this._routeUrl(MANGA_ROUTE.LIKE).toString(), {
+        like: like,
+      })
+      .pipe(
+        catchError((err) => {
+          return of(err.error as ServerResponse);
+        })
+      ) as Observable<ServerResponse>;
   }
 }

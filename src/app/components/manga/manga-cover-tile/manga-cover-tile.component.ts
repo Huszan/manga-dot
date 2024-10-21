@@ -33,7 +33,6 @@ export class MangaCoverTileComponent implements OnInit, OnDestroy {
   private userSub!: Subscription;
 
   constructor(
-    private _mangaService: MangaService,
     private _mangaHttpService: MangaHttpService,
     private _snackbar: MatSnackBar,
     private _auth: AuthService,
@@ -52,28 +51,13 @@ export class MangaCoverTileComponent implements OnInit, OnDestroy {
   }
 
   onClickRemove() {
-    if (this.user?.accountType === AccountType.User) {
-      this._snackbar.open(
-        "You don't have rights to perform this action",
-        'Close',
-        {
-          duration: 8000,
-        }
-      );
-      return;
-    }
     this._mangaHttpService.removeManga(this.manga).subscribe((res) => {
-      if (res) {
-        const message = res.message ? res.message : 'Something went wrong...';
-        this._snackbar.open(message, 'Close', {
-          duration: 8000,
-        });
-      }
+      if (res.message) this._snackbar.open(res.message, '', { duration: 2000 });
     });
   }
 
   onClickEdit() {
-    // TODO: Not implemented yet
+    this._snackbar.open('Not implemented yet', '', { duration: 2000 });
   }
 
   ngOnDestroy() {
