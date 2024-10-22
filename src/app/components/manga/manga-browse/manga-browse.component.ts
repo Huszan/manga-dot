@@ -17,9 +17,10 @@ import {
   MangaHttpService,
   RepositoryFindOptions,
 } from '../../../services/http/manga-http.service';
-import { debounceTime, Subject, Subscription } from 'rxjs';
+import { debounceTime, Observable, Subject, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
+import { ServerResponse } from 'src/app/types/server-response.type';
 
 export interface SortData {
   element: string;
@@ -151,6 +152,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private inputSubject = new Subject<string>();
   private paramSub!: Subscription;
+  private debounceTimeout: any;
 
   constructor(
     private httpManga: MangaHttpService,
@@ -218,15 +220,15 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
     this.addPageToParams().then(() => {
       this.addPerPageToParams();
     });
-    this.getElements();
   }
 
   private initSearchDebounce() {
     this.inputSubject.pipe(debounceTime(1000)).subscribe((inputValue) => {
       this.searchString = inputValue.trim();
-      this.addSearchToParams();
-      if (this.currentPage > 0) this.reset();
-      else this.getElements();
+      this.addSearchToParams().then(() => {
+        this.currentPage = 0;
+        this.addPageToParams();
+      });
     });
   }
 
@@ -242,15 +244,33 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getElements() {
+    if (this.debounceTimeout) {
+      clearTimeout(this.debounceTimeout);
+    }
+
     this.mangaList = [];
     this.isLoading = true;
     this._cdr.detectChanges();
+
+    this.debounceTimeout = setTimeout(() => {
+      this.fetchManga().subscribe((res) => {
+        this.mangaList = res.data && res.data.list ? res.data.list : [];
+        this.mangaCount =
+          res.data && res.data.count ? res.data.count : undefined;
+        this.isLoading = false;
+        this._cdr.detectChanges();
+      });
+    }, 300);
+  }
+
+  private fetchManga(): Observable<ServerResponse> {
     let options: RepositoryFindOptions = {
       where: [],
       take: this.itemsPerPage,
       skip: this.currentPage * this.itemsPerPage,
       order: this.sortBy ? this.sortBy : undefined,
     };
+
     if (this.searchString.length > 0) {
       options.where?.push({
         element: 'manga.name',
@@ -258,27 +278,19 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
         specialType: 'like',
       });
     }
+
     if (this.selectedTagIndexes.length > 0) {
       options.where?.push(...this.tagOptions);
     }
-    this.httpManga.getManga(undefined, options).subscribe((res) => {
-      this.mangaList = res.data && res.data.list ? res.data.list : [];
-      this.mangaCount = res.data && res.data.count ? res.data.count : undefined;
-      this.isLoading = false;
-      this._cdr.detectChanges();
-    });
+
+    // Return an observable from the HTTP call
+    return this.httpManga.getManga(undefined, options);
   }
 
   onSearchInput(event: any) {
     this.mangaList = [];
     this.isLoading = true;
     this.inputSubject.next(event.target.value);
-  }
-
-  private reset() {
-    this.currentPage = 0;
-    if (this.paginator) this.paginator?.firstPage();
-    this._cdr.detectChanges();
   }
 
   onMangaSelect(index: number) {
@@ -314,7 +326,6 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   onSortValueChange(event: any) {
     this.addSortToParams(event);
     this.setSort(event);
-    this.getElements();
   }
 
   addSortToParams(index: number) {
@@ -380,7 +391,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       delete queryParams['tags'];
     }
-    this.router.navigate([], {
+    return this.router.navigate([], {
       relativeTo: this.route,
       queryParams,
     });
@@ -404,9 +415,10 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onTagsApply() {
     this.isTagSelectBoxOpen = false;
-    this.addTagsToParams();
-    if (this.currentPage > 0) this.reset();
-    else this.getElements();
+    this.addTagsToParams().then(() => {
+      this.currentPage = 0;
+      this.addPageToParams();
+    });
   }
 
   private get searchQueryParam() {
