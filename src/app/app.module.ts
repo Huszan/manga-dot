@@ -51,6 +51,7 @@ import { MangaSearchBarComponent } from './components/manga/manga-search-bar/man
 import { ContactFormComponent } from './components/views/contact-form/contact-form.component';
 import { FooterComponent } from './components/nav/footer/footer.component';
 import { MangaCarouselComponent } from './components/manga/manga-carousel/manga-carousel.component';
+import { InViewDirective } from './directives/in-view.directive';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { MangaCarouselComponent } from './components/manga/manga-carousel/manga-
     ContactFormComponent,
     FooterComponent,
     MangaCarouselComponent,
+    InViewDirective,
   ],
   imports: [
     BrowserModule,
