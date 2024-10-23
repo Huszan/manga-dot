@@ -7,13 +7,11 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { MangaService } from 'src/app/services/data/manga.service';
-import {
-  MangaHttpService,
-  RepositoryFindOptions,
-} from 'src/app/services/http/manga-http.service';
+import { MangaHttpService } from 'src/app/services/http/manga-http.service';
 import { MangaType } from 'src/app/types/manga.type';
 import { ItemPerPage, SortData } from '../manga-browse/manga-browse.component';
 import { fakeArray } from 'src/app/utils/base';
+import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
 
 @Component({
   selector: 'app-manga-carousel',

@@ -13,14 +13,12 @@ import { MangaType } from '../../../types/manga.type';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { StoreItem, StoreService } from '../../../services/store.service';
 import { MatSlider } from '@angular/material/slider';
-import {
-  MangaHttpService,
-  RepositoryFindOptions,
-} from '../../../services/http/manga-http.service';
+import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { debounceTime, Observable, Subject, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { ServerResponse } from 'src/app/types/server-response.type';
+import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
 
 export interface SortData {
   element: string;

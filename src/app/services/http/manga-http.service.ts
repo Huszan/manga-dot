@@ -3,10 +3,10 @@ import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, Observable, of } from 'rxjs';
 import { LikeType } from '../../types/like.type';
-import { SortData } from 'src/app/components/manga/manga-browse/manga-browse.component';
 import { ServerResponse } from 'src/app/types/server-response.type';
 import { AuthService } from '../data/auth.service';
 import { generateGenericHeaders } from 'src/app/utils/route.utils';
+import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
 
 const MANGA_DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
@@ -19,16 +19,6 @@ enum MANGA_ROUTE {
   GET_PAGES = 'manga/:mangaId/chapters/:chapterId/pages',
   REMOVE = 'manga/:mangaId',
   LIKE = 'manga/like',
-}
-export interface RepositoryFindOptions {
-  where?: {
-    element: string;
-    value: string | number;
-    specialType?: 'like';
-  }[];
-  skip?: number;
-  take?: number;
-  order?: SortData;
 }
 
 @Injectable({
