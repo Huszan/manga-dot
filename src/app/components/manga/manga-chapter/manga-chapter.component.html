@@ -16,9 +16,18 @@
       else skeletonPages
     "
   >
-    <ng-container *ngFor="let page of manga!.chapters![chapter].pages!">
-      <img [src]="sanitizeUrl(page.url)" alt="no image" />
-    </ng-container>
+    <div class="pages-wrapper">
+      <ng-container
+        *ngFor="let page of manga!.chapters![chapter].pages!; let i = index"
+      >
+        <img
+          [src]="sanitizeUrl(page.url)"
+          alt="no image"
+          appInView
+          (inView)="onPageInView(i)"
+        />
+      </ng-container>
+    </div>
   </ng-container>
 </ng-template>
 

@@ -10,6 +10,9 @@ import { MangaService } from '../../../services/data/manga.service';
 import { MangaType } from '../../../types/manga.type';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
+import { ReadProgressService } from 'src/app/services/data/read-progress.service';
+import { ReadProgressType } from 'src/app/types/read-progress.type';
+import { AuthService } from 'src/app/services/data/auth.service';
 
 @Component({
   selector: 'app-manga-chapter',
@@ -32,7 +35,9 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private _router: Router,
     private _mangaService: MangaService,
-    private _sanitizer: DomSanitizer
+    private _sanitizer: DomSanitizer,
+    private _readProgressService: ReadProgressService,
+    private _authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -145,6 +150,18 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   sanitizeUrl(url: string) {
     return this._sanitizer.bypassSecurityTrustUrl(url);
+  }
+
+  onPageInView(index: number) {
+    const userId = this._authService.currentUser$.value?.id;
+    if (userId === undefined) return;
+    const progress: ReadProgressType = {
+      userId,
+      mangaId: this.mangaId,
+      lastReadChapter: this.chapter,
+      lastReadPage: index,
+    };
+    this._readProgressService.updateProgress(progress);
   }
 
   ngOnDestroy(): void {
