@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 import { ReadProgressService } from 'src/app/services/data/read-progress.service';
 import { ReadProgressType } from 'src/app/types/read-progress.type';
 import { AuthService } from 'src/app/services/data/auth.service';
+import { PageType } from 'src/app/types/page.type';
 
 @Component({
   selector: 'app-manga-chapter',
@@ -22,10 +23,14 @@ import { AuthService } from 'src/app/services/data/auth.service';
 })
 export class MangaChapterComponent implements OnInit, OnDestroy {
   manga: MangaType | null = null;
+  pages: PageType[] = [];
   chapter: number = 0;
   mangaId: number = 0;
   isInitialized: boolean = false;
   isChapterAccesible: boolean = true;
+
+  loadedImages: boolean[] = [];
+  isImagesLoaded: boolean = false;
 
   mangaSub!: Subscription;
   paramsSub!: Subscription;
@@ -62,7 +67,12 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     this.mangaSub = this._mangaService.selectedManga$.subscribe((manga) => {
       this.manga = manga;
       this.checkIfMangaIsInitialized();
-      if (this.isInitialized) this._cdr.detectChanges();
+      if (this.isInitialized) {
+        this.pages = this.manga!.chapters![this.chapter].pages;
+        this.loadedImages = new Array(this.pages.length).fill(false);
+        this._cdr.detectChanges();
+        this.initializeIntersectionObserver();
+      }
     });
   }
 
@@ -162,6 +172,37 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
       lastReadPage: index,
     };
     this._readProgressService.updateProgress(progress);
+  }
+
+  initializeIntersectionObserver() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const imgElement = entry.target as HTMLImageElement;
+            const index = Number(imgElement.getAttribute('data-index'));
+            if (!this.loadedImages[index]) {
+              imgElement.src = this.pages[index].url;
+              imgElement.onload = () => this.onImageLoad(index);
+              observer.unobserve(imgElement); // Stop observing this image after loading
+            }
+          }
+        });
+      },
+      { rootMargin: '50px', threshold: 0.1 }
+    );
+
+    document
+      .querySelectorAll('.manga-image')
+      .forEach((img) => observer.observe(img));
+  }
+
+  onImageLoad(i: number) {
+    this.loadedImages[i] = true;
+    if (this.loadedImages.every((el) => el)) {
+      this.isImagesLoaded = true;
+    }
+    this._cdr.detectChanges();
   }
 
   ngOnDestroy(): void {

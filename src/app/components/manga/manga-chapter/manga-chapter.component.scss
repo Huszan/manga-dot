@@ -1,4 +1,4 @@
-.pages-wrapper {
+.chapter-wrapper {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -16,10 +16,35 @@
     }
   }
 
-  img {
-    margin: auto;
-    max-width: 1000px;
+  .pages-wrapper {
     width: 100%;
+    .page-wrapper {
+      position: relative;
+      margin: auto;
+      width: 100%;
+      max-width: 1000px;
+
+      .skeleton-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1; /* Ensures the skeleton is on top of the image */
+      }
+
+      .manga-image {
+        min-height: 100vh;
+        width: 100%;
+        opacity: 0;
+        transition: opacity 0.3s ease-in;
+      }
+
+      .manga-image.loaded {
+        min-height: auto;
+        opacity: 1;
+      }
+    }
   }
 
   .action-box {

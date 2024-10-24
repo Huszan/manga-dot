@@ -1,4 +1,4 @@
-<div class="pages-wrapper">
+<div class="chapter-wrapper">
   <ng-container *ngTemplateOutlet="title"></ng-container>
   <ng-container *ngTemplateOutlet="actionBox"></ng-container>
   <ng-container *ngIf="isChapterAccesible; else contentNotFound">
@@ -8,25 +8,28 @@
 </div>
 
 <ng-template #contentFound>
-  <ng-container
-    *ngIf="
-      manga &&
-        manga!.chapters![chapter].pages &&
-        manga!.chapters![chapter].pages.length > 0;
-      else skeletonPages
-    "
-  >
-    <div class="pages-wrapper">
-      <ng-container
-        *ngFor="let page of manga!.chapters![chapter].pages!; let i = index"
-      >
+  <ng-container *ngIf="isInitialized; else skeletonPages">
+    <div class="pages-wrapper" *ngFor="let page of pages; let i = index">
+      <div class="page-wrapper">
+        <ngx-skeleton-loader
+          *ngIf="loadedImages[i] === false"
+          count="1"
+          class="skeleton-overlay"
+          [theme]="{
+            width: '100%',
+            height: '100%',
+            borderRadius: '0'
+          }"
+        ></ngx-skeleton-loader>
         <img
-          [src]="sanitizeUrl(page.url)"
-          alt="no image"
+          [attr.data-index]="i"
+          class="manga-image"
+          alt="manga page"
           appInView
           (inView)="onPageInView(i)"
+          [class.loaded]="loadedImages[i] === true"
         />
-      </ng-container>
+      </div>
     </div>
   </ng-container>
 </ng-template>
@@ -48,17 +51,18 @@
     >
       <mat-icon>arrow_backward</mat-icon>
     </a>
-    <span class="mat-display-2 title">
-      <ng-container *ngIf="manga && manga.name; else skeletonTitle">
+    <span
+      class="mat-display-2 title"
+      *ngIf="
+        manga && manga.name && manga.chapters && manga.chapters[chapter];
+        else skeletonTitle
+      "
+    >
+      <ng-container>
         <a (click)="goToChapterSelect()">{{ manga!.name }}</a>
       </ng-container>
       :&nbsp;
-      <ng-container
-        *ngIf="
-          manga && manga.chapters && manga.chapters[chapter];
-          else skeletonSubtitle
-        "
-      >
+      <ng-container>
         {{ manga!.chapters![chapter].name }}
       </ng-container>
     </span>
@@ -108,20 +112,13 @@
 <ng-template #skeletonTitle>
   <ngx-skeleton-loader
     count="1"
-    [theme]="{ width: '240px', height: '48px', margin: 'unset' }"
-  ></ngx-skeleton-loader>
-</ng-template>
-
-<ng-template #skeletonSubtitle>
-  <ngx-skeleton-loader
-    count="1"
-    [theme]="{ width: '280px', height: '48px', margin: 'unset' }"
+    [theme]="{ width: '80%', height: '48px', margin: 'unset' }"
   ></ngx-skeleton-loader>
 </ng-template>
 
 <ng-template #skeletonPages>
   <ngx-skeleton-loader
-    count="5"
+    count="1"
     [style]="{ width: '100%', margin: 'auto' }"
     [theme]="{
       display: 'block',
