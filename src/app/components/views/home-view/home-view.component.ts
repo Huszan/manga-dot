@@ -5,8 +5,9 @@ import {
 } from '../../manga/manga-browse/manga-browse.component';
 import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
 import { MangaHttpService } from 'src/app/services/http/manga-http.service';
-import { MangaType } from 'src/app/types/manga.type';
 import { ServerResponse } from 'src/app/types/server-response.type';
+import { ReadProgressService } from 'src/app/services/data/read-progress.service';
+import { MangaType } from 'src/app/types/manga.type';
 
 export interface MangaBrowseElement {
   title: string;
@@ -30,7 +31,12 @@ export class HomeViewComponent {
     this.isMobile = event.target.innerWidth < 800;
   }
 
-  constructor(private _mangaHttpService: MangaHttpService) {
+  readMangaList: MangaType[] = [];
+
+  constructor(
+    private _mangaHttpService: MangaHttpService,
+    private _readProgressService: ReadProgressService
+  ) {
     for (let [key, val] of Object.entries(this.browseElements)) {
       this.fetchManga(
         {
@@ -42,6 +48,18 @@ export class HomeViewComponent {
         }
       );
     }
+
+    _readProgressService.readProgressList$.subscribe((list) => {
+      if (!list || list.length === 0) return;
+      this.readMangaList = list
+        .map((el) => {
+          if (!el.manga) return el.manga;
+          el.manga.addedDate = new Date(el.manga.addedDate);
+          el.manga.lastUpdateDate = new Date(el.manga.lastUpdateDate);
+          return el.manga;
+        })
+        .filter((el) => el !== undefined) as MangaType[];
+    });
   }
 
   browseElements: { [key: string]: MangaBrowseElement } = {

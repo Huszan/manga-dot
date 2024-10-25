@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, debounceTime, of, switchMap } from 'rxjs';
+import { BehaviorSubject, debounceTime, Observable, of, switchMap } from 'rxjs';
 import { ReadProgressType } from 'src/app/types/read-progress.type';
 import { AuthService } from './auth.service';
 import { ReadProgressHttpService } from '../http/read-progress-http.service';
@@ -17,6 +17,7 @@ export class ReadProgressService {
     private _authService: AuthService
   ) {
     this.onSetProgress();
+
     _authService.currentUser$.subscribe((user) => {
       if (user === null || !user.id) {
         this.userId = undefined;

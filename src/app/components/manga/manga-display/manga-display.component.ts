@@ -17,6 +17,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { ChapterType } from '../../../types/chapter.type';
 import { Tags } from '../manga-browse/manga-browse.component';
+import { ReadProgressService } from 'src/app/services/data/read-progress.service';
+import { ReadProgressType } from 'src/app/types/read-progress.type';
 
 @Component({
   selector: 'app-manga-display',
@@ -28,9 +30,11 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
   [x: string]: any;
   manga: MangaType | null = null;
   user: UserType | null = null;
+  readProgress: ReadProgressType | null = null;
 
   private _userSub!: Subscription;
   private _mangaSub!: Subscription;
+  private _progressSub!: Subscription;
 
   allTags = Tags;
   fakeArray = FakeArray;
@@ -42,12 +46,14 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
     private mangaHttp: MangaHttpService,
     private _cdr: ChangeDetectorRef,
     private _auth: AuthService,
-    private _snackbar: MatSnackBar
+    private _snackbar: MatSnackBar,
+    private _readProgressService: ReadProgressService
   ) {}
 
   ngOnInit() {
     this._initializeManga();
     this._initializeUser();
+    this._initializeProgress();
   }
 
   get mangaId(): number {
@@ -72,6 +78,19 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
       this.user = user;
       this._cdr.detectChanges();
     });
+  }
+
+  private _initializeProgress() {
+    this._progressSub = this._readProgressService.readProgressList$.subscribe(
+      (list) => {
+        if (this.manga === null) return;
+        const progress = list?.filter((el) => el.mangaId === this.manga!.id)[0];
+        if (progress) {
+          this.readProgress = progress;
+          this._cdr.detectChanges();
+        }
+      }
+    );
   }
 
   get isLikedByUser() {
@@ -110,8 +129,16 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
     this.router.navigate(['manga', this.mangaId, chapter]);
   }
 
+  onContinueReading() {
+    this.router.navigate(
+      ['manga', this.mangaId, this.readProgress?.lastReadChapter],
+      { queryParams: { lastReadPage: this.readProgress?.lastReadPage } }
+    );
+  }
+
   ngOnDestroy() {
     this._userSub.unsubscribe();
     this._mangaSub.unsubscribe();
+    this._progressSub.unsubscribe();
   }
 }

@@ -22,6 +22,12 @@
 </section>
 
 <app-manga-carousel
+  [title]="'Continue reading'"
+  [mangaList]="readMangaList"
+  [itemsPerPage]="6"
+></app-manga-carousel>
+
+<app-manga-carousel
   [title]="browseElements['popular'].title"
   [titleNav]="browseElements['popular'].titleNav"
   [mangaList]="browseElements['popular'].mangaList"

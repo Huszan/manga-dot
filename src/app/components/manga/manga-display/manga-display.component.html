@@ -55,7 +55,7 @@
       </div>
       <button mat-button color="primary" (click)="onLike()">
         <mat-icon
-          *ngIf="!isLikedByUser"
+          *ngIf="!isLikedByUser && manga && manga.chapters"
           style="margin-right: 8px"
           color="primary"
           >thumb_up</mat-icon
@@ -64,6 +64,17 @@
           >thumb_up</mat-icon
         >
         {{ manga!.likes.length }}
+      </button>
+      <button
+        *ngIf="this.user"
+        class="continue-button"
+        mat-flat-button
+        color="accent"
+        [disabled]="!this.readProgress"
+        (click)="onContinueReading()"
+      >
+        Continue reading
+        <mat-icon>arrow_forward</mat-icon>
       </button>
     </div>
   </div>

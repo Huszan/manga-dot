@@ -1,4 +1,5 @@
 import {
+  AfterViewInit as AfterViewChack,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -22,18 +23,21 @@ import { PageType } from 'src/app/types/page.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MangaChapterComponent implements OnInit, OnDestroy {
+  targetElement!: any;
   manga: MangaType | null = null;
   pages: PageType[] = [];
   chapter: number = 0;
   mangaId: number = 0;
   isInitialized: boolean = false;
   isChapterAccesible: boolean = true;
+  lastReadPage: number | undefined;
 
   loadedImages: boolean[] = [];
   isImagesLoaded: boolean = false;
 
   mangaSub!: Subscription;
   paramsSub!: Subscription;
+  queryParamsSub!: Subscription;
 
   constructor(
     private _cdr: ChangeDetectorRef,
@@ -46,12 +50,23 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this._initMangaSub();
     this._initSubToParams();
+    this._initSubToQueryParams();
+    this._initMangaSub();
+  }
+
+  pageWrapperClass(i: number): string {
+    return `page-wrapper${
+      this.lastReadPage && this.lastReadPage === i ? ' scroll-target' : ''
+    }`;
   }
 
   private _initSubToParams() {
     this.paramsSub = this._subToParams();
+  }
+
+  private _initSubToQueryParams() {
+    this.queryParamsSub = this._subToQueryParams();
   }
 
   private _subToParams() {
@@ -60,6 +75,12 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
       this.chapter = Number(params['chapter']);
       this._getManga();
       this._cdr.detectChanges();
+    });
+  }
+
+  private _subToQueryParams() {
+    return this.route.queryParams.subscribe((params) => {
+      this.lastReadPage = Number(params['lastReadPage']);
     });
   }
 
@@ -178,12 +199,17 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const imgElement = entry.target as HTMLImageElement;
-            const index = Number(imgElement.getAttribute('data-index'));
+          const imgElement = entry.target as HTMLImageElement;
+          const index = Number(imgElement.getAttribute('data-index'));
+
+          if (
+            entry.isIntersecting ||
+            (this.lastReadPage !== undefined && index <= this.lastReadPage)
+          ) {
             if (!this.loadedImages[index]) {
               imgElement.src = this.pages[index].url;
               imgElement.onload = () => this.onImageLoad(index);
+              imgElement.onerror = () => this.onImageLoad(index);
               observer.unobserve(imgElement); // Stop observing this image after loading
             }
           }
@@ -202,7 +228,18 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     if (this.loadedImages.every((el) => el)) {
       this.isImagesLoaded = true;
     }
+    if (this.loadedImages.slice(0, this.lastReadPage).every((el) => el)) {
+      this.goToLastReadPage();
+    }
     this._cdr.detectChanges();
+  }
+
+  goToLastReadPage() {
+    const target = document.querySelector('.scroll-target');
+    if (!target) return;
+    target.scrollIntoView({
+      block: 'start',
+    });
   }
 
   ngOnDestroy(): void {
