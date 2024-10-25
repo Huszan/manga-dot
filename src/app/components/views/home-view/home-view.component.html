@@ -22,17 +22,17 @@
 </section>
 
 <app-manga-carousel
-  [title]="browseElements.popular.title"
-  [titleNav]="browseElements.popular.titleNav"
-  [sortBy]="browseElements.popular.sortBy"
-  [itemsPerPage]="browseElements.new.itemsPerPage"
+  [title]="browseElements['popular'].title"
+  [titleNav]="browseElements['popular'].titleNav"
+  [mangaList]="browseElements['popular'].mangaList"
+  [itemsPerPage]="browseElements['popular'].itemsPerPage"
 ></app-manga-carousel>
 
 <app-manga-carousel
-  [title]="browseElements.new.title"
-  [titleNav]="browseElements.new.titleNav"
-  [sortBy]="browseElements.new.sortBy"
-  [itemsPerPage]="browseElements.new.itemsPerPage"
+  [title]="browseElements['new'].title"
+  [titleNav]="browseElements['new'].titleNav"
+  [mangaList]="browseElements['new'].mangaList"
+  [itemsPerPage]="browseElements['new'].itemsPerPage"
 ></app-manga-carousel>
 
 <section class="contact-section">
@@ -57,9 +57,9 @@
 </section>
 
 <app-manga-carousel
-  [title]="browseElements.bestRated.title"
-  [titleNav]="browseElements.bestRated.titleNav"
-  [sortBy]="browseElements.bestRated.sortBy"
-  [itemsPerPage]="browseElements.bestRated.itemsPerPage"
+  [title]="browseElements['bestRated'].title"
+  [titleNav]="browseElements['bestRated'].titleNav"
+  [mangaList]="browseElements['bestRated'].mangaList"
+  [itemsPerPage]="browseElements['bestRated'].itemsPerPage"
   [size]="16"
 ></app-manga-carousel>

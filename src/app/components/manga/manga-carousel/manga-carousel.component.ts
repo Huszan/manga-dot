@@ -1,4 +1,6 @@
 import {
+  AfterViewChecked,
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -7,51 +9,31 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { MangaService } from 'src/app/services/data/manga.service';
-import { MangaHttpService } from 'src/app/services/http/manga-http.service';
 import { MangaType } from 'src/app/types/manga.type';
-import { ItemPerPage, SortData } from '../manga-browse/manga-browse.component';
 import { fakeArray } from 'src/app/utils/base';
-import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
+import { ItemPerPage } from '../manga-browse/manga-browse.component';
 
 @Component({
   selector: 'app-manga-carousel',
   templateUrl: './manga-carousel.component.html',
   styleUrls: ['./manga-carousel.component.scss'],
 })
-export class MangaCarouselComponent {
+export class MangaCarouselComponent implements AfterViewChecked {
   @Input() title!: string;
-  @Input() titleNav!: { link: string; queryParams: any };
-  @Input() sortBy?: SortData;
+  @Input() titleNav: { link: string; queryParams: any } | undefined;
   @Input() itemsPerPage: ItemPerPage | number = 12;
+  @Input() mangaList: MangaType[] = [];
   @Input() size: number = 20;
 
   @ViewChild('carouselWrapperRef') carouselWrapperRef!: ElementRef;
 
-  mangaList: MangaType[] = [];
-  mangaCount: number | undefined;
   fakeArray = fakeArray;
 
   constructor(
-    private httpManga: MangaHttpService,
     private mangaService: MangaService,
-    private _cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private _cdr: ChangeDetectorRef
   ) {}
-
-  getElements() {
-    this.mangaList = [];
-    this._cdr.detectChanges();
-    let options: RepositoryFindOptions = {
-      where: [],
-      take: this.itemsPerPage,
-      order: this.sortBy ? this.sortBy : undefined,
-    };
-    this.httpManga.getManga(undefined, options).subscribe((res) => {
-      this.mangaList = res.data && res.data.list ? res.data.list : [];
-      this.mangaCount = res.data && res.data.count ? res.data.count : undefined;
-      this._cdr.detectChanges();
-    });
-  }
 
   onMangaSelect(index: number) {
     this.mangaService.selectedManga$.next(this.mangaList[index]);
@@ -59,9 +41,11 @@ export class MangaCarouselComponent {
   }
 
   isScrollMaxLeft = true;
-  isScrollMaxRight = false;
+  isScrollMaxRight = true;
 
-  onScroll() {
+  onScroll() {}
+
+  updateScrollVariables() {
     if (!this.carouselWrapperRef) return;
     let el = this.carouselWrapperRef.nativeElement;
     this.isScrollMaxLeft = el.scrollLeft === 0;
@@ -86,7 +70,8 @@ export class MangaCarouselComponent {
     });
   }
 
-  ngAfterViewInit() {
-    this.getElements();
+  ngAfterViewChecked() {
+    this.updateScrollVariables();
+    this._cdr.detectChanges();
   }
 }

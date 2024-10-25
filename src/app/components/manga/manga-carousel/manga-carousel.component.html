@@ -1,11 +1,15 @@
 <div class="manga-carousel">
   <a
+    *ngIf="titleNav"
     class="mat-h2 title"
     style="align-self: start"
     [routerLink]="titleNav.link"
     [queryParams]="titleNav.queryParams"
     >{{ title }}</a
   >
+  <h2 *ngIf="!titleNav" class="mat-h2 title" style="align-self: start">
+    {{ title }}
+  </h2>
   <div class="divider"></div>
 
   <div class="carousel">

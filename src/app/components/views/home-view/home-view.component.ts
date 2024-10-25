@@ -1,14 +1,17 @@
 import { Component, HostListener } from '@angular/core';
 import {
   ItemPerPage,
-  MangaBrowseOptions,
   SortOptions,
 } from '../../manga/manga-browse/manga-browse.component';
+import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
+import { MangaHttpService } from 'src/app/services/http/manga-http.service';
+import { MangaType } from 'src/app/types/manga.type';
+import { ServerResponse } from 'src/app/types/server-response.type';
 
 export interface MangaBrowseElement {
-  title?: string;
+  title: string;
   titleNav?: { link: string; queryParams: any };
-  options: MangaBrowseOptions;
+  mangaList: MangaType[];
   sortBy?: any;
   tags?: number[];
   itemsPerPage: ItemPerPage;
@@ -27,7 +30,21 @@ export class HomeViewComponent {
     this.isMobile = event.target.innerWidth < 800;
   }
 
-  browseElements = {
+  constructor(private _mangaHttpService: MangaHttpService) {
+    for (let [key, val] of Object.entries(this.browseElements)) {
+      this.fetchManga(
+        {
+          take: val.itemsPerPage,
+          order: val.sortBy,
+        },
+        (res) => {
+          this.browseElements[key].mangaList = res.data.list;
+        }
+      );
+    }
+  }
+
+  browseElements: { [key: string]: MangaBrowseElement } = {
     new: {
       title: 'New titles',
       titleNav: {
@@ -36,9 +53,9 @@ export class HomeViewComponent {
           sort: '2',
         },
       },
+      mangaList: [],
       sortBy: SortOptions[2].value,
-      options: { all: false },
-      itemsPerPage: 20,
+      itemsPerPage: 24,
     },
     popular: {
       title: 'Popular',
@@ -48,9 +65,9 @@ export class HomeViewComponent {
           sort: '0',
         },
       },
+      mangaList: [],
       sortBy: SortOptions[0].value,
-      options: { all: false },
-      itemsPerPage: 20,
+      itemsPerPage: 24,
     },
     bestRated: {
       title: 'Best rated',
@@ -60,9 +77,20 @@ export class HomeViewComponent {
           sort: '5',
         },
       },
+      mangaList: [],
       sortBy: SortOptions[5].value,
-      options: { all: false },
-      itemsPerPage: 20,
+      itemsPerPage: 24,
     },
   };
+
+  fetchManga(
+    options: RepositoryFindOptions,
+    next?: (res: ServerResponse) => void
+  ) {
+    return this._mangaHttpService
+      .getManga(undefined, options)
+      .subscribe((res) => {
+        if (next) next(res);
+      });
+  }
 }
