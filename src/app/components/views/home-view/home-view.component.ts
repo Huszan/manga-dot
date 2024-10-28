@@ -1,4 +1,10 @@
-import { Component, HostListener } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnDestroy,
+} from '@angular/core';
 import {
   ItemPerPage,
   SortOptions,
@@ -8,6 +14,7 @@ import { MangaHttpService } from 'src/app/services/http/manga-http.service';
 import { ServerResponse } from 'src/app/types/server-response.type';
 import { ReadProgressService } from 'src/app/services/data/read-progress.service';
 import { MangaType } from 'src/app/types/manga.type';
+import { Subscription } from 'rxjs';
 
 export interface MangaBrowseElement {
   title: string;
@@ -22,8 +29,9 @@ export interface MangaBrowseElement {
   selector: 'app-home-view',
   templateUrl: './home-view.component.html',
   styleUrls: ['./home-view.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeViewComponent {
+export class HomeViewComponent implements OnDestroy {
   isMobile = window.innerWidth < 800;
 
   @HostListener('window:resize', [`$event`])
@@ -32,10 +40,12 @@ export class HomeViewComponent {
   }
 
   readMangaList: MangaType[] = [];
+  private _subscriptions: Subscription[] = [];
 
   constructor(
     private _mangaHttpService: MangaHttpService,
-    private _readProgressService: ReadProgressService
+    private _readProgressService: ReadProgressService,
+    private _cdr: ChangeDetectorRef
   ) {
     for (let [key, val] of Object.entries(this.browseElements)) {
       this.fetchManga(
@@ -45,21 +55,26 @@ export class HomeViewComponent {
         },
         (res) => {
           this.browseElements[key].mangaList = res.data.list;
+          _cdr.markForCheck();
         }
       );
     }
 
-    _readProgressService.readProgressList$.subscribe((list) => {
-      if (!list || list.length === 0) return;
-      this.readMangaList = list
-        .map((el) => {
-          if (!el.manga) return el.manga;
-          el.manga.addedDate = new Date(el.manga.addedDate);
-          el.manga.lastUpdateDate = new Date(el.manga.lastUpdateDate);
-          return el.manga;
-        })
-        .filter((el) => el !== undefined) as MangaType[];
+    let rpSub = _readProgressService.readProgressList$.subscribe((list) => {
+      this.readMangaList =
+        list !== null
+          ? (list
+              .map((el) => {
+                if (!el.manga) return el.manga;
+                el.manga.addedDate = new Date(el.manga.addedDate);
+                el.manga.lastUpdateDate = new Date(el.manga.lastUpdateDate);
+                return el.manga;
+              })
+              .filter((el) => el !== undefined) as MangaType[])
+          : [];
+      this._cdr.markForCheck();
     });
+    this._subscriptions.push(rpSub);
   }
 
   browseElements: { [key: string]: MangaBrowseElement } = {
@@ -105,10 +120,18 @@ export class HomeViewComponent {
     options: RepositoryFindOptions,
     next?: (res: ServerResponse) => void
   ) {
-    return this._mangaHttpService
+    let sub = this._mangaHttpService
       .getManga(undefined, options)
       .subscribe((res) => {
         if (next) next(res);
       });
+    this._subscriptions.push(sub);
+    return sub;
+  }
+
+  ngOnDestroy(): void {
+    this._subscriptions.forEach((el) => {
+      el.unsubscribe();
+    });
   }
 }

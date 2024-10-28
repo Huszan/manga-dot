@@ -9,8 +9,11 @@
 
 <ng-template #contentFound>
   <ng-container *ngIf="isInitialized; else skeletonPages">
-    <div class="pages-wrapper" *ngFor="let page of pages; let i = index">
-      <div [class]="pageWrapperClass(i)">
+    <div class="pages-wrapper" #pagesWrapperRef>
+      <div
+        [class]="pageWrapperClass(i)"
+        *ngFor="let page of pages; let i = index"
+      >
         <ngx-skeleton-loader
           *ngIf="loadedImages[i] === false"
           count="1"

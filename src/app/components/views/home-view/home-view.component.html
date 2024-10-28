@@ -22,6 +22,7 @@
 </section>
 
 <app-manga-carousel
+  *ngIf="0 < readMangaList.length"
   [title]="'Continue reading'"
   [mangaList]="readMangaList"
   [itemsPerPage]="6"

@@ -1,10 +1,11 @@
 import {
-  AfterViewInit as AfterViewChack,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MangaService } from '../../../services/data/manga.service';
@@ -23,7 +24,8 @@ import { PageType } from 'src/app/types/page.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MangaChapterComponent implements OnInit, OnDestroy {
-  targetElement!: any;
+  @ViewChild('pagesWrapperRef') pagesWrapper: ElementRef | undefined =
+    undefined;
   manga: MangaType | null = null;
   pages: PageType[] = [];
   chapter: number = 0;
@@ -196,6 +198,8 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   }
 
   initializeIntersectionObserver() {
+    if (!this.pagesWrapper)
+      setTimeout(() => this.initializeIntersectionObserver, 1000);
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -215,12 +219,12 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
           }
         });
       },
-      { rootMargin: '50px', threshold: 0.1 }
+      { rootMargin: '100%', threshold: 0 }
     );
 
-    document
-      .querySelectorAll('.manga-image')
-      .forEach((img) => observer.observe(img));
+    this.pagesWrapper!.nativeElement.querySelectorAll('.manga-image').forEach(
+      (img: Element) => observer.observe(img)
+    );
   }
 
   onImageLoad(i: number) {
@@ -228,18 +232,27 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     if (this.loadedImages.every((el) => el)) {
       this.isImagesLoaded = true;
     }
-    if (this.loadedImages.slice(0, this.lastReadPage).every((el) => el)) {
+    if (
+      this.lastReadPage !== undefined &&
+      i <= this.lastReadPage &&
+      this.loadedImages.slice(0, this.lastReadPage).every((el) => el)
+    ) {
       this.goToLastReadPage();
     }
     this._cdr.detectChanges();
   }
 
   goToLastReadPage() {
-    const target = document.querySelector('.scroll-target');
+    const target = this.getScrollTarget();
     if (!target) return;
     target.scrollIntoView({
       block: 'start',
     });
+  }
+
+  getScrollTarget(): HTMLElement | undefined {
+    if (!this.pagesWrapper || !this.lastReadPage) return;
+    return this.pagesWrapper.nativeElement.children[this.lastReadPage];
   }
 
   ngOnDestroy(): void {
