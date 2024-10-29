@@ -57,7 +57,7 @@
     <span
       class="mat-display-2 title"
       *ngIf="
-        manga && manga.name && manga.chapters && manga.chapters[chapter];
+        manga && manga.name && manga.chapters && manga.chapters[chapterId];
         else skeletonTitle
       "
     >
@@ -66,7 +66,7 @@
       </ng-container>
       :&nbsp;
       <ng-container>
-        {{ manga!.chapters![chapter].name }}
+        {{ manga!.chapters![chapterId].name }}
       </ng-container>
     </span>
   </div>
@@ -79,7 +79,7 @@
         <mat-form-field appearance="fill" color="accent">
           <mat-label>Select chapter..</mat-label>
           <mat-select
-            [value]="chapter"
+            [value]="chapterId"
             (selectionChange)="onChapterSelect($event)"
           >
             <mat-option

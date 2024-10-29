@@ -28,9 +28,8 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     undefined;
   manga: MangaType | null = null;
   pages: PageType[] = [];
-  chapter: number = 0;
+  chapterId: number = 0;
   mangaId: number = 0;
-  isInitialized: boolean = false;
   isChapterAccesible: boolean = true;
   lastReadPage: number | undefined;
 
@@ -74,9 +73,12 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   private _subToParams() {
     return this.route.params.subscribe((params) => {
       this.mangaId = Number(params['id']);
-      this.chapter = Number(params['chapter']);
-      this._getManga();
-      this._cdr.detectChanges();
+      this.chapterId = Number(params['chapter']);
+      this._getManga(() => {
+        this.isImagesLoaded = false;
+        this._getPages();
+        this._cdr.detectChanges();
+      });
     });
   }
 
@@ -89,52 +91,58 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   private _initMangaSub() {
     this.mangaSub = this._mangaService.selectedManga$.subscribe((manga) => {
       this.manga = manga;
-      this.checkIfMangaIsInitialized();
-      if (this.isInitialized) {
-        this.pages = this.manga!.chapters![this.chapter].pages;
-        this.loadedImages = new Array(this.pages.length).fill(false);
-        this._cdr.detectChanges();
-        this.initializeIntersectionObserver();
-      }
+      this._getPages();
     });
   }
 
-  private _getManga() {
-    if (
-      !this._mangaService.selectedManga$.value ||
-      this._mangaService.selectedManga$.value?.id !== this.mangaId
-    ) {
+  private _getPages() {
+    if (this.isInitialized) {
+      this.pages = this.manga!.chapters![this.chapterId].pages;
+      this.loadedImages = new Array(this.pages.length).fill(false);
+      this._cdr.detectChanges();
+      this.initializeIntersectionObserver();
+    }
+  }
+
+  private _getManga(cb: any = () => {}) {
+    const selectedManga = this._mangaService.selectedManga$.value;
+    if (!selectedManga || selectedManga.id !== this.mangaId) {
       this._mangaService.requestManga(this.mangaId, () => {
         if (!this.isChapterValid) this.goToChapterSelect();
         this._mangaService.requestChapters(() => {
-          this._mangaService.requestPages(this.chapter);
+          this._mangaService.requestPages(this.chapterId, () => {
+            cb();
+          });
         });
       });
     } else {
-      this.manga = this._mangaService.selectedManga$.value;
       if (!this.isChapterValid) this.goToChapterSelect();
-      if (!this.manga.chapters || this.manga.chapters.length <= 0) {
+      if (!selectedManga.chapters || selectedManga.chapters.length <= 0) {
         this._mangaService.requestChapters(() => {
-          this._mangaService.requestPages(this.chapter, (status) => {
+          this._mangaService.requestPages(this.chapterId, (status) => {
             this.isChapterAccesible = status !== 'error';
+            cb();
           });
         });
       } else if (
-        !this.manga?.chapters![this.chapter].pages ||
-        this.manga?.chapters![this.chapter].pages.length === 0
+        !selectedManga.chapters![this.chapterId].pages ||
+        selectedManga.chapters![this.chapterId].pages.length === 0
       ) {
-        this._mangaService.requestPages(this.chapter, (status) => {
+        this._mangaService.requestPages(this.chapterId, (status) => {
           this.isChapterAccesible = status !== 'error';
+          cb();
         });
+      } else {
+        cb();
       }
     }
   }
 
-  checkIfMangaIsInitialized() {
-    this.isInitialized = !!(
+  get isInitialized() {
+    return !!(
       this.manga &&
       this.manga.chapters &&
-      this.manga.chapters[this.chapter].pages
+      this.manga.chapters[this.chapterId].pages
     );
   }
 
@@ -144,21 +152,18 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   navigateToPreviousChapter() {
     if (this.isFirstChapter) return;
-    this.navigateToChapter(this.chapter - 1);
+    this.navigateToChapter(this.chapterId - 1);
   }
 
   navigateToNextChapter() {
     if (this.isLastChapter) return;
-    this.navigateToChapter(this.chapter + 1);
+    this.navigateToChapter(this.chapterId + 1);
   }
 
   navigateToChapter(chapter: number) {
-    this.chapter = chapter;
+    this.chapterId = chapter;
     if (!this.isChapterValid) return;
-    this._router.navigate(['/manga', this.mangaId, this.chapter]).then(() => {
-      this._mangaService.requestPages(this.chapter);
-      window.scroll({ top: 0 });
-    });
+    this._router.navigate(['/manga', this.mangaId, this.chapterId]);
   }
 
   onChapterSelect(event: any) {
@@ -168,17 +173,17 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   get isFirstChapter() {
     if (!this.manga) return false;
-    return this.chapter === 0;
+    return this.chapterId === 0;
   }
 
   get isLastChapter() {
     if (!this.manga) return false;
-    return this.chapter === this.manga.chapterCount - 1;
+    return this.chapterId === this.manga.chapterCount - 1;
   }
 
   get isChapterValid() {
     if (!this.manga) return true;
-    return this.chapter >= 0 && this.chapter <= this.manga.chapterCount - 1;
+    return this.chapterId >= 0 && this.chapterId <= this.manga.chapterCount - 1;
   }
 
   sanitizeUrl(url: string) {
@@ -191,7 +196,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     const progress: ReadProgressType = {
       userId,
       mangaId: this.mangaId,
-      lastReadChapter: this.chapter,
+      lastReadChapter: this.chapterId,
       lastReadPage: index,
     };
     this._readProgressService.updateProgress(progress);
