@@ -10,6 +10,9 @@
 <ng-template #contentFound>
   <ng-container *ngIf="isInitialized; else skeletonPages">
     <div class="pages-wrapper" #pagesWrapperRef>
+      <div class="counter-wrapper">
+        <span class="counter">{{ currentPage }} / {{ pages.length }}</span>
+      </div>
       <div
         [class]="pageWrapperClass(i)"
         *ngFor="let page of pages; let i = index"

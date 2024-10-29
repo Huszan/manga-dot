@@ -1,4 +1,3 @@
-
 .full-height-wrapper {
   min-height: 100vh;
   height: 100%;
@@ -13,9 +12,13 @@ app-footer {
 
 mat-drawer-container {
   background: transparent;
+  overflow: visible;
+
   mat-drawer-content {
     display: flex;
     flex-direction: column;
+    overflow: visible;
+
     .content {
       display: flex;
       flex-direction: column;
@@ -31,6 +34,7 @@ mat-drawer-container {
   }
 
   mat-card {
+    flex: 1;
     margin: 0 auto 0 auto;
   }
 }

@@ -30,6 +30,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   pages: PageType[] = [];
   chapterId: number = 0;
   mangaId: number = 0;
+  currentPage: number = 1;
   isChapterAccesible: boolean = true;
   lastReadPage: number | undefined;
 
@@ -191,6 +192,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   }
 
   onPageInView(index: number) {
+    this.currentPage = index + 1;
     const userId = this._authService.currentUser$.value?.id;
     if (userId === undefined) return;
     const progress: ReadProgressType = {
