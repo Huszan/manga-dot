@@ -43,7 +43,11 @@
       <b>Last update: </b>{{ manga!.lastUpdateDate.toLocaleDateString() }}
     </p>
     <p *ngIf="manga!.description" class="mat-body">
-      <b>Description: </b>{{ manga!.description }}
+      <b>Description: </b
+      ><app-read-more
+        [text]="manga!.description"
+        [maxLength]="300"
+      ></app-read-more>
     </p>
 
     <div class="button-panel">

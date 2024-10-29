@@ -1,0 +1,9 @@
+<span class="read-more-container">
+  <span *ngIf="!isExpanded" class="text"> {{ trimmedText }}... </span>
+  <span *ngIf="isExpanded" class="text">
+    {{ text }}
+  </span>
+  <button mat-button color="primary" (click)="toggleReadMore()">
+    {{ isExpanded ? "Read Less" : "Read More" }}
+  </button>
+</span>

@@ -52,6 +52,7 @@ import { ContactFormComponent } from './components/views/contact-form/contact-fo
 import { FooterComponent } from './components/nav/footer/footer.component';
 import { MangaCarouselComponent } from './components/manga/manga-carousel/manga-carousel.component';
 import { InViewDirective } from './directives/in-view.directive';
+import { ReadMoreComponent } from './components/global/read-more/read-more.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import { InViewDirective } from './directives/in-view.directive';
     FooterComponent,
     MangaCarouselComponent,
     InViewDirective,
+    ReadMoreComponent,
   ],
   imports: [
     BrowserModule,
