@@ -1,11 +1,12 @@
 import {
-  AfterViewChecked,
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
@@ -14,7 +15,6 @@ import { MangaService } from 'src/app/services/data/manga.service';
 import { MangaType } from 'src/app/types/manga.type';
 import { fakeArray } from 'src/app/utils/base';
 import { ItemPerPage } from '../manga-browse/manga-browse.component';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-manga-carousel',
@@ -22,14 +22,18 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./manga-carousel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MangaCarouselComponent implements OnChanges {
+export class MangaCarouselComponent
+  implements OnChanges, AfterViewInit, OnDestroy
+{
   @Input() title!: string;
   @Input() titleNav: { link: string; queryParams: any } | undefined;
   @Input() itemsPerPage: ItemPerPage | number = 12;
   @Input() mangaList: MangaType[] = [];
+  @Input() useProgress: boolean = false;
   @Input() size: number = 20;
 
   @ViewChild('carouselWrapperRef') carouselWrapperRef!: ElementRef;
+  private resizeObserver!: ResizeObserver;
 
   fakeArray = fakeArray;
 
@@ -56,7 +60,9 @@ export class MangaCarouselComponent implements OnChanges {
   isScrollMaxLeft = true;
   isScrollMaxRight = true;
 
-  onScroll() {}
+  onScroll() {
+    this.updateScrollVariables();
+  }
 
   updateScrollVariables() {
     if (!this.carouselWrapperRef) return;
@@ -81,5 +87,21 @@ export class MangaCarouselComponent implements OnChanges {
       left: -el.offsetWidth,
       behavior: 'smooth',
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target === this.carouselWrapperRef.nativeElement) {
+          this.updateScrollVariables();
+          this._cdr.markForCheck();
+        }
+      }
+    });
+    this.resizeObserver.observe(this.carouselWrapperRef.nativeElement);
+  }
+
+  ngOnDestroy(): void {
+    this.resizeObserver.disconnect();
   }
 }

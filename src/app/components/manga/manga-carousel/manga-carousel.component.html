@@ -35,19 +35,36 @@
       #carouselWrapperRef
       (scroll)="onScroll()"
     >
-      <ng-container *ngFor="let manga of mangaList; let i = index">
-        <app-manga-cover-tile
-          [manga]="manga"
-          (onRead)="onMangaSelect(i)"
-          [size]="size"
-        ></app-manga-cover-tile>
-      </ng-container>
-
-      <ng-container *ngIf="mangaList.length === 0">
-        <ng-container *ngFor="let i of fakeArray(itemsPerPage)">
-          <app-manga-cover-tile [size]="size"></app-manga-cover-tile>
+      <ng-container *ngIf="useProgress; else regularList">
+        <ng-container *ngFor="let manga of mangaList; let i = index">
+          <app-manga-cover-tile-box
+            [manga]="manga"
+            [onRead]="onMangaSelect.bind(this, i)"
+            [size]="size"
+          ></app-manga-cover-tile-box>
+        </ng-container>
+        <ng-container *ngIf="mangaList.length === 0">
+          <ng-container *ngFor="let i of fakeArray(itemsPerPage)">
+            <app-manga-cover-tile-box [size]="size"></app-manga-cover-tile-box>
+          </ng-container>
         </ng-container>
       </ng-container>
+
+      <ng-template #regularList>
+        <ng-container *ngFor="let manga of mangaList; let i = index">
+          <app-manga-cover-tile
+            [manga]="manga"
+            (onRead)="onMangaSelect(i)"
+            [size]="size"
+          ></app-manga-cover-tile>
+        </ng-container>
+
+        <ng-container *ngIf="mangaList.length === 0">
+          <ng-container *ngFor="let i of fakeArray(itemsPerPage)">
+            <app-manga-cover-tile [size]="size"></app-manga-cover-tile>
+          </ng-container>
+        </ng-container>
+      </ng-template>
     </div>
   </div>
 </div>

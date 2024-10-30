@@ -15,6 +15,8 @@ import { ServerResponse } from 'src/app/types/server-response.type';
 import { ReadProgressService } from 'src/app/services/data/read-progress.service';
 import { MangaType } from 'src/app/types/manga.type';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/services/data/auth.service';
+import { UserType } from 'src/app/types/user.type';
 
 export interface MangaBrowseElement {
   title: string;
@@ -40,11 +42,14 @@ export class HomeViewComponent implements OnDestroy {
   }
 
   readMangaList: MangaType[] = [];
+  user: UserType | undefined;
+
   private _subscriptions: Subscription[] = [];
 
   constructor(
     private _mangaHttpService: MangaHttpService,
     private _readProgressService: ReadProgressService,
+    private _authService: AuthService,
     private _cdr: ChangeDetectorRef
   ) {
     for (let [key, val] of Object.entries(this.browseElements)) {
@@ -64,17 +69,18 @@ export class HomeViewComponent implements OnDestroy {
       this.readMangaList =
         list !== null
           ? (list
-              .map((el) => {
-                if (!el.manga) return el.manga;
-                el.manga.addedDate = new Date(el.manga.addedDate);
-                el.manga.lastUpdateDate = new Date(el.manga.lastUpdateDate);
-                return el.manga;
-              })
+              .map((el) => el.manga)
               .filter((el) => el !== undefined) as MangaType[])
           : [];
-      this._cdr.markForCheck();
+      _cdr.markForCheck();
     });
     this._subscriptions.push(rpSub);
+
+    let userSub = _authService.currentUser$.subscribe((user) => {
+      this.user = user === null ? undefined : user;
+      _cdr.markForCheck;
+    });
+    this._subscriptions.push(userSub);
   }
 
   browseElements: { [key: string]: MangaBrowseElement } = {

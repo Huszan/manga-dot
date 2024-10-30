@@ -1,0 +1,42 @@
+<div class="manga-cover-tile-progress">
+  <app-manga-cover-tile
+    [manga]="manga"
+    (onRead)="onRead()"
+    [size]="size"
+  ></app-manga-cover-tile>
+  <div *ngIf="manga" class="read-progress-bar-wrapper">
+    <div class="read-progress-bar" [style.width]="progressPercent"></div>
+  </div>
+
+  <ng-container *ngIf="manga; else actionBarSkeleton">
+    <ng-container [ngTemplateOutlet]="actionBar"></ng-container>
+  </ng-container>
+</div>
+
+<ng-template #actionBar>
+  <div class="action-bar-wrapper">
+    <div class="action-bar">
+      <ng-container *ngFor="let action of actions">
+        <button
+          *ngIf="action.isActive"
+          mat-mini-fab
+          [color]="action.color"
+          (click)="action.action()"
+        >
+          <mat-icon>{{ action.icon }}</mat-icon>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #actionBarSkeleton>
+  <div class="action-bar-wrapper">
+    <ngx-skeleton-loader
+      count="1"
+      class="manga-container not-intractable"
+      [style]="{ width: '100%', height: '100%' }"
+    >
+    </ngx-skeleton-loader>
+  </div>
+</ng-template>

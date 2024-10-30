@@ -30,10 +30,29 @@ export class ReadProgressService {
   }
 
   getProgress() {
-    if (!this.userId) return;
+    if (this.userId === undefined) return;
     this._http.get(this.userId).subscribe((res) => {
-      if (!res.data) return;
-      this.readProgressList$.next(res.data as ReadProgressType[]);
+      if (!res.data) {
+        this.readProgressList$.next([]);
+        return;
+      }
+      const progress = res.data as ReadProgressType[];
+      progress.forEach((el) => {
+        if (el.manga) {
+          el.manga.addedDate = new Date(el.manga.addedDate);
+          el.manga.lastUpdateDate = new Date(el.manga.lastUpdateDate);
+        }
+      });
+      this.readProgressList$.next(progress);
+    });
+  }
+
+  removeProgress(progressId: number) {
+    if (this.userId === undefined) return;
+    this._http.del(this.userId, progressId).subscribe((res) => {
+      if (res.status === 'success') {
+        this.getProgress();
+      }
     });
   }
 

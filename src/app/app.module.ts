@@ -53,6 +53,7 @@ import { FooterComponent } from './components/nav/footer/footer.component';
 import { MangaCarouselComponent } from './components/manga/manga-carousel/manga-carousel.component';
 import { InViewDirective } from './directives/in-view.directive';
 import { ReadMoreComponent } from './components/global/read-more/read-more.component';
+import { MangaCoverTileProgressComponent } from './components/manga/manga-cover-tile-progress/manga-cover-tile-progress.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { ReadMoreComponent } from './components/global/read-more/read-more.compo
     MangaCarouselComponent,
     InViewDirective,
     ReadMoreComponent,
+    MangaCoverTileProgressComponent,
   ],
   imports: [
     BrowserModule,
