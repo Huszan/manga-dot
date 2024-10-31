@@ -21,7 +21,7 @@ import { UserType } from 'src/app/types/user.type';
 export interface MangaBrowseElement {
   title: string;
   titleNav?: { link: string; queryParams: any };
-  mangaList: MangaType[];
+  mangaList?: MangaType[] | undefined;
   sortBy?: any;
   tags?: number[];
   itemsPerPage: ItemPerPage;
@@ -41,7 +41,7 @@ export class HomeViewComponent implements OnDestroy {
     this.isMobile = event.target.innerWidth < 800;
   }
 
-  readMangaList: MangaType[] = [];
+  readMangaList: MangaType[] | undefined;
   user: UserType | undefined;
 
   private _subscriptions: Subscription[] = [];
@@ -71,7 +71,7 @@ export class HomeViewComponent implements OnDestroy {
           ? (list
               .map((el) => el.manga)
               .filter((el) => el !== undefined) as MangaType[])
-          : [];
+          : undefined;
       _cdr.markForCheck();
     });
     this._subscriptions.push(rpSub);
@@ -92,7 +92,6 @@ export class HomeViewComponent implements OnDestroy {
           sort: '2',
         },
       },
-      mangaList: [],
       sortBy: SortOptions[2].value,
       itemsPerPage: 24,
     },
@@ -104,7 +103,6 @@ export class HomeViewComponent implements OnDestroy {
           sort: '0',
         },
       },
-      mangaList: [],
       sortBy: SortOptions[0].value,
       itemsPerPage: 24,
     },
@@ -116,7 +114,6 @@ export class HomeViewComponent implements OnDestroy {
           sort: '5',
         },
       },
-      mangaList: [],
       sortBy: SortOptions[5].value,
       itemsPerPage: 24,
     },

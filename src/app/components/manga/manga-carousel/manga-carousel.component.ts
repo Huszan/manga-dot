@@ -28,7 +28,7 @@ export class MangaCarouselComponent
   @Input() title!: string;
   @Input() titleNav: { link: string; queryParams: any } | undefined;
   @Input() itemsPerPage: ItemPerPage | number = 12;
-  @Input() mangaList: MangaType[] = [];
+  @Input() mangaList: MangaType[] | undefined = [];
   @Input() useProgress: boolean = false;
   @Input() size: number = 20;
 
@@ -53,6 +53,7 @@ export class MangaCarouselComponent
   }
 
   onMangaSelect(index: number) {
+    if (!this.mangaList) return;
     this.mangaService.selectedManga$.next(this.mangaList[index]);
     this.router.navigate(['manga', this.mangaList[index].id]);
   }

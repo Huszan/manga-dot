@@ -43,7 +43,8 @@
             [size]="size"
           ></app-manga-cover-tile-box>
         </ng-container>
-        <ng-container *ngIf="mangaList.length === 0">
+
+        <ng-container *ngIf="!mangaList">
           <ng-container *ngFor="let i of fakeArray(itemsPerPage)">
             <app-manga-cover-tile-box [size]="size"></app-manga-cover-tile-box>
           </ng-container>
@@ -59,12 +60,26 @@
           ></app-manga-cover-tile>
         </ng-container>
 
-        <ng-container *ngIf="mangaList.length === 0">
+        <ng-container *ngIf="!mangaList">
           <ng-container *ngFor="let i of fakeArray(itemsPerPage)">
             <app-manga-cover-tile [size]="size"></app-manga-cover-tile>
           </ng-container>
         </ng-container>
       </ng-template>
+
+      <ng-container *ngIf="mangaList && mangaList.length === 0">
+        <div
+          class="tile-replacer"
+          [style]="{
+            height: size ? size * 10 + size * 10 * 0.5 + 'px' : '202.5px'
+          }"
+        >
+          Sorry, but we didn't find anything
+          <ng-container *ngIf="useProgress"
+            >, try reading something and then come back!</ng-container
+          >
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>
