@@ -193,15 +193,17 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   onPageInView(index: number) {
     this.currentPage = index + 1;
-    const userId = this._authService.currentUser$.value?.id;
-    if (userId === undefined) return;
-    const progress: ReadProgressType = {
-      userId,
-      mangaId: this.mangaId,
-      lastReadChapter: this.chapterId,
-      lastReadPage: index,
-    };
-    this._readProgressService.updateProgress(progress);
+    if (!this.lastReadPage || this.lastReadPage < index) {
+      const userId = this._authService.currentUser$.value?.id;
+      if (userId === undefined) return;
+      const progress: ReadProgressType = {
+        userId,
+        mangaId: this.mangaId,
+        lastReadChapter: this.chapterId,
+        lastReadPage: index,
+      };
+      this._readProgressService.updateProgress(progress);
+    }
   }
 
   initializeIntersectionObserver() {
@@ -264,6 +266,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.mangaSub.unsubscribe();
-    this._subToParams().unsubscribe();
+    this.paramsSub.unsubscribe();
+    this.queryParamsSub.unsubscribe();
   }
 }
