@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -54,6 +54,11 @@ import { MangaCarouselComponent } from './components/manga/manga-carousel/manga-
 import { InViewDirective } from './directives/in-view.directive';
 import { ReadMoreComponent } from './components/global/read-more/read-more.component';
 import { MangaCoverTileProgressComponent } from './components/manga/manga-cover-tile-progress/manga-cover-tile-progress.component';
+import { AuthService } from './services/data/auth.service';
+
+function initializeApp(authService: AuthService) {
+  return () => authService.initialize();
+}
 
 @NgModule({
   declarations: [
@@ -110,7 +115,18 @@ import { MangaCoverTileProgressComponent } from './components/manga/manga-cover-
     MatPaginatorModule,
     NgxSkeletonLoaderModule,
   ],
-  providers: [MangaService, MangaHttpService, AuthGuard],
+  providers: [
+    MangaService,
+    MangaHttpService,
+    AuthGuard,
+    AuthService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [AuthService],
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

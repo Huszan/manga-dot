@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { ExtraOptions, RouterModule, Routes } from '@angular/router';
 import { MangaDisplayComponent } from './components/manga/manga-display/manga-display.component';
 import { MangaChapterComponent } from './components/manga/manga-chapter/manga-chapter.component';
 import { CreateMangaFormComponent } from './components/manga/create-manga-form/create-manga-form.component';
@@ -63,8 +63,13 @@ const routes: Routes = [
   { path: '**', redirectTo: '' },
 ];
 
+const routerOptions: ExtraOptions = {
+  scrollPositionRestoration: 'enabled',
+  anchorScrolling: 'enabled',
+};
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, routerOptions)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {

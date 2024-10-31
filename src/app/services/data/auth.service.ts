@@ -1,16 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserType } from '../../types/user.type';
 import { AuthHttpService } from '../http/auth-http.service';
-import {
-  BehaviorSubject,
-  catchError,
-  Observable,
-  of,
-  retry,
-  Subscription,
-  take,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, catchError, of, retry, take, tap } from 'rxjs';
 import { StoreItem, StoreService } from '../store.service';
 import { ServerResponse } from 'src/app/types/server-response.type';
 
@@ -107,6 +98,19 @@ export class AuthService {
         return of(err.error as ServerResponse);
       })
     );
+  }
+
+  initialize(): Promise<void> {
+    return new Promise((res) => {
+      let tokenAuth = this.authByToken();
+      if (tokenAuth) {
+        tokenAuth.subscribe(() => {
+          res();
+        });
+      } else {
+        res();
+      }
+    });
   }
 
   private _setAuthToken() {
