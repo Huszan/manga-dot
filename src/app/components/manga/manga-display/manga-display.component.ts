@@ -61,15 +61,15 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
   }
 
   private _initializeManga() {
-    if (!this.mangaService.selectedManga$.value) {
-      this.mangaService.requestManga(this.mangaId);
+    if (
+      !this.mangaService.selectedManga$.value ||
+      !this.mangaService.selectedManga$.value.chapters
+    ) {
+      this.mangaService.requestChapters(this.mangaId);
     }
     this._mangaSub = this.mangaService.selectedManga$.subscribe((manga) => {
-      if (!manga) return;
       this.manga = manga;
       this._cdr.detectChanges();
-      if (!this.manga.chapters || this.manga.chapters.length <= 0)
-        this.mangaService.requestChapters();
     });
   }
 

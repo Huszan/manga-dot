@@ -1,24 +1,6 @@
 <div class="manga-container-wrapper">
   <ng-container *ngIf="manga; else skeleton">
     <button
-      mat-mini-fab
-      *ngIf="user && user.accountType === 'admin'"
-      color="accent"
-      class="special-button edit"
-      (click)="onClickEdit()"
-    >
-      <mat-icon>edit</mat-icon>
-    </button>
-    <button
-      mat-mini-fab
-      *ngIf="user && user.accountType === 'admin'"
-      color="warn"
-      class="special-button remove"
-      (click)="onClickRemove()"
-    >
-      <mat-icon>delete</mat-icon>
-    </button>
-    <button
       class="manga-container"
       [style]="{ width: size ? size * 10 + 'px' : '' }"
       (click)="onClickRead($event)"
@@ -32,7 +14,8 @@
     <ngx-skeleton-loader
       count="1"
       class="manga-container not-intractable"
-      [style]="{ width: size ? size * 10 + 'px' : '' }"
+      [style]="{ display: 'block', width: size ? size * 10 + 'px' : '' }"
+      [theme]="{ display: 'block', width: '100%', height: '100%' }"
     >
     </ngx-skeleton-loader>
   </ng-template>

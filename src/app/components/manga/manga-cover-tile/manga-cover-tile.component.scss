@@ -105,13 +105,3 @@
     }
   }
 }
-
-::ng-deep {
-  ngx-skeleton-loader {
-    display: block;
-    .loader {
-      width: 100% !important;
-      height: 100% !important;
-    }
-  }
-}

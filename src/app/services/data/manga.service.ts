@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MangaHttpService } from '../http/manga-http.service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { MangaType } from '../../types/manga.type';
-import { Status } from 'src/app/types/status.type';
+import { ChapterType } from 'src/app/types/chapter.type';
+import { PageType } from 'src/app/types/page.type';
 
 @Injectable({
   providedIn: 'root',
@@ -12,45 +13,74 @@ export class MangaService {
 
   constructor(private mangaHttp: MangaHttpService) {}
 
-  requestManga(id: number, callback?: any): Subscription {
-    return this.mangaHttp.getManga(id.toString()).subscribe((res) => {
-      if (!res || res.status === 'error') {
-        return;
-      }
-      if (res.data && res.data.manga) this.selectedManga$.next(res.data.manga);
-      if (callback) callback();
-    });
-  }
+  requestManga(mangaId: number): Promise<void> {
+    return new Promise((res, rej) => {
+      let manga = this.selectedManga$.value;
+      if (manga && manga.id === mangaId) return res();
+      else this.selectedManga$.next(null);
 
-  requestChapters(callback?: any) {
-    const manga = this.selectedManga$.value;
-    if (!manga || !manga.id) return;
-    this.mangaHttp.getMangaChapters(manga.id).subscribe((res) => {
-      if (!res.data && !res.data.chapters) return;
-      manga.chapters = res.data.chapters;
-      this.selectedManga$.next(manga);
-      if (callback) callback();
-    });
-  }
-
-  requestPages(chapter: number, callback?: (status: Status) => void) {
-    const manga = this.selectedManga$.value;
-    if (!manga || !manga.id || !manga.chapters || !manga.chapters[chapter]) {
-      if (callback) callback('error');
-      return;
-    }
-
-    this.mangaHttp
-      .getMangaPages(manga.id, manga.chapters[chapter].id!)
-      .subscribe((res) => {
-        if (res.status === 'error' || !res.data || !res.data.pages) {
-          if (callback) callback(res.status);
-          return;
+      this.mangaHttp.getManga(mangaId.toString()).subscribe((serverRes) => {
+        if (serverRes.status === 'error' || !serverRes.data.manga) {
+          this.selectedManga$.next(null);
+          return rej();
         }
-        manga.chapters![chapter].pages = res.data.pages;
-        this.selectedManga$.next(manga);
-      });
 
-    if (callback) callback('success');
+        this.selectedManga$.next(serverRes.data.manga as MangaType);
+        return res();
+      });
+    });
+  }
+
+  requestChapters(mangaId: number): Promise<void> {
+    return new Promise(async (res, rej) => {
+      await this.requestManga(mangaId);
+      const manga = this.selectedManga$.value;
+      if (!manga) return rej();
+      if (manga.id === mangaId && manga.chapters) return res();
+      else {
+        this.selectedManga$.next({ ...manga, chapters: undefined });
+      }
+
+      this.mangaHttp.getMangaChapters(mangaId).subscribe((serverRes) => {
+        if (!serverRes.data && !serverRes.data.chapters) return rej();
+
+        manga.chapters = serverRes.data.chapters as ChapterType[];
+        this.selectedManga$.next(manga);
+        return res();
+      });
+    });
+  }
+
+  requestPages(mangaId: number, chapterI: number): Promise<void> {
+    return new Promise(async (res, rej) => {
+      await this.requestChapters(mangaId);
+      const manga = this.selectedManga$.value;
+      if (
+        !manga ||
+        !manga.chapters ||
+        !manga.chapters[chapterI] ||
+        manga.chapters[chapterI].id === undefined
+      ) {
+        return rej();
+      }
+
+      this.mangaHttp
+        .getMangaPages(mangaId, manga.chapters[chapterI].id!)
+        .subscribe((serverRes) => {
+          if (
+            serverRes.status === 'error' ||
+            !serverRes.data ||
+            !serverRes.data.pages
+          ) {
+            return rej();
+          }
+
+          let manga = this.selectedManga$.value;
+          if (!manga || !manga.chapters) return rej();
+          manga.chapters[chapterI].pages = serverRes.data.pages as PageType[];
+          this.selectedManga$.next(manga);
+          return res();
+        });
+    });
   }
 }

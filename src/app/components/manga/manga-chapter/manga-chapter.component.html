@@ -57,13 +57,7 @@
     >
       <mat-icon>arrow_backward</mat-icon>
     </a>
-    <span
-      class="mat-display-2 title"
-      *ngIf="
-        manga && manga.name && manga.chapters && manga.chapters[chapterId];
-        else skeletonTitle
-      "
-    >
+    <span class="mat-display-2 title" *ngIf="isInitialized; else skeletonTitle">
       <ng-container>
         <a (click)="goToChapterSelect()">{{ manga!.name }}</a>
       </ng-container>

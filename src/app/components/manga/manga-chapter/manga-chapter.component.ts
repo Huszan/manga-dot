@@ -36,6 +36,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   loadedImages: boolean[] = [];
   isImagesLoaded: boolean = false;
+  isInitialized: boolean = false;
 
   mangaSub!: Subscription;
   paramsSub!: Subscription;
@@ -52,6 +53,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this._cdr.detectChanges();
     this._initSubToParams();
     this._initSubToQueryParams();
     this._initMangaSub();
@@ -75,11 +77,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     return this.route.params.subscribe((params) => {
       this.mangaId = Number(params['id']);
       this.chapterId = Number(params['chapter']);
-      this._getManga(() => {
-        this.isImagesLoaded = false;
-        this._getPages();
-        this._cdr.detectChanges();
-      });
+      this._mangaService.requestPages(this.mangaId, this.chapterId);
     });
   }
 
@@ -91,12 +89,15 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   private _initMangaSub() {
     this.mangaSub = this._mangaService.selectedManga$.subscribe((manga) => {
-      this.manga = manga;
-      this._getPages();
+      if (this.mangaId === manga?.id) {
+        this.manga = manga;
+        this._getIsInitialized();
+        this._startPageObserver();
+      }
     });
   }
 
-  private _getPages() {
+  private _startPageObserver() {
     if (this.isInitialized) {
       this.pages = this.manga!.chapters![this.chapterId].pages;
       this.loadedImages = new Array(this.pages.length).fill(false);
@@ -105,42 +106,8 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _getManga(cb: any = () => {}) {
-    const selectedManga = this._mangaService.selectedManga$.value;
-    if (!selectedManga || selectedManga.id !== this.mangaId) {
-      this._mangaService.requestManga(this.mangaId, () => {
-        if (!this.isChapterValid) this.goToChapterSelect();
-        this._mangaService.requestChapters(() => {
-          this._mangaService.requestPages(this.chapterId, () => {
-            cb();
-          });
-        });
-      });
-    } else {
-      if (!this.isChapterValid) this.goToChapterSelect();
-      if (!selectedManga.chapters || selectedManga.chapters.length <= 0) {
-        this._mangaService.requestChapters(() => {
-          this._mangaService.requestPages(this.chapterId, (status) => {
-            this.isChapterAccesible = status !== 'error';
-            cb();
-          });
-        });
-      } else if (
-        !selectedManga.chapters![this.chapterId].pages ||
-        selectedManga.chapters![this.chapterId].pages.length === 0
-      ) {
-        this._mangaService.requestPages(this.chapterId, (status) => {
-          this.isChapterAccesible = status !== 'error';
-          cb();
-        });
-      } else {
-        cb();
-      }
-    }
-  }
-
-  get isInitialized() {
-    return !!(
+  _getIsInitialized() {
+    this.isInitialized = !!(
       this.manga &&
       this.manga.chapters &&
       this.manga.chapters[this.chapterId].pages
@@ -208,7 +175,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
 
   initializeIntersectionObserver() {
     if (!this.pagesWrapper)
-      setTimeout(() => this.initializeIntersectionObserver, 1000);
+      setTimeout(() => this.initializeIntersectionObserver, 100);
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
