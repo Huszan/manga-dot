@@ -27,7 +27,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
   @ViewChild('pagesWrapperRef') pagesWrapper: ElementRef | undefined =
     undefined;
   manga: MangaType | null = null;
-  pages: PageType[] = [];
+  pages: PageType[] | null = null;
   chapterId: number = 0;
   mangaId: number = 0;
   currentPage: number = 1;
@@ -77,6 +77,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     return this.route.params.subscribe((params) => {
       this.mangaId = Number(params['id']);
       this.chapterId = Number(params['chapter']);
+      this._reset();
       this._mangaService.requestPages(this.mangaId, this.chapterId);
     });
   }
@@ -92,21 +93,29 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
       if (this.mangaId === manga?.id) {
         this.manga = manga;
         this._getIsInitialized();
+        if (!this.isInitialized) return;
+        this.pages = this.manga.chapters![this.chapterId].pages;
         this._startPageObserver();
       }
     });
   }
 
   private _startPageObserver() {
-    if (this.isInitialized) {
-      this.pages = this.manga!.chapters![this.chapterId].pages;
-      this.loadedImages = new Array(this.pages.length).fill(false);
-      this._cdr.detectChanges();
-      this.initializeIntersectionObserver();
-    }
+    if (this.pages === null) return;
+    this.loadedImages = new Array(this.pages.length).fill(false);
+    this._cdr.detectChanges();
+    this.initializeIntersectionObserver();
   }
 
-  _getIsInitialized() {
+  private _reset() {
+    if (this.manga && this.manga.id !== this.mangaId) {
+      this.isInitialized = false;
+      this.manga = null;
+    }
+    this.pages = null;
+  }
+
+  private _getIsInitialized() {
     this.isInitialized = !!(
       this.manga &&
       this.manga.chapters &&
@@ -186,7 +195,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
             entry.isIntersecting ||
             (this.lastReadPage !== undefined && index <= this.lastReadPage)
           ) {
-            if (!this.loadedImages[index]) {
+            if (!this.loadedImages[index] && this.pages) {
               imgElement.src = this.pages[index].url;
               imgElement.onload = () => this.onImageLoad(index);
               imgElement.onerror = () => this.onImageLoad(index);
