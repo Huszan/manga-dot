@@ -55,6 +55,7 @@ import { InViewDirective } from './directives/in-view.directive';
 import { ReadMoreComponent } from './components/global/read-more/read-more.component';
 import { MangaCoverTileProgressComponent } from './components/manga/manga-cover-tile-progress/manga-cover-tile-progress.component';
 import { AuthService } from './services/data/auth.service';
+import { ConfirmDialogComponent } from './components/global/confirm-dialog/confirm-dialog.component';
 
 function initializeApp(authService: AuthService) {
   return () => authService.initialize();
@@ -85,6 +86,7 @@ function initializeApp(authService: AuthService) {
     InViewDirective,
     ReadMoreComponent,
     MangaCoverTileProgressComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,13 @@
+<h2>{{ title }}</h2>
+<div *ngIf="desc !== null" class="confirm-dialog--desc">{{ desc }}</div>
+<button
+  mat-flat-button
+  class="confirm-dialog--button"
+  color="accent"
+  (click)="onConfirm()"
+>
+  Confirm
+</button>
+<button mat-flat-button class="confirm-dialog--button" (click)="onCancel()">
+  Cancel
+</button>
