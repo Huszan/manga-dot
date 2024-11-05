@@ -1,9 +1,5 @@
 <div class="manga-cover-tile-progress">
-  <app-manga-cover-tile
-    [manga]="manga"
-    (onRead)="onRead()"
-    [size]="size"
-  ></app-manga-cover-tile>
+  <app-manga-cover-tile [manga]="manga" [size]="size"></app-manga-cover-tile>
   <div *ngIf="manga" class="read-progress-bar-wrapper">
     <div class="read-progress-bar" [style.width]="progressPercent"></div>
   </div>

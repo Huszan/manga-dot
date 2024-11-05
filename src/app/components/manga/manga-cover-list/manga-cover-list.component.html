@@ -1,69 +1,69 @@
-
 <div class="manga-container-wrapper">
-  <ng-container *ngIf="manga else skeleton">
-    <button mat-mini-fab *ngIf="user && user.accountType === 'admin'" color="accent" class="special-button edit" (click)="onClickEdit()">
-      <mat-icon>edit</mat-icon>
-    </button>
-    <button mat-mini-fab *ngIf="user && user.accountType === 'admin'" color="warn" class="special-button remove" (click)="onClickRemove()">
-      <mat-icon>delete</mat-icon>
-    </button>
-    <button
-      class="manga-container"
-      (click)="onClickRead($event)"
-    >
-
-      <img [src]="manga.pic" alt="">
+  <ng-container *ngIf="manga; else skeleton">
+    <button class="manga-container" (click)="onClickRead()">
+      <img [src]="manga.pic" alt="" />
     </button>
     <div class="info-box">
-      <button class="manga-title mat-h2" (click)="onClickRead($event)"><span>{{ manga.name }}</span></button>
-      <div class="manga-info"><span><b>Chapters: </b>{{manga.chapterCount}} chapters</span></div>
-      <div *ngIf="manga.authors.length > 0" class="manga-info"><b>Authors: </b><span *ngFor="let author of manga.authors">{{ author }} </span></div>
-      <div *ngIf="manga.tags.length > 0" class="manga-info"><b>Tags: </b><span *ngFor="let tag of manga.tags">{{ tag }} </span></div>
+      <button class="manga-title mat-h2" (click)="onClickRead()">
+        <span>{{ manga.name }}</span>
+      </button>
+      <div class="manga-info">
+        <span><b>Chapters: </b>{{ manga.chapterCount }} chapters</span>
+      </div>
+      <div *ngIf="manga.authors.length > 0" class="manga-info">
+        <b>Authors: </b
+        ><span *ngFor="let author of manga.authors">{{ author }} </span>
+      </div>
+      <div *ngIf="manga.tags.length > 0" class="manga-info">
+        <b>Tags: </b><span *ngFor="let tag of manga.tags">{{ tag }} </span>
+      </div>
     </div>
   </ng-container>
 </div>
 
 <ng-template #skeleton>
-  <ngx-skeleton-loader
-    count="1"
-    class="manga-container not-intractable">
+  <ngx-skeleton-loader count="1" class="manga-container not-intractable">
   </ngx-skeleton-loader>
   <div class="info-box">
     <ngx-skeleton-loader
       count="1"
       class="not-intractable"
       [theme]="{
-        'height': '32px',
-        'width': '400px',
+        height: '32px',
+        width: '400px',
         'margin-bottom': '16px'
-      }">
+      }"
+    >
     </ngx-skeleton-loader>
     <ngx-skeleton-loader
       count="1"
       class="not-intractable"
       [theme]="{
-        'height': '12px',
-        'width': '300px',
+        height: '12px',
+        width: '300px',
         'margin-bottom': '0'
-      }">
+      }"
+    >
     </ngx-skeleton-loader>
     <ngx-skeleton-loader
       count="1"
       class="not-intractable"
       [theme]="{
-        'height': '12px',
-        'width': '500px',
+        height: '12px',
+        width: '500px',
         'margin-bottom': '0'
-      }">
+      }"
+    >
     </ngx-skeleton-loader>
     <ngx-skeleton-loader
       count="1"
       class="not-intractable"
       [theme]="{
-        'height': '12px',
-        'width': '500px',
+        height: '12px',
+        width: '500px',
         'margin-bottom': '0'
-      }">
+      }"
+    >
     </ngx-skeleton-loader>
   </div>
 </ng-template>

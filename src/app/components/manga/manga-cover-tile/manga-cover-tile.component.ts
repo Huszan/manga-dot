@@ -16,6 +16,7 @@ import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../services/data/auth.service';
 import { AccountType } from '../../../services/http/auth-http.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-manga-cover-tile',
@@ -26,7 +27,6 @@ import { AccountType } from '../../../services/http/auth-http.service';
 export class MangaCoverTileComponent implements OnInit, OnDestroy {
   @Input() manga!: MangaType;
   @Input() size?: number;
-  @Output() onRead = new EventEmitter();
 
   user: UserType | null = null;
 
@@ -34,9 +34,11 @@ export class MangaCoverTileComponent implements OnInit, OnDestroy {
 
   constructor(
     private _mangaHttpService: MangaHttpService,
+    private _mangaService: MangaService,
     private _snackbar: MatSnackBar,
     private _auth: AuthService,
-    private _cdr: ChangeDetectorRef
+    private _cdr: ChangeDetectorRef,
+    private _router: Router
   ) {}
 
   ngOnInit() {
@@ -46,8 +48,9 @@ export class MangaCoverTileComponent implements OnInit, OnDestroy {
     });
   }
 
-  onClickRead(event: any) {
-    this.onRead.emit(event);
+  onClickRead() {
+    this._mangaService.selectedManga$.next(this.manga);
+    this._router.navigate(['manga', this.manga.id]);
   }
 
   onClickRemove() {

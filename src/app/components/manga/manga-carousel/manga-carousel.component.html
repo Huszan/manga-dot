@@ -55,7 +55,6 @@
         <ng-container *ngFor="let manga of mangaList; let i = index">
           <app-manga-cover-tile
             [manga]="manga"
-            (onRead)="onMangaSelect(i)"
             [size]="size"
           ></app-manga-cover-tile>
         </ng-container>

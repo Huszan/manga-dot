@@ -3,7 +3,7 @@
     <button
       class="manga-container"
       [style]="{ width: size ? size * 10 + 'px' : '' }"
-      (click)="onClickRead($event)"
+      (click)="onClickRead()"
     >
       <img [src]="manga.pic" alt="" />
       <span class="manga-title mat-body-2">{{ manga.name }}</span>
