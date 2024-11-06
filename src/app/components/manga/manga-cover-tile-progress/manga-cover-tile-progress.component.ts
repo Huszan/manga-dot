@@ -2,7 +2,6 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
-  OnChanges,
   OnDestroy,
   SimpleChanges,
 } from '@angular/core';
@@ -18,16 +17,14 @@ import { ReadProgressType } from 'src/app/types/read-progress.type';
   templateUrl: './manga-cover-tile-progress.component.html',
   styleUrls: ['./manga-cover-tile-progress.component.scss'],
 })
-export class MangaCoverTileProgressComponent implements OnDestroy, OnChanges {
+export class MangaCoverTileProgressComponent implements OnDestroy {
   @Input() manga!: MangaType;
   @Input() size?: number;
-  @Input() onRead: any = () => {};
+
+  private _readProgressList: ReadProgressType[] | null = null;
 
   subscriptions: Subscription[] = [];
-
-  private _readProgressList: ReadProgressType[] | undefined;
   readProgress: ReadProgressType | undefined;
-  progressPercent: string = '0%';
 
   actions: ActionButton[] = [
     {
@@ -47,6 +44,10 @@ export class MangaCoverTileProgressComponent implements OnDestroy, OnChanges {
     },
   ];
 
+  progressBarConfig = {
+    wrapperStyle: 'position: absolute; transform: translateY(-100%)',
+  };
+
   constructor(
     private _readProgressService: ReadProgressService,
     private _router: Router,
@@ -54,9 +55,7 @@ export class MangaCoverTileProgressComponent implements OnDestroy, OnChanges {
   ) {
     const readProgressSub = _readProgressService.readProgressList$.subscribe(
       (readProgressList) => {
-        this._readProgressList = readProgressList
-          ? readProgressList
-          : undefined;
+        this._readProgressList = readProgressList;
         this.updateReadProgress();
       }
     );
@@ -78,27 +77,16 @@ export class MangaCoverTileProgressComponent implements OnDestroy, OnChanges {
 
   updateReadProgress() {
     if (!this.manga || !this._readProgressList) return;
-    this.readProgress = this._readProgressList?.find(
+    this.readProgress = this._readProgressList.find(
       (val) => val.mangaId === this.manga.id
     );
     this._cdr.detectChanges();
-  }
-
-  getProgressPercent() {
-    if (!this.readProgress || !this.manga || !this.manga.chapterCount)
-      return '0%';
-    const num = Math.ceil(
-      (this.readProgress?.lastReadChapter / this.manga.chapterCount) * 100
-    );
-    return `${num}%`;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['manga']) {
       setTimeout(() => {
         this.updateReadProgress();
-        this.progressPercent = this.getProgressPercent();
-        this._cdr.detectChanges();
       }, 0);
     }
   }

@@ -57,6 +57,7 @@ import { MangaCoverTileProgressComponent } from './components/manga/manga-cover-
 import { AuthService } from './services/data/auth.service';
 import { ConfirmDialogComponent } from './components/global/confirm-dialog/confirm-dialog.component';
 import { MangaCoverTileActionBarComponent } from './components/manga/manga-cover-tile-action-bar/manga-cover-tile-action-bar.component';
+import { MangaCoverTileProgressBarComponent } from './components/manga/manga-cover-tile-progress-bar/manga-cover-tile-progress-bar.component';
 
 function initializeApp(authService: AuthService) {
   return () => authService.initialize();
@@ -89,6 +90,7 @@ function initializeApp(authService: AuthService) {
     MangaCoverTileProgressComponent,
     ConfirmDialogComponent,
     MangaCoverTileActionBarComponent,
+    MangaCoverTileProgressBarComponent,
   ],
   imports: [
     BrowserModule,

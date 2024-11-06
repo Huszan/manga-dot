@@ -1,15 +1,8 @@
 .manga-cover-tile-progress {
   position: relative;
 
-  .read-progress-bar-wrapper {
+  .manga-cover-tile--progress-wrapper {
     position: absolute;
     transform: translateY(-100%);
-    width: 100%;
-    height: 5px;
-
-    .read-progress-bar {
-      height: 100%;
-      background-color: var(--accent-color);
-    }
   }
 }

@@ -39,7 +39,6 @@
         <ng-container *ngFor="let manga of mangaList; let i = index">
           <app-manga-cover-tile-box
             [manga]="manga"
-            [onRead]="onMangaSelect.bind(this, i)"
             [size]="size"
           ></app-manga-cover-tile-box>
         </ng-container>

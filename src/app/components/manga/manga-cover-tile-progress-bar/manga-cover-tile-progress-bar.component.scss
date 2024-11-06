@@ -1,0 +1,9 @@
+.manga-cover-tile--progress-wrapper {
+  width: 100%;
+  height: 5px;
+
+  .progress {
+    height: 100%;
+    background-color: var(--accent-color);
+  }
+}
