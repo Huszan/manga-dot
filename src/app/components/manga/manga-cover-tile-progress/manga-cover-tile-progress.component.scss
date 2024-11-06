@@ -12,14 +12,4 @@
       background-color: var(--accent-color);
     }
   }
-
-  .action-bar-wrapper {
-    height: 50px;
-    .action-bar {
-      display: flex;
-      gap: 5px;
-      padding: 5px;
-      background-color: var(--primary-darker-color);
-    }
-  }
 }

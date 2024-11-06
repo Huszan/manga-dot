@@ -10,20 +10,9 @@
 </div>
 
 <ng-template #actionBar>
-  <div class="action-bar-wrapper">
-    <div class="action-bar">
-      <ng-container *ngFor="let action of actions">
-        <button
-          *ngIf="action.isActive"
-          mat-mini-fab
-          [color]="action.color"
-          (click)="action.action()"
-        >
-          <mat-icon>{{ action.icon }}</mat-icon>
-        </button>
-      </ng-container>
-    </div>
-  </div>
+  <app-manga-cover-tile-action-bar
+    [actionButtonList]="actions"
+  ></app-manga-cover-tile-action-bar>
 </ng-template>
 
 <ng-template #actionBarSkeleton>

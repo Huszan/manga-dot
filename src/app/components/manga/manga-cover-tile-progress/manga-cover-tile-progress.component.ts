@@ -6,18 +6,12 @@ import {
   OnDestroy,
   SimpleChanges,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ReadProgressService } from 'src/app/services/data/read-progress.service';
 import { ActionButton } from 'src/app/types/action-button.type';
 import { MangaType } from 'src/app/types/manga.type';
 import { ReadProgressType } from 'src/app/types/read-progress.type';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogData,
-  ConfirmDialogRes,
-} from '../../global/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-manga-cover-tile-box',
@@ -45,6 +39,10 @@ export class MangaCoverTileProgressComponent implements OnDestroy, OnChanges {
     {
       icon: 'close',
       isActive: true,
+      confirmData: {
+        title: `Are you sure you want to remove your reading progress?`,
+        desc: `This action can't be reversed`,
+      },
       action: () => this.onRemoveProgress(),
     },
   ];
@@ -52,8 +50,7 @@ export class MangaCoverTileProgressComponent implements OnDestroy, OnChanges {
   constructor(
     private _readProgressService: ReadProgressService,
     private _router: Router,
-    private _cdr: ChangeDetectorRef,
-    private _dialog: MatDialog
+    private _cdr: ChangeDetectorRef
   ) {
     const readProgressSub = _readProgressService.readProgressList$.subscribe(
       (readProgressList) => {
@@ -75,23 +72,6 @@ export class MangaCoverTileProgressComponent implements OnDestroy, OnChanges {
   }
 
   onRemoveProgress() {
-    const dialogRef = this._dialog.open<
-      ConfirmDialogComponent,
-      ConfirmDialogData
-    >(ConfirmDialogComponent, {
-      data: {
-        title: 'Are you sure you want to remove your reading progress?',
-        desc: `This action can't be reversed`,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((res: ConfirmDialogRes) => {
-      if (res.action === 'cancel') return;
-      this._removeProgress();
-    });
-  }
-
-  private _removeProgress() {
     if (!this.readProgress || !this.readProgress.id) return;
     this._readProgressService.removeProgress(this.readProgress.id);
   }
