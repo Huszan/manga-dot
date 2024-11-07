@@ -15,7 +15,6 @@ import { Subscription } from 'rxjs';
 import { LikeType } from '../../../types/like.type';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
-import { ChapterType } from '../../../types/chapter.type';
 import { Tags } from '../manga-browse/manga-browse.component';
 import { ReadProgressService } from 'src/app/services/data/read-progress.service';
 import { ReadProgressType } from 'src/app/types/read-progress.type';

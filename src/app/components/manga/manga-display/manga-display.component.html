@@ -5,81 +5,90 @@
 </ng-container>
 
 <ng-template #mangaFound>
-  <div class="display-container cf">
-    <img class="logo" [src]="manga!.pic" />
-    <p class="mat-display-3 title">
-      <span
-        ><b>{{ manga!.name.toUpperCase() }}</b></span
-      >
-    </p>
+  <div
+    class="display-container-wrapper"
+    [style.backgroundImage]="'url(' + manga!.pic + ')'"
+  >
+    <div class="bg"></div>
+    <div class="display-container cf">
+      <img class="logo" [src]="manga!.pic" />
+      <p class="mat-display-3 title">
+        <span
+          ><b>{{ manga!.name.toUpperCase() }}</b></span
+        >
+      </p>
 
-    <p *ngIf="manga!.authors && manga!.authors.length > 0" class="mat-body-2">
-      <b>Authors: </b>
-      <ng-container *ngFor="let author of manga!.authors">
-        {{ author }}
-      </ng-container>
-    </p>
-    <p *ngIf="manga!.tags" class="mat-body-2">
-      <b>Tags: </b>
-      <span class="tag-wrapper">
-        <ng-container *ngFor="let genre of manga!.tags; let last = last">
-          <ng-container *ngIf="allTags.includes(genre.toLowerCase())">
-            <a
-              mat-flat-button
-              color="accent"
-              [routerLink]="['/manga/browse']"
-              [queryParams]="{ tags: allTags.indexOf(genre.toLowerCase()) }"
-            >
-              {{ genre }}
-            </a>
-          </ng-container>
+      <p *ngIf="manga!.authors && manga!.authors.length > 0" class="mat-body-2">
+        <b>Authors: </b>
+        <ng-container *ngFor="let author of manga!.authors">
+          {{ author }}
         </ng-container>
-      </span>
-    </p>
-    <p class="mat-body">
-      <b>Added: </b>{{ manga!.addedDate.toLocaleDateString() }}
-    </p>
-    <p class="mat-body">
-      <b>Last update: </b>{{ manga!.lastUpdateDate.toLocaleDateString() }}
-    </p>
-    <p *ngIf="manga!.description" class="mat-body">
-      <b>Description: </b
-      ><app-read-more
-        [text]="manga!.description"
-        [maxLength]="300"
-      ></app-read-more>
-    </p>
-
-    <div class="button-panel">
-      <div class="mat-button" style="cursor: default">
-        <span class="mat-button-wrapper">
-          <mat-icon style="margin-right: 8px">remove_red_eye</mat-icon>
-          {{ manga!.viewCount }}
+      </p>
+      <p *ngIf="manga!.tags" class="mat-body-2">
+        <b>Tags: </b>
+        <span class="tag-wrapper">
+          <ng-container *ngFor="let genre of manga!.tags; let last = last">
+            <ng-container *ngIf="allTags.includes(genre.toLowerCase())">
+              <a
+                mat-flat-button
+                color="accent"
+                [routerLink]="['/manga/browse']"
+                [queryParams]="{ tags: allTags.indexOf(genre.toLowerCase()) }"
+              >
+                {{ genre }}
+              </a>
+            </ng-container>
+          </ng-container>
         </span>
+      </p>
+      <p class="mat-body">
+        <b>Added: </b>{{ manga!.addedDate.toLocaleDateString() }}
+      </p>
+      <p class="mat-body">
+        <b>Last update: </b>{{ manga!.lastUpdateDate.toLocaleDateString() }}
+      </p>
+      <p *ngIf="manga!.description" class="mat-body">
+        <b>Description: </b
+        ><app-read-more
+          [text]="manga!.description"
+          [maxLength]="300"
+        ></app-read-more>
+      </p>
+
+      <div class="button-panel">
+        <div class="mat-button" style="cursor: default">
+          <span class="mat-button-wrapper">
+            <mat-icon style="margin-right: 8px">remove_red_eye</mat-icon>
+            {{ manga!.viewCount }}
+          </span>
+        </div>
+        <button mat-button color="primary" (click)="onLike()">
+          <mat-icon
+            *ngIf="!isLikedByUser && manga && manga.chapters"
+            style="margin-right: 8px"
+            color="primary"
+            >thumb_up</mat-icon
+          >
+          <mat-icon
+            *ngIf="isLikedByUser"
+            style="margin-right: 8px"
+            color="accent"
+            >thumb_up</mat-icon
+          >
+          {{ manga!.likes.length }}
+        </button>
+        <button
+          *ngIf="this.user"
+          class="continue-button"
+          mat-flat-button
+          color="accent"
+          [disabled]="!this.readProgress"
+          (click)="onContinueReading()"
+        >
+          Continue reading
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
       </div>
-      <button mat-button color="primary" (click)="onLike()">
-        <mat-icon
-          *ngIf="!isLikedByUser && manga && manga.chapters"
-          style="margin-right: 8px"
-          color="primary"
-          >thumb_up</mat-icon
-        >
-        <mat-icon *ngIf="isLikedByUser" style="margin-right: 8px" color="accent"
-          >thumb_up</mat-icon
-        >
-        {{ manga!.likes.length }}
-      </button>
-      <button
-        *ngIf="this.user"
-        class="continue-button"
-        mat-flat-button
-        color="accent"
-        [disabled]="!this.readProgress"
-        (click)="onContinueReading()"
-      >
-        Continue reading
-        <mat-icon>arrow_forward</mat-icon>
-      </button>
     </div>
   </div>
 

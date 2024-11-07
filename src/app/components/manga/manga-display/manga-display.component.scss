@@ -1,40 +1,58 @@
 $logo-w: 200px;
 
-.display-container {
-  margin: 25px 25px 5px 25px;
+.display-container-wrapper {
+  position: relative;
+  background-size: cover;
+  background-position: center 10%;
 
-  .logo {
-    float: left;
-    width: $logo-w;
-    margin: 24px 48px 24px 24px;
-    box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
+  .bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      rgba(255, 255, 255, $alpha: 0.6) 0%,
+      rgba(255, 255, 255, $alpha: 1) 50%
+    );
+    backdrop-filter: blur(5px);
   }
 
-  .title {
-    overflow-wrap: break-word;
-  }
+  .display-container {
+    position: relative;
+    padding: 25px 25px 5px 25px;
 
-  .nowrap {
-    white-space: nowrap;
-  }
-
-  .button-panel {
-    display: flex;
-    flex-direction: row;
-    margin: 24px;
-    gap: 10px;
-
-    .continue-button {
-      margin-left: auto;
+    .logo {
+      float: left;
+      width: $logo-w;
+      margin: 24px 48px 24px 24px;
+      box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
     }
-  }
 
-  .tag-wrapper {
-    display: inline-flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.2rem;
-    max-width: calc(100% - $logo-w - 100px);
+    .title {
+      overflow-wrap: break-word;
+    }
+
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    .button-panel {
+      display: flex;
+      flex-direction: row;
+      margin: 24px;
+      gap: 10px;
+
+      .continue-button {
+        margin-left: auto;
+      }
+    }
+
+    .tag-wrapper {
+      display: inline-flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.2rem;
+      max-width: calc(100% - $logo-w - 100px);
+    }
   }
 }
 
