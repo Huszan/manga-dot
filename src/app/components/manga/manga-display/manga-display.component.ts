@@ -26,7 +26,6 @@ import { ReadProgressType } from 'src/app/types/read-progress.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MangaDisplayComponent implements OnInit, OnDestroy {
-  [x: string]: any;
   manga: MangaType | null = null;
   user: UserType | null = null;
   readProgress: ReadProgressType | null = null;

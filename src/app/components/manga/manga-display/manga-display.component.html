@@ -24,15 +24,16 @@
           {{ author }}
         </ng-container>
       </p>
-      <p *ngIf="manga!.tags" class="mat-body-2">
+      <p *ngIf="manga!.tags && manga?.tags?.length !== 0" class="mat-body-2">
         <b>Tags: </b>
         <span class="tag-wrapper">
           <ng-container *ngFor="let genre of manga!.tags; let last = last">
-            <ng-container *ngIf="allTags.includes(genre.toLowerCase())">
+            <ng-container>
               <a
                 mat-flat-button
                 color="accent"
                 [routerLink]="['/manga/browse']"
+                [disabled]="!allTags.includes(genre.toLowerCase())"
                 [queryParams]="{ tags: allTags.indexOf(genre.toLowerCase()) }"
               >
                 {{ genre }}
