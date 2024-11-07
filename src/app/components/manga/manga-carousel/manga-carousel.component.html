@@ -37,15 +37,17 @@
     >
       <ng-container *ngIf="useProgress; else regularList">
         <ng-container *ngFor="let manga of mangaList; let i = index">
-          <app-manga-cover-tile-box
+          <app-manga-cover-tile-progress
             [manga]="manga"
             [size]="size"
-          ></app-manga-cover-tile-box>
+          ></app-manga-cover-tile-progress>
         </ng-container>
 
         <ng-container *ngIf="!mangaList">
           <ng-container *ngFor="let i of fakeArray(itemsPerPage)">
-            <app-manga-cover-tile-box [size]="size"></app-manga-cover-tile-box>
+            <app-manga-cover-tile-progress
+              [size]="size"
+            ></app-manga-cover-tile-progress>
           </ng-container>
         </ng-container>
       </ng-container>

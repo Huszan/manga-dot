@@ -8,7 +8,7 @@
       <ng-container *ngFor="let button of actionButtonList">
         <button
           *ngIf="button.isActive"
-          mat-mini-fab
+          mat-flat-button
           [color]="button.color"
           (click)="
             button.confirmData
@@ -17,6 +17,7 @@
           "
         >
           <mat-icon>{{ button.icon }}</mat-icon>
+          {{ button.name }}
         </button>
       </ng-container>
     </div>

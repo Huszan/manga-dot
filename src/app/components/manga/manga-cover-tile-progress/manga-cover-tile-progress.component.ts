@@ -13,7 +13,7 @@ import { MangaType } from 'src/app/types/manga.type';
 import { ReadProgressType } from 'src/app/types/read-progress.type';
 
 @Component({
-  selector: 'app-manga-cover-tile-box',
+  selector: 'app-manga-cover-tile-progress',
   templateUrl: './manga-cover-tile-progress.component.html',
   styleUrls: ['./manga-cover-tile-progress.component.scss'],
 })
@@ -28,6 +28,7 @@ export class MangaCoverTileProgressComponent implements OnDestroy {
 
   actions: ActionButton[] = [
     {
+      name: 'Continue reading',
       icon: 'import_contacts',
       color: 'accent',
       isActive: true,
