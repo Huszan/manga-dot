@@ -87,29 +87,31 @@ $logo-w: 200px;
 }
 
 @media screen and (max-width: 720px) {
-  .display-container {
-    display: flex;
-    flex-direction: column;
+  .display-container-wrapper {
+    .display-container {
+      display: flex;
+      flex-direction: column;
 
-    .logo {
-      align-self: center;
-      width: 100%;
-      max-width: 220px;
-      height: unset;
-      margin: 0 0 24px 0;
-    }
-
-    .button-panel {
-      margin: unset;
-      flex-wrap: wrap;
-
-      .continue-button {
+      .logo {
+        align-self: center;
         width: 100%;
+        max-width: 220px;
+        height: unset;
+        margin: 0 0 24px 0;
       }
-    }
 
-    .tag-wrapper {
-      max-width: unset;
+      .button-panel {
+        margin: unset;
+        flex-wrap: wrap;
+
+        .continue-button {
+          width: 100%;
+        }
+      }
+
+      .tag-wrapper {
+        max-width: none;
+      }
     }
   }
 }
