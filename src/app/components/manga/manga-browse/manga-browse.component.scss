@@ -58,7 +58,7 @@
   width: 100%;
   gap: 5px;
   padding: 5px;
-  background-color: #fcfcfc;
+  flex: 1;
 
   &.static {
     max-height: 475px;
@@ -72,11 +72,8 @@
   row-gap: 10px;
   max-height: 0;
   overflow: hidden;
-  transition: max-height .25s ease-out;
-  &.expanded {
-    max-height: 500px;
-    transition: max-height .25s ease-in;
-  }
+  transition: max-height 0.2s ease-in-out;
+
   .genre-list {
     * {
       width: 150px;
@@ -86,6 +83,9 @@
 
 @media screen and (max-width: 800px) {
   .manga-browse-section {
+    .search-bar {
+      width: 100%;
+    }
     .action-bar {
       flex-wrap: wrap;
       justify-content: center;

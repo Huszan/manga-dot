@@ -42,7 +42,7 @@
     </ng-container>
 
     <ng-container *ngIf="actionsAllowed.all || actionsAllowed.canSelectTags">
-      <button mat-button (click)="isTagSelectBoxOpen = !isTagSelectBoxOpen">
+      <button mat-button (click)="toggleTags()">
         Select tags
         <mat-icon *ngIf="!isTagSelectBoxOpen">arrow_drop_down</mat-icon>
         <mat-icon *ngIf="isTagSelectBoxOpen">arrow_drop_up</mat-icon>
@@ -87,17 +87,22 @@
     *ngIf="actionsAllowed.all != false"
     class="genre-toggle-container"
     [ngClass]="isTagSelectBoxOpen ? 'expanded' : ''"
+    appExpendableContent
+    [isExpanded]="isTagSelectBoxOpen"
   >
-    <ng-container *ngIf="isTagSelectBoxOpen">
-      <form [formGroup]="checkboxForm" class="genre-list">
-        <ng-container *ngFor="let key of checkboxFormKeys">
-          <mat-checkbox [formControlName]="key">{{ key }}</mat-checkbox>
-        </ng-container>
-      </form>
-      <button mat-flat-button color="accent" (click)="onTagsApply()">
-        Apply
-      </button>
-    </ng-container>
+    <form [formGroup]="checkboxForm" class="genre-list">
+      <ng-container *ngFor="let key of checkboxFormKeys">
+        <mat-checkbox [formControlName]="key">{{ key }}</mat-checkbox>
+      </ng-container>
+    </form>
+    <button
+      mat-flat-button
+      color="accent"
+      (click)="onTagsApply()"
+      [disabled]="!isTagSelectBoxOpen"
+    >
+      Apply
+    </button>
   </div>
 
   <div

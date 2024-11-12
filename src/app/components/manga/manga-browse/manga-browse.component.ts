@@ -146,7 +146,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   itemPerPageValues: ItemPerPage[] = [6, 9, 12, 18, 24, 36, 48, 64];
   isLoading: boolean = false;
   isTagSelectBoxOpen = false;
-  checkboxForm!: FormGroup;
+  checkboxForm: FormGroup = this.fb.group({});
 
   private inputSubject = new Subject<string>();
   private paramSub!: Subscription;
@@ -231,7 +231,6 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private initCheckboxForm() {
-    this.checkboxForm = this.fb.group({});
     for (let el of this.availableTags) {
       this.checkboxForm.addControl(el, this.fb.control(false));
     }
@@ -510,6 +509,15 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   onDisplayTypeChange(event: any) {
     this.displayType = event.value;
     this.store.setItem(StoreItem.MANGA_DISPLAY_TYPE, this.displayType);
+  }
+
+  toggleTags() {
+    this.isTagSelectBoxOpen = !this.isTagSelectBoxOpen;
+    if (this.isTagSelectBoxOpen) {
+      this.checkboxForm.enable();
+    } else {
+      this.checkboxForm.disable();
+    }
   }
 
   ngOnDestroy() {
