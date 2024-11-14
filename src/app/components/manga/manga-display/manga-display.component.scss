@@ -41,7 +41,7 @@ $logo-w: 200px;
       margin: 24px;
       gap: 10px;
 
-      .continue-button {
+      .delete-button {
         margin-left: auto;
       }
     }
@@ -104,7 +104,8 @@ $logo-w: 200px;
         margin: unset;
         flex-wrap: wrap;
 
-        .continue-button {
+        .continue-button,
+        .delete-button {
           width: 100%;
         }
       }

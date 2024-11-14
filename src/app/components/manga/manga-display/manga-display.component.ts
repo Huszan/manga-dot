@@ -18,6 +18,8 @@ import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { Tags } from '../manga-browse/manga-browse.component';
 import { ReadProgressService } from 'src/app/services/data/read-progress.service';
 import { ReadProgressType } from 'src/app/types/read-progress.type';
+import { MatDialog } from '@angular/material/dialog';
+import { useConfirmDialog } from 'src/app/utils/base';
 
 @Component({
   selector: 'app-manga-display',
@@ -38,6 +40,7 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
   fakeArray = FakeArray;
 
   constructor(
+    public dialog: MatDialog,
     private route: ActivatedRoute,
     private router: Router,
     private mangaService: MangaService,
@@ -132,6 +135,40 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
       ['manga', this.mangaId, this.readProgress?.lastReadChapter],
       { queryParams: { lastReadPage: this.readProgress?.lastReadPage } }
     );
+  }
+
+  onDelete() {
+    useConfirmDialog(
+      this.dialog,
+      {
+        title: 'Are you sure you want to delete this manga?',
+        desc: 'This action is permament and cannot be reversed!',
+      },
+      () => this.deleteManga()
+    );
+  }
+
+  private deleteManga() {
+    if (!this.user || this.user.accountType !== 'admin') return;
+    this.mangaHttp.removeManga(this.manga).subscribe((res) => {
+      if (res.status === 'success') {
+        this.router.navigate(['/']).then(() => {
+          this._snackbar.open(
+            res.message ? res.message : 'Successfuly removed manga',
+            'Close',
+            { duration: 4000 }
+          );
+        });
+      } else if (res.message) {
+        this._snackbar.open(
+          res.message
+            ? res.message
+            : 'Something went wrong during removing manga',
+          'Close',
+          { duration: 4000 }
+        );
+      }
+    });
   }
 
   ngOnDestroy() {
