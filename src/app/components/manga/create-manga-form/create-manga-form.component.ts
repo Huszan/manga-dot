@@ -13,8 +13,10 @@ import {
 } from '@angular/forms';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MangaService } from '../../../services/data/manga.service';
-import { firstValueFrom } from 'rxjs';
+import { ScrapMangaType } from 'src/app/types/scrap-manga.type';
+import { ScrapperHttpServiceService } from 'src/app/services/http/scrapper-http-service.service';
+import { MangaType } from 'src/app/types/manga.type';
+import { ServerResponse } from 'src/app/types/server-response.type';
 
 @Component({
   selector: 'app-create-manga-form',
@@ -25,15 +27,13 @@ import { firstValueFrom } from 'rxjs';
 export class CreateMangaFormComponent {
   form!: FormGroup;
 
-  lastTestedForm: any | undefined = undefined;
-  lastTestId: number | undefined = undefined;
+  lastTestedForm: MangaType | undefined = undefined;
   isLoading: boolean = false;
-  currentlyTestingChapter: number = 0;
 
   constructor(
     private _fb: FormBuilder,
+    private _scrapperHttpService: ScrapperHttpServiceService,
     private _mangaHttpService: MangaHttpService,
-    private _mangaService: MangaService,
     private _cdr: ChangeDetectorRef,
     private _snackbar: MatSnackBar
   ) {
@@ -45,19 +45,42 @@ export class CreateMangaFormComponent {
       name: ['', Validators.required],
       picture: ['', Validators.required],
       authors: this._fb.array([]),
-      genres: this._fb.array([]),
+      tags: this._fb.array([]),
       description: [''],
-      startingChapter: ['1', Validators.required],
-      chapterCount: ['2', Validators.required],
-      htmlLocate: this._fb.group({
+
+      chapterNameLocate: this._fb.group({
+        positions: this._fb.array([], Validators.required),
+        lookedType: ['a', Validators.required],
+        lookedAttribute: ['content', Validators.required],
+        urls: this._fb.array([], Validators.required),
+      }),
+
+      chapterUrlLocate: this._fb.group({
+        positions: this._fb.array([], Validators.required),
+        lookedType: ['a', Validators.required],
+        lookedAttribute: ['href', Validators.required],
+        urls: this._fb.array([], Validators.required),
+      }),
+
+      pagesLocate: this._fb.group({
         positions: this._fb.array([], Validators.required),
         lookedType: ['img', Validators.required],
         lookedAttribute: ['src', Validators.required],
         urls: this._fb.array([], Validators.required),
       }),
     });
-    this.addPosition();
-    this.addUrl();
+    this.addPagesLocatePosition('');
+    this.addPagesLocateUrl('');
+    this.addArrayEntry(
+      this.getFormArray(this.chapterNameLocate, 'positions'),
+      ''
+    );
+    this.addArrayEntry(this.getFormArray(this.chapterNameLocate, 'urls'), '');
+    this.addArrayEntry(
+      this.getFormArray(this.chapterUrlLocate, 'positions'),
+      ''
+    );
+    this.addArrayEntry(this.getFormArray(this.chapterUrlLocate, 'urls'), '');
   }
 
   getControlGroup(control: AbstractControl) {
@@ -76,96 +99,118 @@ export class CreateMangaFormComponent {
     return this.form.get('authors') as FormArray;
   }
 
-  newAuthor(): FormGroup {
+  newAuthor(value?: string): FormGroup {
     return this._fb.group({
-      name: '',
+      name: value ? value : '',
     });
   }
 
-  addAuthor() {
-    this.authors.push(this.newAuthor());
+  addAuthor(value?: string) {
+    this.authors.push(this.newAuthor(value));
   }
 
   removeAuthor(index: number) {
     this.authors.removeAt(index);
   }
 
-  get genres() {
-    return this.form.get('genres') as FormArray;
+  get tags() {
+    return this.form.get('tags') as FormArray;
   }
 
-  newGenre(): FormGroup {
+  newTag(value?: string): FormGroup {
     return this._fb.group({
-      name: '',
+      name: value ? value : '',
     });
   }
 
-  addGenre() {
-    this.genres.push(this.newGenre());
+  addTag(value?: string) {
+    this.tags.push(this.newTag(value));
   }
 
-  removeGenre(index: number) {
-    this.genres.removeAt(index);
+  removeTag(index: number) {
+    this.tags.removeAt(index);
   }
 
   get description() {
     return this.form.get('description') as FormControl;
   }
 
-  get startingChapter() {
-    return this.form.get('startingChapter') as FormControl;
+  get pagesLocate() {
+    return this.form.get('pagesLocate') as FormGroup;
   }
 
-  get chapterCount() {
-    return this.form.get('chapterCount') as FormControl;
+  get pagesLocatePositions() {
+    return this.pagesLocate.get('positions') as FormArray;
   }
 
-  get htmlLocate() {
-    return this.form.get('htmlLocate') as FormGroup;
-  }
-
-  get positions() {
-    return this.htmlLocate.get('positions') as FormArray;
-  }
-
-  newPosition(value = ''): FormGroup {
+  newPagesLocatePosition(value = ''): FormGroup {
     return this._fb.group({
       name: [value, Validators.required],
     });
   }
 
-  addPosition(value = '') {
-    this.positions.push(this.newPosition(value));
+  addPagesLocatePosition(value = '') {
+    this.pagesLocatePositions.push(this.newPagesLocatePosition(value));
   }
 
-  removePosition(index: number) {
-    this.positions.removeAt(index);
+  removePagesLocatePosition(index: number) {
+    this.pagesLocatePositions.removeAt(index);
   }
 
-  get lookedType() {
-    return this.htmlLocate.get('lookedType') as FormControl;
+  get pagesLocateLookedType() {
+    return this.pagesLocate.get('lookedType') as FormControl;
   }
 
-  get lookedAttribute() {
-    return this.htmlLocate.get('lookedAttribute') as FormControl;
+  get pagesLocateLookedAttribute() {
+    return this.pagesLocate.get('lookedAttribute') as FormControl;
   }
 
-  get urls() {
-    return this.htmlLocate.get('urls') as FormArray;
+  get pagesLocateUrls() {
+    return this.pagesLocate.get('urls') as FormArray;
   }
 
-  newUrl(value = ''): FormGroup {
+  newPagesLocateUrl(value = ''): FormGroup {
     return this._fb.group({
       name: [value, Validators.required],
     });
   }
 
-  addUrl(value = '') {
-    this.urls.push(this.newUrl(value));
+  addPagesLocateUrl(value = '') {
+    this.pagesLocateUrls.push(this.newPagesLocateUrl(value));
   }
 
-  removeUrl(index: number) {
-    this.urls.removeAt(index);
+  removePagesLocateUrl(index: number) {
+    this.pagesLocateUrls.removeAt(index);
+  }
+
+  get chapterNameLocate(): FormGroup {
+    return this.form.get('chapterNameLocate') as FormGroup;
+  }
+
+  get chapterUrlLocate(): FormGroup {
+    return this.form.get('chapterUrlLocate') as FormGroup;
+  }
+
+  getFormControl(group: FormGroup, key: string): FormControl {
+    return group.get(key) as FormControl;
+  }
+
+  getFormArray(group: FormGroup, key: string): FormArray {
+    return group.get(key) as FormArray;
+  }
+
+  newArrayEntry(value: any): FormGroup {
+    return this._fb.group({
+      name: [value, Validators.required],
+    });
+  }
+
+  addArrayEntry(array: FormArray, value: any) {
+    array.push(this.newArrayEntry(value));
+  }
+
+  removeArrayEntry(array: FormArray, i: number) {
+    array.removeAt(i);
   }
 
   formArrayToArray(formArray: FormArray): any[] {
@@ -176,20 +221,49 @@ export class CreateMangaFormComponent {
     return array;
   }
 
-  get formData() {
+  get formData(): ScrapMangaType {
     return {
       name: this.name.value,
       authors: this.formArrayToArray(this.authors),
-      chapterCount: this.chapterCount.value,
       description: this.description.value,
-      genres: this.formArrayToArray(this.genres),
+      tags: this.formArrayToArray(this.tags),
       pic: this.picture.value,
-      startingChapter: this.startingChapter.value,
-      htmlLocate: {
-        positions: this.formArrayToArray(this.positions),
-        lookedType: this.lookedType.value,
-        lookedAttr: this.lookedAttribute.value,
-        urls: this.formArrayToArray(this.urls),
+
+      chaptersScrap: {
+        nameLocate: {
+          positions: this.formArrayToArray(
+            this.getFormArray(this.chapterNameLocate, 'positions')
+          ),
+          lookedType: this.getFormControl(this.chapterNameLocate, 'lookedType')
+            .value,
+          lookedAttr: this.getFormControl(
+            this.chapterNameLocate,
+            'lookedAttribute'
+          ).value,
+          urls: this.formArrayToArray(
+            this.getFormArray(this.chapterNameLocate, 'urls')
+          ),
+        },
+        urlLocate: {
+          positions: this.formArrayToArray(
+            this.getFormArray(this.chapterUrlLocate, 'positions')
+          ),
+          lookedType: this.getFormControl(this.chapterUrlLocate, 'lookedType')
+            .value,
+          lookedAttr: this.getFormControl(
+            this.chapterUrlLocate,
+            'lookedAttribute'
+          ).value,
+          urls: this.formArrayToArray(
+            this.getFormArray(this.chapterUrlLocate, 'urls')
+          ),
+        },
+      },
+      pagesLocate: {
+        positions: this.formArrayToArray(this.pagesLocatePositions),
+        lookedType: this.pagesLocateLookedType.value,
+        lookedAttr: this.pagesLocateLookedAttribute.value,
+        urls: this.formArrayToArray(this.pagesLocateUrls),
       },
     };
   }
@@ -204,39 +278,17 @@ export class CreateMangaFormComponent {
   }
 
   onTest() {
-    // this.isLoading = true;
-    // this.testFormLocally().then((res) => {
-    //   this.isLoading = false;
-    //   this._cdr.detectChanges();
-    //   this.displayTestSnackbar(res);
-    // });
+    this.isLoading = true;
+    this._scrapperHttpService.scrapManga(this.formData).subscribe((res) => {
+      this.isLoading = false;
+      this.lastTestedForm = res.data as MangaType;
+      this.displayTestSnackbar(res);
+      this._cdr.detectChanges();
+    });
   }
 
-  async testFormLocally() {
-    // let failedOn = [];
-    // this.lastTestedForm = this.formData;
-    // for (
-    //   let i = this.startingChapter.value;
-    //   i <= this.chapterCount.value;
-    //   i++
-    // ) {
-    //   this.currentlyTestingChapter = i;
-    //   const response = await firstValueFrom(
-    //     this._mangaHttpService.testMangaChapter(this.formData, i)
-    //   );
-    //   if (!response) {
-    //     failedOn.push(i);
-    //   }
-    //   this._cdr.detectChanges();
-    // }
-    // return {
-    //   success: failedOn.length === 0,
-    //   failedOn: failedOn,
-    // };
-  }
-
-  displayTestSnackbar(data: any) {
-    if (data.success) {
+  displayTestSnackbar(res: ServerResponse) {
+    if (res.status === 'success') {
       this._snackbar.open(
         'Testing successful. Click submit to add manga to database!',
         'Close',
@@ -244,16 +296,10 @@ export class CreateMangaFormComponent {
       );
     } else {
       this._snackbar.open(
-        `Testing unsuccessful. Failed chapters: ${String(data.failedOn)}`,
+        res.message ? res.message : `Testing unsuccessful`,
         'Close'
       );
     }
-  }
-
-  get testingProgress() {
-    return Math.round(
-      (this.currentlyTestingChapter / this.chapterCount.value) * 100
-    );
   }
 
   onSubmit() {
@@ -268,9 +314,13 @@ export class CreateMangaFormComponent {
         });
         this.clearForm();
       } else {
-        this._snackbar.open('Something went wrong. Try again later', 'Close', {
-          duration: 8000,
-        });
+        this._snackbar.open(
+          res.message ? res.message : 'Something went wrong. Try again later',
+          'Close',
+          {
+            duration: 8000,
+          }
+        );
       }
       this.isLoading = false;
       this._cdr.detectChanges();

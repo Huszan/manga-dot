@@ -1,18 +1,13 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-group">
-
   <div class="form-title mat-display-2">Add new manga</div>
 
   <mat-form-field>
-    <input matInput
-           formControlName="name"
-           placeholder="Title">
+    <input matInput formControlName="name" placeholder="Title" />
   </mat-form-field>
 
   <mat-form-field class="picture-preview-trigger">
-    <input matInput
-           formControlName="picture"
-           placeholder="Picture url">
-    <img class="picture-preview" alt="" [src]="picture.value">
+    <input matInput formControlName="picture" placeholder="Picture url" />
+    <img class="picture-preview" alt="" [src]="picture.value" />
   </mat-form-field>
 
   <div class="form-array-wrapper" formArrayName="authors">
@@ -20,9 +15,7 @@
     <ng-container *ngFor="let author of authors.controls; let i = index">
       <mat-form-field [formGroup]="getControlGroup(author)" id="authors">
         <div class="field">
-          <input matInput
-                 formControlName="name"
-                 type="text">
+          <input matInput formControlName="name" type="text" />
           <button mat-icon-button (click)="removeAuthor(i)" type="button">
             <mat-icon color="warn">delete</mat-icon>
           </button>
@@ -34,21 +27,19 @@
     </button>
   </div>
 
-  <div class="form-array-wrapper" formArrayName="genres">
-    <label for="genre" class="mat-h2">Genres</label>
-    <ng-container *ngFor="let genre of genres.controls; let i = index">
-      <mat-form-field [formGroup]="getControlGroup(genre)" id="genre">
+  <div class="form-array-wrapper" formArrayName="tags">
+    <label for="tag" class="mat-h2">Tags</label>
+    <ng-container *ngFor="let tag of tags.controls; let i = index">
+      <mat-form-field [formGroup]="getControlGroup(tag)" id="genre">
         <div class="field">
-          <input matInput
-                 formControlName="name"
-                 type="text">
-          <button mat-icon-button (click)="removeGenre(i)" type="button">
+          <input matInput formControlName="name" type="text" />
+          <button mat-icon-button (click)="removeTag(i)" type="button">
             <mat-icon color="warn">delete</mat-icon>
           </button>
         </div>
       </mat-form-field>
     </ng-container>
-    <button mat-mini-fab (click)="addGenre()" type="button">
+    <button mat-mini-fab (click)="addTag()" type="button">
       <mat-icon color="primary" style="align-self: center">add</mat-icon>
     </button>
   </div>
@@ -64,34 +55,13 @@
     </textarea>
   </mat-form-field>
 
-  <mat-form-field>
-    <input
-      matInput
-      formControlName="startingChapter"
-      placeholder="Starting chapter"
-      type="number"
+  <div class="form-group" [formGroup]="pagesLocate" id="pagesLocate">
+    <label for="pagesLocate" class="form-title mat-display-1"
+      >Scrapper pages locate</label
     >
-  </mat-form-field>
-
-  <mat-form-field>
-    <input
-      matInput
-      formControlName="chapterCount"
-      placeholder="Last chapter"
-      type="number"
-    >
-  </mat-form-field>
-
-  <div class="form-group" [formGroup]="htmlLocate" id="htmlLocate">
-
-    <label for="htmlLocate" class="form-title mat-display-1">Scrapper information</label>
 
     <mat-form-field>
-      <input
-        matInput
-        formControlName="lookedType"
-        placeholder="Element type"
-      >
+      <input matInput formControlName="lookedType" placeholder="Element type" />
     </mat-form-field>
 
     <mat-form-field>
@@ -99,27 +69,30 @@
         matInput
         formControlName="lookedAttribute"
         placeholder="Element attribute"
-      >
+      />
     </mat-form-field>
 
     <div class="form-array-wrapper" formArrayName="positions">
       <label for="position" class="mat-h2">Possible positions in html</label>
-      <div class="mat-body warn-text">
-       ex. .separator > a
-      </div>
-      <ng-container *ngFor="let position of positions.controls; let i = index">
+      <div class="mat-body warn-text">ex. .separator > a</div>
+      <ng-container
+        *ngFor="let position of pagesLocatePositions.controls; let i = index"
+      >
         <mat-form-field [formGroup]="getControlGroup(position)" id="position">
           <div class="field">
-            <input matInput
-                   formControlName="name"
-                   type="text">
-            <button mat-icon-button (click)="removePosition(i)" type="button" *ngIf="positions.controls.length > 1">
+            <input matInput formControlName="name" type="text" />
+            <button
+              mat-icon-button
+              (click)="removePagesLocatePosition(i)"
+              type="button"
+              *ngIf="pagesLocatePositions.controls.length > 1"
+            >
               <mat-icon color="warn">delete</mat-icon>
             </button>
           </div>
         </mat-form-field>
       </ng-container>
-      <button mat-mini-fab (click)="addPosition()" type="button">
+      <button mat-mini-fab (click)="addPagesLocatePosition()" type="button">
         <mat-icon color="primary" style="align-self: center">add</mat-icon>
       </button>
     </div>
@@ -127,31 +100,240 @@
     <div class="form-array-wrapper" formArrayName="urls">
       <label for="url" class="mat-h2">Possible urls</label>
       <div class="mat-body warn-text">
-        Put '!!!' in place of chapter number, ex. https://example/manga/chapter-!!!
+        Put '!!!' in place of chapter number, ex.
+        https://example/manga/chapter-!!!
       </div>
-      <ng-container *ngFor="let url of urls.controls; let i = index">
+      <ng-container *ngFor="let url of pagesLocateUrls.controls; let i = index">
         <mat-form-field [formGroup]="getControlGroup(url)" id="url">
           <div class="field">
-            <input matInput
-                   formControlName="name"
-                   type="text">
-            <button mat-icon-button (click)="removeUrl(i)" type="button">
-              <mat-icon color="warn" *ngIf="urls.controls.length > 1">delete</mat-icon>
+            <input matInput formControlName="name" type="text" />
+            <button
+              mat-icon-button
+              (click)="removePagesLocateUrl(i)"
+              type="button"
+            >
+              <mat-icon color="warn" *ngIf="pagesLocateUrls.controls.length > 1"
+                >delete</mat-icon
+              >
             </button>
           </div>
         </mat-form-field>
       </ng-container>
-      <button mat-mini-fab (click)="addUrl()" type="button">
+      <button mat-mini-fab (click)="addPagesLocateUrl()" type="button">
+        <mat-icon color="primary" style="align-self: center">add</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="form-group"
+    [formGroup]="chapterNameLocate"
+    id="chapterNameLocate"
+  >
+    <label for="chapterNameLocate" class="form-title mat-display-1"
+      >Scrapper chapter name locate</label
+    >
+
+    <mat-form-field>
+      <input matInput formControlName="lookedType" placeholder="Element type" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <input
+        matInput
+        formControlName="lookedAttribute"
+        placeholder="Element attribute"
+      />
+    </mat-form-field>
+
+    <div class="form-array-wrapper" formArrayName="positions">
+      <label for="position" class="mat-h2">Possible positions in html</label>
+      <div class="mat-body warn-text">ex. .separator > a</div>
+      <ng-container
+        *ngFor="
+          let position of getFormArray(chapterNameLocate, 'positions').controls;
+          let i = index
+        "
+      >
+        <mat-form-field [formGroup]="getControlGroup(position)">
+          <div class="field">
+            <input matInput formControlName="name" type="text" />
+            <button
+              mat-icon-button
+              (click)="
+                removeArrayEntry(
+                  getFormArray(chapterNameLocate, 'positions'),
+                  i
+                )
+              "
+              type="button"
+              *ngIf="
+                getFormArray(chapterNameLocate, 'positions').controls.length > 1
+              "
+            >
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+          </div>
+        </mat-form-field>
+      </ng-container>
+      <button
+        mat-mini-fab
+        (click)="
+          addArrayEntry(getFormArray(chapterNameLocate, 'positions'), '')
+        "
+        type="button"
+      >
         <mat-icon color="primary" style="align-self: center">add</mat-icon>
       </button>
     </div>
 
+    <div class="form-array-wrapper" formArrayName="urls">
+      <label for="url" class="mat-h2">Possible urls</label>
+      <ng-container
+        *ngFor="
+          let url of getFormArray(chapterNameLocate, 'urls').controls;
+          let i = index
+        "
+      >
+        <mat-form-field [formGroup]="getControlGroup(url)" id="url">
+          <div class="field">
+            <input matInput formControlName="name" type="text" />
+            <button
+              mat-icon-button
+              (click)="
+                removeArrayEntry(getFormArray(chapterNameLocate, 'urls'), i)
+              "
+              type="button"
+            >
+              <mat-icon
+                color="warn"
+                *ngIf="
+                  getFormArray(chapterNameLocate, 'urls').controls.length > 1
+                "
+                >delete</mat-icon
+              >
+            </button>
+          </div>
+        </mat-form-field>
+      </ng-container>
+      <button
+        mat-mini-fab
+        (click)="addArrayEntry(getFormArray(chapterNameLocate, 'urls'), '')"
+        type="button"
+      >
+        <mat-icon color="primary" style="align-self: center">add</mat-icon>
+      </button>
+    </div>
   </div>
 
-  <button type="button" mat-raised-button color="primary" [disabled]="!isFormValid" (click)="onTest()">{{lastTestId ? 'Test again' : 'Test'}}</button>
+  <div class="form-group" [formGroup]="chapterUrlLocate" id="chapterUrlLocate">
+    <label for="chapterUrlLocate" class="form-title mat-display-1"
+      >Scrapper chapter url locate</label
+    >
 
-  <button mat-raised-button color="accent" [disabled]="!lastTestedForm">Submit</button>
+    <mat-form-field>
+      <input matInput formControlName="lookedType" placeholder="Element type" />
+    </mat-form-field>
 
+    <mat-form-field>
+      <input
+        matInput
+        formControlName="lookedAttribute"
+        placeholder="Element attribute"
+      />
+    </mat-form-field>
+
+    <div class="form-array-wrapper" formArrayName="positions">
+      <label for="position" class="mat-h2">Possible positions in html</label>
+      <div class="mat-body warn-text">ex. .separator > a</div>
+      <ng-container
+        *ngFor="
+          let position of getFormArray(chapterUrlLocate, 'positions').controls;
+          let i = index
+        "
+      >
+        <mat-form-field [formGroup]="getControlGroup(position)">
+          <div class="field">
+            <input matInput formControlName="name" type="text" />
+            <button
+              mat-icon-button
+              (click)="
+                removeArrayEntry(getFormArray(chapterUrlLocate, 'positions'), i)
+              "
+              type="button"
+              *ngIf="
+                getFormArray(chapterUrlLocate, 'positions').controls.length > 1
+              "
+            >
+              <mat-icon color="warn">delete</mat-icon>
+            </button>
+          </div>
+        </mat-form-field>
+      </ng-container>
+      <button
+        mat-mini-fab
+        (click)="addArrayEntry(getFormArray(chapterUrlLocate, 'positions'), '')"
+        type="button"
+      >
+        <mat-icon color="primary" style="align-self: center">add</mat-icon>
+      </button>
+    </div>
+
+    <div class="form-array-wrapper" formArrayName="urls">
+      <label for="url" class="mat-h2">Possible urls</label>
+      <ng-container
+        *ngFor="
+          let url of getFormArray(chapterUrlLocate, 'urls').controls;
+          let i = index
+        "
+      >
+        <mat-form-field [formGroup]="getControlGroup(url)" id="url">
+          <div class="field">
+            <input matInput formControlName="name" type="text" />
+            <button
+              mat-icon-button
+              (click)="
+                removeArrayEntry(getFormArray(chapterUrlLocate, 'urls'), i)
+              "
+              type="button"
+            >
+              <mat-icon
+                color="warn"
+                *ngIf="
+                  getFormArray(chapterUrlLocate, 'urls').controls.length > 1
+                "
+                >delete</mat-icon
+              >
+            </button>
+          </div>
+        </mat-form-field>
+      </ng-container>
+      <button
+        mat-mini-fab
+        (click)="addArrayEntry(getFormArray(chapterUrlLocate, 'urls'), '')"
+        type="button"
+      >
+        <mat-icon color="primary" style="align-self: center">add</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    mat-raised-button
+    color="primary"
+    [disabled]="!isFormValid"
+    (click)="onTest()"
+  >
+    {{ lastTestedForm ? "Test again" : "Test" }}
+  </button>
+
+  <button mat-raised-button color="accent" [disabled]="!lastTestedForm">
+    Submit
+  </button>
 </form>
 
-<app-full-screen-loader *ngIf="isLoading" displayText="This may take some time. Please, be patient. {{testingProgress}}%"></app-full-screen-loader>
+<app-full-screen-loader
+  *ngIf="isLoading"
+  displayText="This may take some time. Please, be patient"
+></app-full-screen-loader>
