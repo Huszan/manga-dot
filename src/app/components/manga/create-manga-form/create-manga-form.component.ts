@@ -2,6 +2,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
+  ViewChild,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -17,6 +19,8 @@ import { ScrapMangaType } from 'src/app/types/scrap-manga.type';
 import { ScrapperHttpServiceService } from 'src/app/services/http/scrapper-http-service.service';
 import { MangaType } from 'src/app/types/manga.type';
 import { ServerResponse } from 'src/app/types/server-response.type';
+import { HtmlLocateType } from 'src/app/types/html-locate.type';
+import { exportJsonFile, importJsonFile } from 'src/app/utils/fm.utils';
 
 @Component({
   selector: 'app-create-manga-form',
@@ -25,6 +29,7 @@ import { ServerResponse } from 'src/app/types/server-response.type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateMangaFormComponent {
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   form!: FormGroup;
 
   lastTestedForm: MangaType | undefined = undefined;
@@ -325,5 +330,40 @@ export class CreateMangaFormComponent {
       this.isLoading = false;
       this._cdr.detectChanges();
     });
+  }
+
+  importData(data: ScrapMangaType) {
+    this.name.setValue(data.name);
+    this.picture.setValue(data.pic);
+    data.authors.forEach((author) => this.addAuthor(author));
+    data.tags.forEach((tag) => this.addTag(tag));
+    this.description.setValue(data.description);
+    this.importLocate(data.pagesLocate, this.pagesLocate);
+    this.importLocate(data.chaptersScrap.nameLocate, this.chapterNameLocate);
+    this.importLocate(data.chaptersScrap.urlLocate, this.chapterUrlLocate);
+  }
+
+  importLocate(data: HtmlLocateType, group: FormGroup) {
+    this.getFormControl(group, 'lookedType').setValue(data.lookedType);
+    this.getFormControl(group, 'lookedAttribute').setValue(data.lookedAttr);
+    this.getFormArray(group, 'positions').clear();
+    data.positions.forEach((pos) =>
+      this.addArrayEntry(this.getFormArray(group, 'positions'), pos)
+    );
+    this.getFormArray(group, 'urls').clear();
+    data.urls.forEach((url) =>
+      this.addArrayEntry(this.getFormArray(group, 'urls'), url)
+    );
+  }
+
+  onImport(e: Event) {
+    importJsonFile(e, (res: ScrapMangaType | null) => {
+      if (res === null) return;
+      this.importData(res);
+    });
+  }
+
+  onExport() {
+    exportJsonFile(this.formData, 'manga-data');
   }
 }
