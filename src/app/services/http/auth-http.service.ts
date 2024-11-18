@@ -11,6 +11,10 @@ export enum AccountType {
   Moderator = 'mod',
 }
 
+export interface AuthLogoutConfig {
+  logoutFromAllDevices?: boolean;
+}
+
 enum ROUTE {
   LOGIN = 'login',
   TOKEN_LOGIN = 'login/token',
@@ -55,9 +59,10 @@ export class AuthHttpService {
     }) as Observable<ServerResponse>;
   }
 
-  logout(id: number): Observable<ServerResponse> {
+  logout(id: number, config?: AuthLogoutConfig): Observable<ServerResponse> {
     return this.http.post(this._routeUrl(ROUTE.LOGOUT).toString(), {
       id: id,
+      config: config,
     }) as Observable<ServerResponse>;
   }
 

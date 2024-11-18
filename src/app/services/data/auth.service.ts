@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserType } from '../../types/user.type';
-import { AuthHttpService } from '../http/auth-http.service';
+import { AuthHttpService, AuthLogoutConfig } from '../http/auth-http.service';
 import { BehaviorSubject, catchError, of, retry, take, tap } from 'rxjs';
 import { StoreItem, StoreService } from '../store.service';
 import { ServerResponse } from 'src/app/types/server-response.type';
@@ -43,9 +43,12 @@ export class AuthService {
       tap((res) => {
         if (res.status === 'success') {
           this.currentUser$.next(res.data);
+        } else {
+          this.store.removeItem(StoreItem.AUTH_TOKEN);
         }
       }),
       catchError((err) => {
+        this.store.removeItem(StoreItem.AUTH_TOKEN);
         return of(err.error as ServerResponse);
       })
     );
@@ -60,9 +63,9 @@ export class AuthService {
     );
   }
 
-  logout() {
+  logout(config?: AuthLogoutConfig) {
     if (!this.currentUser$.value?.id) return;
-    return this._http.logout(this.currentUser$.value?.id).pipe(
+    return this._http.logout(this.currentUser$.value?.id, config).pipe(
       retry(3),
       tap((res) => {
         if (res.status === 'success') {
