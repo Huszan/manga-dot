@@ -28,11 +28,7 @@ export class MangaHttpService {
   private readonly _domain;
 
   constructor(private http: HttpClient, private _authService: AuthService) {
-    if (environment.production) {
-      this._domain = MANGA_DOMAIN.Production;
-    } else {
-      this._domain = MANGA_DOMAIN.Development;
-    }
+    this._domain = environment.apiUrl;
   }
 
   private _routeUrl(route: MANGA_ROUTE | string): URL {

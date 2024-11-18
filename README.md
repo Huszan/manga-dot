@@ -51,13 +51,13 @@ To run this project locally, follow these steps:
 
 This project includes several scripts for development and maintenance:
 
-- ng: Command to run Angular CLI commands.
-- serve: Start the Angular development server.
-- serve-mobile: Start the Angular development server with a custom host for mobile testing.
-- build: Compile the project for production with the specified base href.
-- watch: Build the project in watch mode for development.
-- test: Run unit tests for the application.
-- deploy: Deploy the application with the specified base href.
+- `ng`: Command to run Angular CLI commands.
+- `serve`: Start the Angular development server.
+- `serve-mobile`: Start the Angular development server with a custom host for mobile testing.
+- `build`: Compile the project for production with the specified base href.
+- `watch`: Build the project in watch mode for development.
+- `test`: Run unit tests for the application.
+- `deploy`: Deploy the application with the specified base href.
 
 ## Roadmap
 

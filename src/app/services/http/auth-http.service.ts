@@ -11,10 +11,6 @@ export enum AccountType {
   Moderator = 'mod',
 }
 
-const DOMAIN = {
-  Production: 'https://personal-website-backend-production.up.railway.app/',
-  Development: 'http://localhost:3000/',
-};
 enum ROUTE {
   LOGIN = 'login',
   TOKEN_LOGIN = 'login/token',
@@ -32,11 +28,7 @@ export class AuthHttpService {
   private readonly _domain;
 
   constructor(private http: HttpClient) {
-    if (environment.production) {
-      this._domain = DOMAIN.Production;
-    } else {
-      this._domain = DOMAIN.Development;
-    }
+    this._domain = environment.apiUrl;
   }
 
   private _routeUrl(route: ROUTE): URL {

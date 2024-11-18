@@ -5,11 +5,6 @@ import { ReadProgressType } from 'src/app/types/read-progress.type';
 import { ServerResponse } from 'src/app/types/server-response.type';
 import { environment } from 'src/environments/environment';
 
-const DOMAIN = {
-  Production: 'https://personal-website-backend-production.up.railway.app',
-  Development: 'http://localhost:3000',
-};
-
 @Injectable({
   providedIn: 'root',
 })
@@ -17,15 +12,13 @@ export class ReadProgressHttpService {
   private readonly _domain;
 
   constructor(private _http: HttpClient) {
-    this._domain = environment.production
-      ? DOMAIN.Production
-      : DOMAIN.Development;
+    this._domain = environment.apiUrl;
   }
 
   get(userId: number, progressId?: number): Observable<ServerResponse> {
     let route = new URL(
-      `${this._domain}/user/${userId}/progress${
-        progressId ? `/${progressId}` : ''
+      `${this._domain}user/${userId}/progress${
+        progressId ? `${progressId}` : ''
       }`
     );
 
@@ -37,7 +30,7 @@ export class ReadProgressHttpService {
   }
 
   set(progress: ReadProgressType): Observable<ServerResponse> {
-    let route = new URL(`${this._domain}/user/${progress.userId}/progress`);
+    let route = new URL(`${this._domain}user/${progress.userId}/progress`);
 
     return this._http
       .post<ServerResponse>(route.toString(), { data: progress })
@@ -49,9 +42,7 @@ export class ReadProgressHttpService {
   }
 
   del(userId: number, progressId: number): Observable<ServerResponse> {
-    let route = new URL(
-      `${this._domain}/user/${userId}/progress/${progressId}`
-    );
+    let route = new URL(`${this._domain}user/${userId}/progress/${progressId}`);
 
     return this._http.delete<ServerResponse>(route.toString()).pipe(
       catchError((err) => {

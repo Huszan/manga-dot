@@ -7,11 +7,6 @@ import { ScrapMangaType } from 'src/app/types/scrap-manga.type';
 import { AuthService } from '../data/auth.service';
 import { generateGenericHeaders } from 'src/app/utils/route.utils';
 
-const DOMAIN = {
-  Production: 'https://personal-website-backend-production.up.railway.app',
-  Development: 'http://localhost:3000',
-};
-
 @Injectable({
   providedIn: 'root',
 })
@@ -19,9 +14,7 @@ export class ScrapperHttpServiceService {
   private readonly _domain;
 
   constructor(private _http: HttpClient, private _authService: AuthService) {
-    this._domain = environment.production
-      ? DOMAIN.Production
-      : DOMAIN.Development;
+    this._domain = environment.apiUrl;
   }
 
   scrapManga(scrapData: ScrapMangaType): Observable<ServerResponse> {

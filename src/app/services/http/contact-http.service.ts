@@ -4,10 +4,6 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { ServerResponse } from 'src/app/types/server-response.type';
 
-const DOMAIN = {
-  Production: 'https://personal-website-backend-production.up.railway.app/',
-  Development: 'http://localhost:3000/',
-};
 enum ROUTE {
   SEND_MAIL = 'sendMailMangaDot',
 }
@@ -26,11 +22,7 @@ export class ContactHttpService {
   private readonly _domain;
 
   constructor(private http: HttpClient) {
-    if (environment.production) {
-      this._domain = DOMAIN.Production;
-    } else {
-      this._domain = DOMAIN.Development;
-    }
+    this._domain = environment.apiUrl;
   }
 
   private _routeUrl(route: ROUTE): URL {

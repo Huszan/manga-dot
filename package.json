@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "serve": "ng serve",
-    "serve-mobile": "ng serve --configuration production --host 192.168.1.10",
+    "serve-mobile": "ng serve --configuration developmentMobile --host 0.0.0.0",
     "build": "ng build --configuration production --base-href /manga-dot",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",

@@ -56,9 +56,23 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
+            },
+            "developmentMobile": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.mobile.ts"
+                }
+              ]
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -68,6 +82,9 @@
             },
             "development": {
               "browserTarget": "manga-dot:build:development"
+            },
+            "developmentMobile": {
+              "browserTarget": "manga-dot:build:developmentMobile"
             }
           },
           "defaultConfiguration": "development"
