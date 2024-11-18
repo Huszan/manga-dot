@@ -67,9 +67,11 @@ export class MangaCarouselComponent
 
   updateScrollVariables() {
     if (!this.carouselWrapperRef) return;
+    const offset = 10;
     let el = this.carouselWrapperRef.nativeElement as HTMLElement;
-    this.isScrollMaxLeft = el.scrollLeft === 0;
-    this.isScrollMaxRight = el.scrollWidth <= el.scrollLeft + el.offsetWidth;
+    this.isScrollMaxLeft = el.scrollLeft < offset;
+    this.isScrollMaxRight =
+      el.scrollWidth - offset <= el.scrollLeft + el.offsetWidth;
   }
 
   goNext() {
