@@ -53,16 +53,6 @@ export class MangaCoverTileComponent implements OnInit, OnDestroy {
     this._router.navigate(['manga', this.manga.id]);
   }
 
-  onClickRemove() {
-    this._mangaHttpService.removeManga(this.manga).subscribe((res) => {
-      if (res.message) this._snackbar.open(res.message, '', { duration: 2000 });
-    });
-  }
-
-  onClickEdit() {
-    this._snackbar.open('Not implemented yet', '', { duration: 2000 });
-  }
-
   ngOnDestroy() {
     this.userSub.unsubscribe();
   }

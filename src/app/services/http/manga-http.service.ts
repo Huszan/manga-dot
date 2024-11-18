@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, tap } from 'rxjs';
 import { LikeType } from '../../types/like.type';
 import { ServerResponse } from 'src/app/types/server-response.type';
 import { AuthService } from '../data/auth.service';
 import { generateGenericHeaders } from 'src/app/utils/route.utils';
 import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
+import { ReadProgressService } from '../data/read-progress.service';
 
 const MANGA_DOMAIN = {
   Production: 'https://personal-website-backend-production.up.railway.app/',
@@ -27,7 +28,11 @@ enum MANGA_ROUTE {
 export class MangaHttpService {
   private readonly _domain;
 
-  constructor(private http: HttpClient, private _authService: AuthService) {
+  constructor(
+    private http: HttpClient,
+    private _authService: AuthService,
+    private _readProgressService: ReadProgressService
+  ) {
     this._domain = environment.apiUrl;
   }
 
@@ -121,6 +126,10 @@ export class MangaHttpService {
       .pipe(
         catchError((err) => {
           return of(err.error as ServerResponse);
+        }),
+        tap(() => {
+          if (this._readProgressService.isMangaInReadProgress(manga.id))
+            this._readProgressService.getProgress();
         })
       ) as Observable<ServerResponse>;
   }

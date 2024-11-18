@@ -90,4 +90,12 @@ export class ReadProgressService {
     if (lastProgress[0].lastReadPage < progress.lastReadPage) return false;
     return true;
   }
+
+  isMangaInReadProgress(mangaId: number) {
+    const progressList = this.readProgressList$.value;
+    if (!progressList) return;
+    return (
+      progressList.filter((progress) => progress.mangaId === mangaId).length > 0
+    );
+  }
 }
