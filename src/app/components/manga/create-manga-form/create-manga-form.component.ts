@@ -21,6 +21,10 @@ import { MangaType } from 'src/app/types/manga.type';
 import { ServerResponse } from 'src/app/types/server-response.type';
 import { HtmlLocateType } from 'src/app/types/html-locate.type';
 import { exportJsonFile, importJsonFile } from 'src/app/utils/fm.utils';
+import {
+  SessionStoreService,
+  StoreItem,
+} from 'src/app/services/session-store.service';
 
 @Component({
   selector: 'app-create-manga-form',
@@ -39,53 +43,108 @@ export class CreateMangaFormComponent {
     private _fb: FormBuilder,
     private _scrapperHttpService: ScrapperHttpServiceService,
     private _mangaHttpService: MangaHttpService,
+    private _sessionStoreService: SessionStoreService,
     private _cdr: ChangeDetectorRef,
     private _snackbar: MatSnackBar
   ) {
-    this._initForm();
+    const lastData = _sessionStoreService.getItem(StoreItem.MANGA_FORM_DATA);
+    this._initForm(lastData);
+    this.form.valueChanges.subscribe(() => {
+      _sessionStoreService.setItem(StoreItem.MANGA_FORM_DATA, this.formData);
+    });
   }
 
-  private _initForm() {
+  private _initForm(lastData?: ScrapMangaType) {
     this.form = this._fb.group({
-      name: ['', Validators.required],
-      picture: ['', Validators.required],
+      name: [lastData ? lastData.name : '', Validators.required],
+      picture: [lastData ? lastData.pic : '', Validators.required],
       authors: this._fb.array([]),
       tags: this._fb.array([]),
-      description: [''],
+      description: [lastData ? lastData.description : ''],
 
       chapterNameLocate: this._fb.group({
         positions: this._fb.array([], Validators.required),
-        lookedType: ['a', Validators.required],
-        lookedAttribute: ['content', Validators.required],
+        lookedType: [
+          lastData ? lastData.chaptersScrap.nameLocate.lookedType : 'a',
+          Validators.required,
+        ],
+        lookedAttribute: [
+          lastData ? lastData.chaptersScrap.nameLocate.lookedAttr : 'content',
+          Validators.required,
+        ],
         urls: this._fb.array([], Validators.required),
       }),
 
       chapterUrlLocate: this._fb.group({
         positions: this._fb.array([], Validators.required),
-        lookedType: ['a', Validators.required],
-        lookedAttribute: ['href', Validators.required],
+        lookedType: [
+          lastData ? lastData.chaptersScrap.urlLocate.lookedType : 'a',
+          Validators.required,
+        ],
+        lookedAttribute: [
+          lastData ? lastData.chaptersScrap.urlLocate.lookedAttr : 'href',
+          Validators.required,
+        ],
         urls: this._fb.array([], Validators.required),
       }),
 
       pagesLocate: this._fb.group({
         positions: this._fb.array([], Validators.required),
-        lookedType: ['img', Validators.required],
-        lookedAttribute: ['src', Validators.required],
+        lookedType: [
+          lastData ? lastData.pagesLocate.lookedType : 'img',
+          Validators.required,
+        ],
+        lookedAttribute: [
+          lastData ? lastData.pagesLocate.lookedAttr : 'src',
+          Validators.required,
+        ],
         urls: this._fb.array([], Validators.required),
       }),
     });
-    this.addPagesLocatePosition('');
-    this.addPagesLocateUrl('');
-    this.addArrayEntry(
+    this.loadArray(this.authors, lastData?.authors);
+    this.loadArray(this.tags, lastData?.tags);
+    this.loadArray(
+      this.getFormArray(this.pagesLocate, 'positions'),
+      lastData?.pagesLocate.positions
+    );
+    this.loadArray(
+      this.getFormArray(this.pagesLocate, 'urls'),
+      lastData?.pagesLocate.urls
+    );
+    this.loadArray(
       this.getFormArray(this.chapterNameLocate, 'positions'),
-      ''
+      lastData?.chaptersScrap.nameLocate.positions
     );
-    this.addArrayEntry(this.getFormArray(this.chapterNameLocate, 'urls'), '');
-    this.addArrayEntry(
+    this.loadArray(
+      this.getFormArray(this.chapterNameLocate, 'urls'),
+      lastData?.chaptersScrap.nameLocate.urls
+    );
+    this.loadArray(
       this.getFormArray(this.chapterUrlLocate, 'positions'),
-      ''
+      lastData?.chaptersScrap.urlLocate.positions
     );
-    this.addArrayEntry(this.getFormArray(this.chapterUrlLocate, 'urls'), '');
+    this.loadArray(
+      this.getFormArray(this.chapterUrlLocate, 'urls'),
+      lastData?.chaptersScrap.urlLocate.urls
+    );
+  }
+
+  loadArray(array: FormArray, lastArray?: Array<any>) {
+    if (lastArray) {
+      lastArray.forEach((el) => this.addArrayEntry(array, el));
+    } else if (this.hasValidator(array, Validators.required)) {
+      this.addArrayEntry(array, '');
+    }
+  }
+
+  hasValidator(
+    control: AbstractControl | null,
+    validator: any
+  ): boolean | null {
+    if (!control || !control.validator) return false;
+
+    const validatorFn = control.validator({} as AbstractControl);
+    return validatorFn && validatorFn.hasOwnProperty(validator.name);
   }
 
   getControlGroup(control: AbstractControl) {
@@ -104,36 +163,8 @@ export class CreateMangaFormComponent {
     return this.form.get('authors') as FormArray;
   }
 
-  newAuthor(value?: string): FormGroup {
-    return this._fb.group({
-      name: value ? value : '',
-    });
-  }
-
-  addAuthor(value?: string) {
-    this.authors.push(this.newAuthor(value));
-  }
-
-  removeAuthor(index: number) {
-    this.authors.removeAt(index);
-  }
-
   get tags() {
     return this.form.get('tags') as FormArray;
-  }
-
-  newTag(value?: string): FormGroup {
-    return this._fb.group({
-      name: value ? value : '',
-    });
-  }
-
-  addTag(value?: string) {
-    this.tags.push(this.newTag(value));
-  }
-
-  removeTag(index: number) {
-    this.tags.removeAt(index);
   }
 
   get description() {
@@ -148,20 +179,6 @@ export class CreateMangaFormComponent {
     return this.pagesLocate.get('positions') as FormArray;
   }
 
-  newPagesLocatePosition(value = ''): FormGroup {
-    return this._fb.group({
-      name: [value, Validators.required],
-    });
-  }
-
-  addPagesLocatePosition(value = '') {
-    this.pagesLocatePositions.push(this.newPagesLocatePosition(value));
-  }
-
-  removePagesLocatePosition(index: number) {
-    this.pagesLocatePositions.removeAt(index);
-  }
-
   get pagesLocateLookedType() {
     return this.pagesLocate.get('lookedType') as FormControl;
   }
@@ -172,20 +189,6 @@ export class CreateMangaFormComponent {
 
   get pagesLocateUrls() {
     return this.pagesLocate.get('urls') as FormArray;
-  }
-
-  newPagesLocateUrl(value = ''): FormGroup {
-    return this._fb.group({
-      name: [value, Validators.required],
-    });
-  }
-
-  addPagesLocateUrl(value = '') {
-    this.pagesLocateUrls.push(this.newPagesLocateUrl(value));
-  }
-
-  removePagesLocateUrl(index: number) {
-    this.pagesLocateUrls.removeAt(index);
   }
 
   get chapterNameLocate(): FormGroup {
@@ -280,6 +283,7 @@ export class CreateMangaFormComponent {
   clearForm() {
     this._initForm();
     this.lastTestedForm = undefined;
+    this._sessionStoreService.removeItem(StoreItem.MANGA_FORM_DATA);
   }
 
   onTest() {
@@ -335,8 +339,8 @@ export class CreateMangaFormComponent {
   importData(data: ScrapMangaType) {
     this.name.setValue(data.name);
     this.picture.setValue(data.pic);
-    data.authors.forEach((author) => this.addAuthor(author));
-    data.tags.forEach((tag) => this.addTag(tag));
+    data.authors.forEach((author) => this.addArrayEntry(this.authors, author));
+    data.tags.forEach((tag) => this.addArrayEntry(this.tags, tag));
     this.description.setValue(data.description);
     this.importLocate(data.pagesLocate, this.pagesLocate);
     this.importLocate(data.chaptersScrap.nameLocate, this.chapterNameLocate);

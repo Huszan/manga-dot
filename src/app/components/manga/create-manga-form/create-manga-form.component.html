@@ -4,7 +4,12 @@
   class="add-manga-form form-group"
 >
   <div class="form-title mat-display-2">Add new manga</div>
-  <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu">
+  <button
+    mat-icon-button
+    type="button"
+    class="more-button"
+    [matMenuTriggerFor]="menu"
+  >
     <mat-icon>more_vert</mat-icon>
   </button>
 
@@ -23,13 +28,17 @@
       <mat-form-field [formGroup]="getControlGroup(author)" id="authors">
         <div class="field">
           <input matInput formControlName="name" type="text" />
-          <button mat-icon-button (click)="removeAuthor(i)" type="button">
+          <button
+            mat-icon-button
+            (click)="removeArrayEntry(authors, i)"
+            type="button"
+          >
             <mat-icon color="warn">delete</mat-icon>
           </button>
         </div>
       </mat-form-field>
     </ng-container>
-    <button mat-mini-fab (click)="addAuthor()" type="button">
+    <button mat-mini-fab (click)="addArrayEntry(authors, '')" type="button">
       <mat-icon color="primary" style="align-self: center">add</mat-icon>
     </button>
   </div>
@@ -40,13 +49,17 @@
       <mat-form-field [formGroup]="getControlGroup(tag)" id="genre">
         <div class="field">
           <input matInput formControlName="name" type="text" />
-          <button mat-icon-button (click)="removeTag(i)" type="button">
+          <button
+            mat-icon-button
+            (click)="removeArrayEntry(tags, i)"
+            type="button"
+          >
             <mat-icon color="warn">delete</mat-icon>
           </button>
         </div>
       </mat-form-field>
     </ng-container>
-    <button mat-mini-fab (click)="addTag()" type="button">
+    <button mat-mini-fab (click)="addArrayEntry(tags, '')" type="button">
       <mat-icon color="primary" style="align-self: center">add</mat-icon>
     </button>
   </div>
@@ -90,7 +103,9 @@
             <input matInput formControlName="name" type="text" />
             <button
               mat-icon-button
-              (click)="removePagesLocatePosition(i)"
+              (click)="
+                removeArrayEntry(getFormArray(pagesLocate, 'positions'), i)
+              "
               type="button"
               *ngIf="pagesLocatePositions.controls.length > 1"
             >
@@ -99,7 +114,11 @@
           </div>
         </mat-form-field>
       </ng-container>
-      <button mat-mini-fab (click)="addPagesLocatePosition()" type="button">
+      <button
+        mat-mini-fab
+        (click)="addArrayEntry(getFormArray(pagesLocate, 'positions'), '')"
+        type="button"
+      >
         <mat-icon color="primary" style="align-self: center">add</mat-icon>
       </button>
     </div>
@@ -116,17 +135,20 @@
             <input matInput formControlName="name" type="text" />
             <button
               mat-icon-button
-              (click)="removePagesLocateUrl(i)"
+              (click)="removeArrayEntry(getFormArray(pagesLocate, 'url'), i)"
               type="button"
+              *ngIf="pagesLocateUrls.controls.length > 1"
             >
-              <mat-icon color="warn" *ngIf="pagesLocateUrls.controls.length > 1"
-                >delete</mat-icon
-              >
+              <mat-icon color="warn">delete</mat-icon>
             </button>
           </div>
         </mat-form-field>
       </ng-container>
-      <button mat-mini-fab (click)="addPagesLocateUrl()" type="button">
+      <button
+        mat-mini-fab
+        (click)="addArrayEntry(getFormArray(pagesLocate, 'url'), '')"
+        type="button"
+      >
         <mat-icon color="primary" style="align-self: center">add</mat-icon>
       </button>
     </div>
@@ -211,14 +233,11 @@
                 removeArrayEntry(getFormArray(chapterNameLocate, 'urls'), i)
               "
               type="button"
+              *ngIf="
+                getFormArray(chapterNameLocate, 'urls').controls.length > 1
+              "
             >
-              <mat-icon
-                color="warn"
-                *ngIf="
-                  getFormArray(chapterNameLocate, 'urls').controls.length > 1
-                "
-                >delete</mat-icon
-              >
+              <mat-icon color="warn">delete</mat-icon>
             </button>
           </div>
         </mat-form-field>
@@ -303,14 +322,9 @@
                 removeArrayEntry(getFormArray(chapterUrlLocate, 'urls'), i)
               "
               type="button"
+              *ngIf="getFormArray(chapterUrlLocate, 'urls').controls.length > 1"
             >
-              <mat-icon
-                color="warn"
-                *ngIf="
-                  getFormArray(chapterUrlLocate, 'urls').controls.length > 1
-                "
-                >delete</mat-icon
-              >
+              <mat-icon color="warn">delete</mat-icon>
             </button>
           </div>
         </mat-form-field>
@@ -346,6 +360,9 @@
 ></app-full-screen-loader>
 
 <mat-menu #menu="matMenu">
+  <button mat-menu-item type="button" (click)="clearForm()">
+    <mat-icon color="warn">replay</mat-icon> Reset form
+  </button>
   <button mat-menu-item type="button" (click)="fileInput.click()">
     <mat-icon color="primary">upload</mat-icon> Import data
   </button>
