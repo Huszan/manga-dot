@@ -61,6 +61,10 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
     return Number(this.route.snapshot.paramMap.get('id'));
   }
 
+  get imageUrl(): string {
+    return this.manga!.imagePath ? this.manga!.imagePath : this.manga!.pic;
+  }
+
   private _initializeManga() {
     if (
       !this.mangaService.selectedManga$.value ||

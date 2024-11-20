@@ -7,11 +7,11 @@
 <ng-template #mangaFound>
   <div
     class="display-container-wrapper"
-    [style.backgroundImage]="'url(' + manga!.pic + ')'"
+    [style.backgroundImage]="'url(' + imageUrl + ')'"
   >
     <div class="bg"></div>
     <div class="display-container cf">
-      <img class="logo" [src]="manga!.pic" />
+      <img class="logo" [src]="imageUrl" />
       <p class="mat-display-3 title">
         <span
           ><b>{{ manga!.name.toUpperCase() }}</b></span

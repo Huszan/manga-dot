@@ -18,7 +18,7 @@ export class ScrapperHttpServiceService {
   }
 
   scrapManga(scrapData: ScrapMangaType): Observable<ServerResponse> {
-    let route = new URL(`${this._domain}/scrapper/manga/`);
+    let route = new URL(`${this._domain}scrapper/manga/`);
     const body = {
       data: scrapData,
     };

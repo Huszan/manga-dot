@@ -61,6 +61,7 @@ export class CreateMangaFormComponent {
       authors: this._fb.array([]),
       tags: this._fb.array([]),
       description: [lastData ? lastData.description : ''],
+      beforeUrl: [lastData ? lastData.beforeUrl : ''],
 
       chapterNameLocate: this._fb.group({
         positions: this._fb.array([], Validators.required),
@@ -127,6 +128,9 @@ export class CreateMangaFormComponent {
       this.getFormArray(this.chapterUrlLocate, 'urls'),
       lastData?.chaptersScrap.urlLocate.urls
     );
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
   }
 
   loadArray(array: FormArray, lastArray?: Array<any>) {
@@ -169,6 +173,10 @@ export class CreateMangaFormComponent {
 
   get description() {
     return this.form.get('description') as FormControl;
+  }
+
+  get beforeUrl() {
+    return this.form.get('beforeUrl') as FormControl;
   }
 
   get pagesLocate() {
@@ -234,6 +242,7 @@ export class CreateMangaFormComponent {
       name: this.name.value,
       authors: this.formArrayToArray(this.authors),
       description: this.description.value,
+      beforeUrl: this.beforeUrl.value,
       tags: this.formArrayToArray(this.tags),
       pic: this.picture.value,
 
@@ -342,6 +351,7 @@ export class CreateMangaFormComponent {
     data.authors.forEach((author) => this.addArrayEntry(this.authors, author));
     data.tags.forEach((tag) => this.addArrayEntry(this.tags, tag));
     this.description.setValue(data.description);
+    this.beforeUrl.setValue(data.beforeUrl);
     this.importLocate(data.pagesLocate, this.pagesLocate);
     this.importLocate(data.chaptersScrap.nameLocate, this.chapterNameLocate);
     this.importLocate(data.chaptersScrap.urlLocate, this.chapterUrlLocate);

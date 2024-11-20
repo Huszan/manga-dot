@@ -1,7 +1,7 @@
 <div class="manga-container-wrapper">
   <ng-container *ngIf="manga; else skeleton">
     <button class="manga-container" (click)="onClickRead()">
-      <img [src]="manga.pic" alt="" />
+      <img [src]="imageUrl" alt="" />
     </button>
     <div class="info-box">
       <button class="manga-title mat-h2" (click)="onClickRead()">

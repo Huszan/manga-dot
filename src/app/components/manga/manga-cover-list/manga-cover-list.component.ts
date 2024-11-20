@@ -40,6 +40,10 @@ export class MangaCoverListComponent implements OnInit, OnDestroy {
     private _router: Router
   ) {}
 
+  get imageUrl(): string {
+    return this.manga!.imagePath ? this.manga!.imagePath : this.manga!.pic;
+  }
+
   ngOnInit() {
     this.userSub = this._auth.currentUser$.subscribe((user) => {
       this.user = user;
