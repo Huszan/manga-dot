@@ -46,9 +46,13 @@
   <div class="form-array-wrapper" formArrayName="tags">
     <label for="tag" class="mat-h2">Tags</label>
     <ng-container *ngFor="let tag of tags.controls; let i = index">
-      <mat-form-field [formGroup]="getControlGroup(tag)" id="genre">
+      <mat-form-field [formGroup]="getControlGroup(tag)">
         <div class="field">
-          <input matInput formControlName="name" type="text" />
+          <mat-select formControlName="name">
+            <mat-option *ngFor="let tag of availableTags" [value]="tag">{{
+              tag
+            }}</mat-option>
+          </mat-select>
           <button
             mat-icon-button
             (click)="removeArrayEntry(tags, i)"
@@ -59,7 +63,11 @@
         </div>
       </mat-form-field>
     </ng-container>
-    <button mat-mini-fab (click)="addArrayEntry(tags, '')" type="button">
+    <button
+      mat-mini-fab
+      (click)="addArrayEntry(tags, availableTags[0])"
+      type="button"
+    >
       <mat-icon color="primary" style="align-self: center">add</mat-icon>
     </button>
   </div>

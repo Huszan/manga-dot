@@ -25,6 +25,7 @@ import {
   SessionStoreService,
   StoreItem,
 } from 'src/app/services/session-store.service';
+import { Tags } from '../manga-browse/manga-browse.component';
 
 @Component({
   selector: 'app-create-manga-form',
@@ -35,6 +36,7 @@ import {
 export class CreateMangaFormComponent {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   form!: FormGroup;
+  availableTags = Tags;
 
   lastTestedForm: MangaType | undefined = undefined;
   isLoading: boolean = false;
