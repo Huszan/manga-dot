@@ -38,7 +38,9 @@ export class CreateMangaFormComponent {
   form!: FormGroup;
   availableTags = Tags;
 
-  lastTestedForm: MangaType | undefined = undefined;
+  lastTestedForm:
+    | { manga: MangaType; htmlLocateList: HtmlLocateType[] }
+    | undefined = undefined;
   isLoading: boolean = false;
 
   constructor(
@@ -250,6 +252,7 @@ export class CreateMangaFormComponent {
 
       chaptersScrap: {
         nameLocate: {
+          entityName: 'chapterNames',
           positions: this.formArrayToArray(
             this.getFormArray(this.chapterNameLocate, 'positions')
           ),
@@ -264,6 +267,7 @@ export class CreateMangaFormComponent {
           ),
         },
         urlLocate: {
+          entityName: 'chapterUrls',
           positions: this.formArrayToArray(
             this.getFormArray(this.chapterUrlLocate, 'positions')
           ),
@@ -279,6 +283,7 @@ export class CreateMangaFormComponent {
         },
       },
       pagesLocate: {
+        entityName: 'pages',
         positions: this.formArrayToArray(this.pagesLocatePositions),
         lookedType: this.pagesLocateLookedType.value,
         lookedAttr: this.pagesLocateLookedAttribute.value,
@@ -301,7 +306,16 @@ export class CreateMangaFormComponent {
     this.isLoading = true;
     this._scrapperHttpService.scrapManga(this.formData).subscribe((res) => {
       this.isLoading = false;
-      this.lastTestedForm = res.data as MangaType;
+      this.lastTestedForm = res.data
+        ? {
+            manga: res.data as MangaType,
+            htmlLocateList: [
+              this.formData.chaptersScrap.nameLocate,
+              this.formData.chaptersScrap.urlLocate,
+              this.formData.pagesLocate,
+            ],
+          }
+        : undefined;
       this.displayTestSnackbar(res);
       this._cdr.detectChanges();
     });
@@ -327,24 +341,30 @@ export class CreateMangaFormComponent {
       return;
     }
     this.isLoading = true;
-    this._mangaHttpService.postManga(this.lastTestedForm).subscribe((res) => {
-      if (res.status === 'success') {
-        this._snackbar.open('Successfully added manga to database!', 'Close', {
-          duration: 8000,
-        });
-        this.clearForm();
-      } else {
-        this._snackbar.open(
-          res.message ? res.message : 'Something went wrong. Try again later',
-          'Close',
-          {
-            duration: 8000,
-          }
-        );
-      }
-      this.isLoading = false;
-      this._cdr.detectChanges();
-    });
+    this._mangaHttpService
+      .postManga(this.lastTestedForm.manga, this.lastTestedForm.htmlLocateList)
+      .subscribe((res) => {
+        if (res.status === 'success') {
+          this._snackbar.open(
+            'Successfully added manga to database!',
+            'Close',
+            {
+              duration: 8000,
+            }
+          );
+          this.clearForm();
+        } else {
+          this._snackbar.open(
+            res.message ? res.message : 'Something went wrong. Try again later',
+            'Close',
+            {
+              duration: 8000,
+            }
+          );
+        }
+        this.isLoading = false;
+        this._cdr.detectChanges();
+      });
   }
 
   importData(data: ScrapMangaType) {

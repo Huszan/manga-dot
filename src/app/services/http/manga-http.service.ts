@@ -8,11 +8,8 @@ import { AuthService } from '../data/auth.service';
 import { generateGenericHeaders } from 'src/app/utils/route.utils';
 import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
 import { ReadProgressService } from '../data/read-progress.service';
+import { HtmlLocateType } from 'src/app/types/html-locate.type';
 
-const MANGA_DOMAIN = {
-  Production: 'https://personal-website-backend-production.up.railway.app/',
-  Development: 'http://localhost:3000/',
-};
 enum MANGA_ROUTE {
   POST = 'manga',
   GET_MANGAS = 'manga/:mangaId',
@@ -97,12 +94,16 @@ export class MangaHttpService {
     ) as Observable<ServerResponse>;
   }
 
-  postManga(mangaForm: any): Observable<ServerResponse> {
+  postManga(
+    mangaForm: any,
+    htmlLocateList?: HtmlLocateType[]
+  ): Observable<ServerResponse> {
     return this.http
       .post<ServerResponse>(
         this._routeUrl(MANGA_ROUTE.POST).toString(),
         {
           manga: mangaForm,
+          htmlLocateList,
         },
         {
           headers: generateGenericHeaders(this._authService),
