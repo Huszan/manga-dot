@@ -83,4 +83,23 @@ export class MangaService {
         });
     });
   }
+
+  updateLikes(): Promise<void> {
+    const manga = this.selectedManga$.value;
+    return new Promise((res, rej) => {
+      this.mangaHttp.getManga(manga?.id).subscribe((serverRes) => {
+        const nextManga = serverRes.data.manga as MangaType;
+        if (serverRes.status === 'error' || !serverRes.data.manga) {
+          this.selectedManga$.next(null);
+          return rej();
+        }
+
+        this.selectedManga$.next({
+          ...manga,
+          likes: nextManga.likes,
+        } as MangaType);
+        return res();
+      });
+    });
+  }
 }
