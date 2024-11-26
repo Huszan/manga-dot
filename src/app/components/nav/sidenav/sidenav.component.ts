@@ -36,19 +36,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private _snackbar: MatSnackBar
   ) {}
 
-  get displayRoutes() {
-    return this.routes.filter(
-      (route) => route.data && route.data['sidebarDisplay']
-    );
-  }
-
   ngOnInit() {
     this.userSub = this.subscribeToUser();
     this.routesSub = this.subscribeToRoutes();
   }
 
   private subscribeToRoutes() {
-    return this._routingModule.availableRoutes.subscribe(() => {
+    return this._routingModule.availableRoutes.subscribe((val) => {
+      this.routes = val;
       this._cdr.detectChanges();
     });
   }

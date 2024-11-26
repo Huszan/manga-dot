@@ -8,7 +8,7 @@
     </ng-container>
   </div>
   <mat-nav-list>
-    <ng-container *ngFor="let route of displayRoutes; let i = index">
+    <ng-container *ngFor="let route of routes; let i = index">
       <mat-list-item
         (click)="onRouteClick(route)"
         [routerLink]="route.path"

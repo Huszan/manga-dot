@@ -101,7 +101,7 @@ export class AppRoutingModule {
   private _collectAvailableRoutes(user?: UserType) {
     let currentAvailable: Routes = [];
     routes.forEach((el) => {
-      if (el.redirectTo === undefined && el.title != undefined) {
+      if (el.data && el.data['sidebarDisplay']) {
         if (el.data && el.data['roles']) {
           if (el.data['roles'].includes(user?.accountType)) {
             currentAvailable.push(el);
