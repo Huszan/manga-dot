@@ -8,7 +8,7 @@
     </ng-container>
   </div>
   <mat-nav-list>
-    <ng-container *ngFor="let route of routes; let i = index">
+    <ng-container *ngFor="let route of displayRoutes; let i = index">
       <mat-list-item
         (click)="onRouteClick(route)"
         [routerLink]="route.path"
@@ -16,8 +16,12 @@
         [routerLinkActiveOptions]="{ exact: true }"
         queryParamsHandling="merge"
       >
-        <mat-icon *ngIf="route.data && route.data['icon']" style="margin-right: 10px">{{ route.data['icon'] }}</mat-icon>
-        {{ getDisplay(i) }}
+        <mat-icon
+          *ngIf="route.data && route.data['icon']"
+          style="margin-right: 10px"
+          >{{ route.data["icon"] }}</mat-icon
+        >
+        {{ route.data!["sidebarDisplay"] }}
       </mat-list-item>
     </ng-container>
   </mat-nav-list>
@@ -25,22 +29,35 @@
 
 <ng-template #userNotLogged>
   <div class="login-actions">
-    <button mat-raised-button [routerLink]="'login'" (click)="onRouteClick()">Login</button>
-    <button mat-raised-button color="accent" [routerLink]="'register'" (click)="onRouteClick()">Register</button>
+    <button mat-raised-button [routerLink]="'login'" (click)="onRouteClick()">
+      Login
+    </button>
+    <button
+      mat-raised-button
+      color="accent"
+      [routerLink]="'register'"
+      (click)="onRouteClick()"
+    >
+      Register
+    </button>
   </div>
 </ng-template>
 
 <ng-template #userLogged>
-  <div class="account-type mat-caption"
-       [ngClass]="{
-        'user': user?.accountType === 'user',
-        'mod': user?.accountType === 'mod',
-        'admin': user?.accountType === 'admin'
-        }"
+  <div
+    class="account-type mat-caption"
+    [ngClass]="{
+      user: user?.accountType === 'user',
+      mod: user?.accountType === 'mod',
+      admin: user?.accountType === 'admin'
+    }"
   >
-    {{ user?.accountType!.toUpperCase() }}</div>
+    {{ user?.accountType!.toUpperCase() }}
+  </div>
   <h2 class="mat-h2">{{ user?.name }}</h2>
   <div class="login-actions">
-    <button mat-raised-button color="warn" (click)="onLogoutClick()">Logout</button>
+    <button mat-raised-button color="warn" (click)="onLogoutClick()">
+      Logout
+    </button>
   </div>
 </ng-template>
