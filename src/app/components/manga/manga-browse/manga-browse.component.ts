@@ -18,16 +18,14 @@ import { debounceTime, Observable, Subject, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { ServerResponse } from 'src/app/types/server-response.type';
-import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
-
-export interface SortData {
-  element: string;
-  sort: 'ASC' | 'DESC';
-}
+import {
+  RepositoryFindOptions,
+  RepositoryOrder,
+} from 'src/app/types/repository-find-options.type';
 
 export const SortOptions: {
   display: string;
-  value: SortData;
+  value: RepositoryOrder;
 }[] = [
   {
     display: 'Most popular',
@@ -60,46 +58,46 @@ export const SortOptions: {
 ];
 
 export const Tags = [
-  'action',
-  'adventure',
-  'fantasy',
-  'harem',
-  'romance',
-  'supernatural',
-  'comedy',
-  'shounen',
-  'historical',
-  'shoujo',
-  'slice of life',
-  'drama',
-  'martial arts',
-  'horror',
-  'mystery',
-  'psychological',
-  'tragedy',
-  'webtoons',
-  'school life',
-  'yaoi',
-  'isekai',
-  'seinen',
-  'pornographic',
-  'manhwa',
-  'shounen ai',
-  'cooking',
-  'manhua',
-  'josei',
-  'smut',
-  'yuri',
-  'sci fi',
-  'erotica',
-  'mature',
-  'sports',
-  'mecha',
-  'gender bender',
-  'shoujo ai',
-  'medical',
-  'one shot',
-  'doujinshi',
+  'Action',
+  'Adventure',
+  'Comedy',
+  'Cooking',
+  'Doujinshi',
+  'Drama',
+  'Erotica',
+  'Fantasy',
+  'Gender bender',
+  'Harem',
+  'Historical',
+  'Horror',
+  'Isekai',
+  'Josei',
+  'Manhua',
+  'Manhwa',
+  'Martial arts',
+  'Mature',
+  'Mecha',
+  'Medical',
+  'Mystery',
+  'One shot',
+  'Pornographic',
+  'Psychological',
+  'Romance',
+  'School life',
+  'Sci fi',
+  'Seinen',
+  'Shoujo',
+  'Shoujo ai',
+  'Shounen',
+  'Shounen ai',
+  'Slice of life',
+  'Smut',
+  'Sports',
+  'Supernatural',
+  'Tragedy',
+  'Webtoons',
+  'Yaoi',
+  'Yuri',
 ];
 
 export interface MangaBrowseOptions {
@@ -126,7 +124,7 @@ export class MangaBrowseComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() titleNav?: { link: string; queryParams: any };
   @Input() actionsAllowed: MangaBrowseOptions = { all: true };
   @Input() displayType: 'tiles' | 'list' = 'tiles';
-  @Input() sortBy?: SortData;
+  @Input() sortBy?: RepositoryOrder;
   @Input() isStaticHeight?: boolean = true;
   @Input() tags: number[] = [];
   @Input() itemsPerPage: ItemPerPage | number = 12;

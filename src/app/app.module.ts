@@ -59,6 +59,7 @@ import { ConfirmDialogComponent } from './components/global/confirm-dialog/confi
 import { MangaCoverTileActionBarComponent } from './components/manga/manga-cover-tile-action-bar/manga-cover-tile-action-bar.component';
 import { MangaCoverTileProgressBarComponent } from './components/manga/manga-cover-tile-progress-bar/manga-cover-tile-progress-bar.component';
 import { ExpendableContentDirective } from './directives/expendable-content.directive';
+import { EditMangaFormComponent } from './components/manga/edit-manga-form/edit-manga-form.component';
 
 function initializeApp(authService: AuthService) {
   return () => authService.initialize();
@@ -73,6 +74,7 @@ function initializeApp(authService: AuthService) {
     MangaDisplayComponent,
     MangaChapterComponent,
     CreateMangaFormComponent,
+    EditMangaFormComponent,
     FullScreenLoaderComponent,
     LoginFormComponent,
     RegisterFormComponent,

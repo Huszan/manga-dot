@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import {
@@ -25,33 +26,68 @@ import {
   StoreItem,
 } from 'src/app/services/session-store.service';
 import { Tags } from '../manga-browse/manga-browse.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MangaService } from 'src/app/services/data/manga.service';
+import { BehaviorSubject } from 'rxjs';
+import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
 
 @Component({
-  selector: 'app-create-manga-form',
-  templateUrl: './create-manga-form.component.html',
-  styleUrls: ['./create-manga-form.component.scss'],
+  selector: 'app-edit-manga-form',
+  templateUrl: './edit-manga-form.component.html',
+  styleUrls: ['./edit-manga-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateMangaFormComponent {
+export class EditMangaFormComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   form!: FormGroup;
   availableTags = Tags;
+  manga$ = new BehaviorSubject<MangaType | null>(null);
 
   lastTestedForm?: MangaType;
   isLoading: boolean = false;
 
   constructor(
+    private _route: ActivatedRoute,
+    private _router: Router,
     private _fb: FormBuilder,
     private _scrapperHttpService: ScrapperHttpServiceService,
     private _mangaHttpService: MangaHttpService,
+    private _mangaService: MangaService,
     private _sessionStoreService: SessionStoreService,
     private _cdr: ChangeDetectorRef,
     private _snackbar: MatSnackBar
   ) {
-    const lastData = _sessionStoreService.getItem(StoreItem.MANGA_FORM_DATA);
-    this._initForm(lastData);
-    this.form.valueChanges.subscribe(() => {
-      _sessionStoreService.setItem(StoreItem.MANGA_FORM_DATA, this.formData);
+    this._initForm();
+  }
+
+  ngOnInit(): void {
+    this._route.paramMap.subscribe((params) => {
+      const mangaId = Number(params.get('id'));
+      this.getManga(mangaId);
+      this.isLoading = false;
+    });
+    this.manga$.subscribe((manga) => {
+      if (!manga) return;
+      this._initForm(manga);
+      this._cdr.markForCheck();
+    });
+  }
+
+  getManga(id: number): void {
+    if (!id || isNaN(id)) this.onError(`Manga with this id doesn't exist`);
+    const options: RepositoryFindOptions = {
+      relations: { scrapManga: true },
+    };
+    this._mangaHttpService.getManga(id, options).subscribe((res) => {
+      if (res.status === 'success') {
+        this.manga$.next(res.data.manga);
+      } else this.onError(`Manga with this id doesn't exist`);
+    });
+  }
+
+  onError(message: string) {
+    this._router.navigate(['/']).then(() => {
+      this._snackbar.open(message, 'Close');
     });
   }
 
@@ -244,8 +280,14 @@ export class CreateMangaFormComponent {
     return array;
   }
 
-  get formData(): MangaType {
+  get formData(): MangaType | null {
+    const manga = this.manga$.value;
+    if (!manga) return null;
+    const locate = this.getFormLocates(
+      manga.scrapManga ? manga.scrapManga.htmlLocateList : []
+    );
     return {
+      id: manga.id,
       name: this.name.value,
       pic: this.picture.value,
       authors: this.formArrayToArray(this.authors),
@@ -253,13 +295,15 @@ export class CreateMangaFormComponent {
       description: this.description.value,
       likes: [],
       lastUpdateDate: new Date(),
-      addedDate: new Date(),
-      chapterCount: 0,
-      viewCount: 0,
+      addedDate: manga.addedDate,
+      chapterCount: manga.chapterCount,
+      viewCount: manga.viewCount,
       scrapManga: {
+        id: manga.scrapManga?.id,
         beforeUrl: this.beforeUrl.value,
         htmlLocateList: [
           {
+            id: locate.chapterNames?.id,
             entityName: 'chapterNames',
             positions: this.formArrayToArray(
               this.getFormArray(this.chapterNameLocate, 'positions')
@@ -277,6 +321,7 @@ export class CreateMangaFormComponent {
             ),
           },
           {
+            id: locate.chapterUrls?.id,
             entityName: 'chapterUrls',
             positions: this.formArrayToArray(
               this.getFormArray(this.chapterUrlLocate, 'positions')
@@ -292,6 +337,7 @@ export class CreateMangaFormComponent {
             ),
           },
           {
+            id: locate.pages?.id,
             entityName: 'pages',
             positions: this.formArrayToArray(this.pagesLocatePositions),
             lookedType: this.pagesLocateLookedType.value,
@@ -314,10 +360,12 @@ export class CreateMangaFormComponent {
   }
 
   onTest() {
+    const data = this.formData;
+    if (!data) return;
     this.isLoading = true;
-    this._scrapperHttpService.scrapManga(this.formData).subscribe((res) => {
+    this._scrapperHttpService.scrapManga(data).subscribe((res) => {
       this.isLoading = false;
-      this.lastTestedForm = res.data;
+      this.lastTestedForm = res.data as MangaType;
       this.displayTestSnackbar(res);
       this._cdr.detectChanges();
     });
@@ -328,7 +376,7 @@ export class CreateMangaFormComponent {
       this._snackbar.open(
         'Testing successful. Click submit to add manga to database!',
         'Close',
-        { duration: 8000 }
+        { duration: 4000 }
       );
     } else {
       this._snackbar.open(
@@ -343,10 +391,10 @@ export class CreateMangaFormComponent {
       return;
     }
     this.isLoading = true;
-    this._mangaHttpService.postManga(this.lastTestedForm).subscribe((res) => {
+    this._mangaHttpService.updateManga(this.lastTestedForm).subscribe((res) => {
       if (res.status === 'success') {
-        this._snackbar.open('Successfully added manga to database!', 'Close', {
-          duration: 8000,
+        this._snackbar.open('Manga successfully updated!', 'Close', {
+          duration: 4000,
         });
         this.clearForm();
       } else {
@@ -354,7 +402,7 @@ export class CreateMangaFormComponent {
           res.message ? res.message : 'Something went wrong. Try again later',
           'Close',
           {
-            duration: 8000,
+            duration: 4000,
           }
         );
       }

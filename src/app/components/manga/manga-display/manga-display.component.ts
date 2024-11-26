@@ -123,7 +123,7 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
     };
     this.mangaHttp.likeManga(like).subscribe((res) => {
       if (res.status === 'success') {
-        this.mangaService.requestManga(this.mangaId);
+        this.mangaService.updateLikes();
       } else if (res.message) {
         this._snackbar.open(res.message, 'Close', { duration: 8000 });
       }
@@ -173,6 +173,10 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
         );
       }
     });
+  }
+
+  onEdit() {
+    this.router.navigate(['/manga', this.mangaId, 'edit']);
   }
 
   ngOnDestroy() {

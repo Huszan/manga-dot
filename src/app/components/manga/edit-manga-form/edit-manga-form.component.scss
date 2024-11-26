@@ -1,0 +1,30 @@
+.add-manga-form {
+  position: relative;
+
+  .more-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+  }
+}
+
+.picture-preview {
+  position: absolute;
+  left: 0;
+  top: -1rem;
+  transform: translateY(-100%);
+  width: 100px;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 100;
+
+  transition: opacity 0.2s ease-in-out;
+}
+
+.picture-preview-trigger {
+  &:hover {
+    .picture-preview {
+      opacity: 1;
+    }
+  }
+}

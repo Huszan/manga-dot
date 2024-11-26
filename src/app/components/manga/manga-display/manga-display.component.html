@@ -33,8 +33,8 @@
                 mat-flat-button
                 color="accent"
                 [routerLink]="['/manga/browse']"
-                [disabled]="!allTags.includes(genre.toLowerCase())"
-                [queryParams]="{ tags: allTags.indexOf(genre.toLowerCase()) }"
+                [disabled]="!allTags.includes(genre)"
+                [queryParams]="{ tags: allTags.indexOf(genre) }"
               >
                 {{ genre }}
               </a>
@@ -65,7 +65,7 @@
         </div>
         <button mat-button color="primary" (click)="onLike()">
           <mat-icon
-            *ngIf="!isLikedByUser && manga && manga.chapters"
+            *ngIf="!isLikedByUser"
             style="margin-right: 8px"
             color="primary"
             >thumb_up</mat-icon
@@ -90,6 +90,19 @@
           (click)="onDelete()"
         >
           <mat-icon>delete</mat-icon>
+        </button>
+        <button
+          *ngIf="
+            this.user &&
+            this.user.accountType &&
+            this.user.accountType === 'admin'
+          "
+          mat-flat-button
+          class="edit-button"
+          [color]="'accent'"
+          (click)="onEdit()"
+        >
+          <mat-icon>edit</mat-icon>
         </button>
         <button
           *ngIf="this.user"

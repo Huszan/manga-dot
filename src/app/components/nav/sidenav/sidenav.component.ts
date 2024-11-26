@@ -42,8 +42,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToRoutes() {
-    return this._routingModule.availableRoutes.subscribe((routes) => {
-      this.routes = routes;
+    return this._routingModule.availableRoutes.subscribe((val) => {
+      this.routes = val;
       this._cdr.detectChanges();
     });
   }
@@ -53,12 +53,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.user = user;
       this._cdr.detectChanges();
     });
-  }
-
-  getDisplay(index: number) {
-    return this._routingModule.getTitleDisplay(
-      String(this.routes[index].title)
-    );
   }
 
   onLogoutClick() {

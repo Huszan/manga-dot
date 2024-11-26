@@ -13,46 +13,58 @@ import { AuthService } from './services/data/auth.service';
 import { UserType } from './types/user.type';
 import { BehaviorSubject } from 'rxjs';
 import { ContactFormComponent } from './components/views/contact-form/contact-form.component';
+import { EditMangaFormComponent } from './components/manga/edit-manga-form/edit-manga-form.component';
 
 const routes: Routes = [
   {
     title: 'Manga dot | Home',
     path: '',
-    data: { icon: 'home' },
+    data: { icon: 'home', sidebarDisplay: 'Home' },
     component: HomeViewComponent,
   },
   {
     title: 'Manga dot | Browse',
     path: 'manga/browse',
-    data: { icon: 'manage_search' },
+    data: { icon: 'manage_search', sidebarDisplay: 'Browse' },
     component: MangaBrowseComponent,
   },
   {
-    title: 'Manga dot | Add new',
+    title: 'Manga dot | Add manga',
     path: 'manga/add',
     canActivate: [AuthGuard],
-    data: { roles: ['admin', 'mod'], icon: 'add' },
+    data: { roles: ['admin', 'mod'], icon: 'add', sidebarDisplay: 'Add manga' },
     component: CreateMangaFormComponent,
+  },
+  {
+    title: 'Manga dot | Edit manga',
+    path: 'manga/:id/edit',
+    canActivate: [AuthGuard],
+    data: { roles: ['admin', 'mod'] },
+    component: EditMangaFormComponent,
   },
   {
     title: 'Manga dot | Contact',
     path: 'contact',
-    data: { icon: 'email' },
+    data: { icon: 'email', sidebarDisplay: 'Contact' },
     component: ContactFormComponent,
   },
   {
+    title: 'Manga dot | Preview',
     path: 'manga/:id',
     component: MangaDisplayComponent,
   },
   {
+    title: 'Manga dot | Read',
     path: 'manga/:id/:chapter',
     component: MangaChapterComponent,
   },
   {
+    title: 'Manga dot | Login',
     path: 'login',
     component: LoginFormComponent,
   },
   {
+    title: 'Manga dot | Register',
     path: 'register',
     component: RegisterFormComponent,
   },
@@ -60,7 +72,7 @@ const routes: Routes = [
     path: 'activate',
     component: ActivateAccountComponent,
   },
-  { path: '**', redirectTo: '' },
+  { title: 'Manga dot | Redirect', path: '**', redirectTo: '' },
 ];
 
 const routerOptions: ExtraOptions = {
@@ -89,7 +101,7 @@ export class AppRoutingModule {
   private _collectAvailableRoutes(user?: UserType) {
     let currentAvailable: Routes = [];
     routes.forEach((el) => {
-      if (el.redirectTo === undefined && el.title != undefined) {
+      if (el.data && el.data['sidebarDisplay']) {
         if (el.data && el.data['roles']) {
           if (el.data['roles'].includes(user?.accountType)) {
             currentAvailable.push(el);
