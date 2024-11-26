@@ -15,11 +15,9 @@ export class MangaService {
 
   requestManga(mangaId: number): Promise<void> {
     return new Promise((res, rej) => {
-      let manga = this.selectedManga$.value;
-      if (manga && manga.id === mangaId) return res();
-      else this.selectedManga$.next(null);
+      this.selectedManga$.next(null);
 
-      this.mangaHttp.getManga(mangaId.toString()).subscribe((serverRes) => {
+      this.mangaHttp.getManga(mangaId).subscribe((serverRes) => {
         if (serverRes.status === 'error' || !serverRes.data.manga) {
           this.selectedManga$.next(null);
           return rej();
@@ -33,7 +31,7 @@ export class MangaService {
 
   requestChapters(mangaId: number): Promise<void> {
     return new Promise(async (res, rej) => {
-      await this.requestManga(mangaId);
+      if (!this.selectedManga$.value) await this.requestManga(mangaId);
       const manga = this.selectedManga$.value;
       if (!manga) return rej();
       if (manga.id === mangaId && manga.chapters) return res();

@@ -13,6 +13,7 @@ import { AuthService } from './services/data/auth.service';
 import { UserType } from './types/user.type';
 import { BehaviorSubject } from 'rxjs';
 import { ContactFormComponent } from './components/views/contact-form/contact-form.component';
+import { EditMangaFormComponent } from './components/manga/edit-manga-form/edit-manga-form.component';
 
 const routes: Routes = [
   {
@@ -28,11 +29,17 @@ const routes: Routes = [
     component: MangaBrowseComponent,
   },
   {
-    title: 'Manga dot | Add new',
+    title: 'Manga dot | Add manga',
     path: 'manga/add',
     canActivate: [AuthGuard],
     data: { roles: ['admin', 'mod'], icon: 'add' },
     component: CreateMangaFormComponent,
+  },
+  {
+    path: 'manga/:id/edit',
+    canActivate: [AuthGuard],
+    data: { roles: ['admin', 'mod'] },
+    component: EditMangaFormComponent,
   },
   {
     title: 'Manga dot | Contact',

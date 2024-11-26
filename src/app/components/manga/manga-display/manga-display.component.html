@@ -92,6 +92,19 @@
           <mat-icon>delete</mat-icon>
         </button>
         <button
+          *ngIf="
+            this.user &&
+            this.user.accountType &&
+            this.user.accountType === 'admin'
+          "
+          mat-flat-button
+          class="edit-button"
+          [color]="'accent'"
+          (click)="onEdit()"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
           *ngIf="this.user"
           class="continue-button"
           mat-flat-button

@@ -8,10 +8,11 @@ import { AuthService } from '../data/auth.service';
 import { generateGenericHeaders } from 'src/app/utils/route.utils';
 import { RepositoryFindOptions } from 'src/app/types/repository-find-options.type';
 import { ReadProgressService } from '../data/read-progress.service';
-import { HtmlLocateType } from 'src/app/types/html-locate.type';
+import { MangaType } from 'src/app/types/manga.type';
 
 enum MANGA_ROUTE {
   POST = 'manga',
+  PUT = 'manga/:mangaId',
   GET_MANGAS = 'manga/:mangaId',
   GET_CHAPTERS = 'manga/:mangaId/chapters',
   GET_PAGES = 'manga/:mangaId/chapters/:chapterId/pages',
@@ -38,13 +39,20 @@ export class MangaHttpService {
   }
 
   getManga(
-    id?: string,
+    id?: number,
     options?: RepositoryFindOptions,
     bigSearch?: string
   ): Observable<ServerResponse> {
     let route = this._routeUrl(
       `${MANGA_ROUTE.GET_MANGAS.replace('/:mangaId', id ? `/${id}` : '')}`
     );
+    options = {
+      ...options,
+      relations: {
+        ...options?.relations,
+        likes: true,
+      },
+    };
 
     const addDate = (res: ServerResponse) => {
       if (res.data && res.data.manga) {
@@ -94,16 +102,12 @@ export class MangaHttpService {
     ) as Observable<ServerResponse>;
   }
 
-  postManga(
-    mangaForm: any,
-    htmlLocateList?: HtmlLocateType[]
-  ): Observable<ServerResponse> {
+  postManga(manga: MangaType): Observable<ServerResponse> {
     return this.http
       .post<ServerResponse>(
         this._routeUrl(MANGA_ROUTE.POST).toString(),
         {
-          manga: mangaForm,
-          htmlLocateList,
+          manga,
         },
         {
           headers: generateGenericHeaders(this._authService),
@@ -114,6 +118,22 @@ export class MangaHttpService {
           return of(err.error as ServerResponse);
         })
       ) as Observable<ServerResponse>;
+  }
+
+  updateManga(manga: MangaType): Observable<ServerResponse> {
+    const path = MANGA_ROUTE.PUT.replace('/:mangaId', `/${manga.id}`);
+    let headers = generateGenericHeaders(this._authService);
+    return this.http
+      .put<ServerResponse>(
+        this._routeUrl(path).toString(),
+        { manga },
+        { headers }
+      )
+      .pipe(
+        catchError((err) => {
+          return of(err.error as ServerResponse);
+        })
+      );
   }
 
   removeManga(manga: any): Observable<ServerResponse> {

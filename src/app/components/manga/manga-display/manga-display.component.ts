@@ -175,6 +175,10 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
     });
   }
 
+  onEdit() {
+    this.router.navigate(['/manga', this.mangaId, 'edit']);
+  }
+
   ngOnDestroy() {
     this._userSub.unsubscribe();
     this._mangaSub.unsubscribe();
