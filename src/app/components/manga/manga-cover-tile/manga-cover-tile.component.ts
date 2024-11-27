@@ -42,7 +42,9 @@ export class MangaCoverTileComponent implements OnInit, OnDestroy {
   ) {}
 
   get imageUrl(): string {
-    return this.manga!.imagePath ? this.manga!.imagePath : this.manga!.pic;
+    return this.manga!.imagePath
+      ? this.manga.imagePath.replace(/'/g, '%27')
+      : this.manga!.pic;
   }
 
   ngOnInit() {
