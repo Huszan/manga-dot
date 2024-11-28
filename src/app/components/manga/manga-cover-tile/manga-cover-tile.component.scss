@@ -47,9 +47,13 @@
     }
   }
 
+  ::ng-deep .image-container {
+    transition: scale 0.2s ease-out;
+  }
+
   .manga-container:hover,
   .manga-container:focus {
-    .image-container {
+    ::ng-deep .image-container {
       scale: 105%;
     }
     .manga-title,
