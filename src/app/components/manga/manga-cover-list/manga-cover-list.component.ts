@@ -2,11 +2,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
-  Output,
 } from '@angular/core';
 import { MangaType } from '../../../types/manga.type';
 import { UserType } from '../../../types/user.type';
@@ -15,7 +13,6 @@ import { MangaService } from '../../../services/data/manga.service';
 import { MangaHttpService } from '../../../services/http/manga-http.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../../services/data/auth.service';
-import { AccountType } from '../../../services/http/auth-http.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -33,16 +30,10 @@ export class MangaCoverListComponent implements OnInit, OnDestroy {
 
   constructor(
     private _mangaService: MangaService,
-    private _mangaHttpService: MangaHttpService,
-    private _snackbar: MatSnackBar,
     private _auth: AuthService,
     private _cdr: ChangeDetectorRef,
     private _router: Router
   ) {}
-
-  get imageUrl(): string {
-    return this.manga!.imagePath ? this.manga!.imagePath : this.manga!.pic;
-  }
 
   ngOnInit() {
     this.userSub = this._auth.currentUser$.subscribe((user) => {

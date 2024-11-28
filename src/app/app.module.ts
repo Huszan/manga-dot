@@ -60,6 +60,7 @@ import { MangaCoverTileActionBarComponent } from './components/manga/manga-cover
 import { MangaCoverTileProgressBarComponent } from './components/manga/manga-cover-tile-progress-bar/manga-cover-tile-progress-bar.component';
 import { ExpendableContentDirective } from './directives/expendable-content.directive';
 import { EditMangaFormComponent } from './components/manga/edit-manga-form/edit-manga-form.component';
+import { ImageContainerComponent } from './components/global/image-container/image-container.component';
 
 function initializeApp(authService: AuthService) {
   return () => authService.initialize();
@@ -95,6 +96,7 @@ function initializeApp(authService: AuthService) {
     MangaCoverTileActionBarComponent,
     MangaCoverTileProgressBarComponent,
     ExpendableContentDirective,
+    ImageContainerComponent,
   ],
   imports: [
     BrowserModule,

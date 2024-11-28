@@ -11,7 +11,12 @@
   >
     <div class="bg"></div>
     <div class="display-container cf">
-      <img class="logo" [src]="imageUrl" />
+      <div class="logo">
+        <app-image-container
+          [primaryUrl]="manga!.imagePath"
+          [fallbackUrl]="manga!.pic"
+        ></app-image-container>
+      </div>
       <p class="mat-display-3 title">
         <span
           ><b>{{ manga!.name.toUpperCase() }}</b></span

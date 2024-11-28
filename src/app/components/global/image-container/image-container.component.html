@@ -1,0 +1,17 @@
+<ng-container *ngIf="imageUrl.value; else skeleton">
+  <div
+    [ngClass]="imageClass"
+    class="image-container"
+    [style.background-image]="'url(' + imageUrl.value + ')'"
+  ></div>
+</ng-container>
+
+<ng-template #skeleton>
+  <ngx-skeleton-loader
+    count="1"
+    class="manga-container not-intractable"
+    [style]="{ display: 'block', width: '100%', height: '100%' }"
+    [theme]="{ display: 'block', width: '100%', height: '100%' }"
+  >
+  </ngx-skeleton-loader>
+</ng-template>

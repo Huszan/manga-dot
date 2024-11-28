@@ -5,10 +5,10 @@
       [style]="{ width: size ? size * 10 + 'px' : '' }"
       (click)="onClickRead()"
     >
-      <div
-        class="image-container"
-        [style.background-image]="'url(' + imageUrl + ')'"
-      ></div>
+      <app-image-container
+        [primaryUrl]="manga.imagePath"
+        [fallbackUrl]="manga.pic"
+      ></app-image-container>
       <span class="manga-title mat-body-2">{{ manga.name }}</span>
       <span class="manga-info">{{ manga.chapterCount }} chapters</span>
     </button>
