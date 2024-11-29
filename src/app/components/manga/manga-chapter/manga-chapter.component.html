@@ -53,13 +53,13 @@
       mat-icon-button
       color="primary"
       class="back-button"
-      (click)="goToChapterSelect()"
+      [routerLink]="['/manga', mangaId]"
     >
       <mat-icon>arrow_backward</mat-icon>
     </a>
     <span class="mat-display-2 title" *ngIf="isInitialized; else skeletonTitle">
       <ng-container>
-        <a (click)="goToChapterSelect()">{{ manga!.name }}</a>
+        <a [routerLink]="['/manga', mangaId]">{{ manga!.name }}</a>
       </ng-container>
       :&nbsp;
       <ng-container>
@@ -89,22 +89,24 @@
       </div>
     </ng-container>
     <div class="button-wrapper">
-      <button
+      <a
+        class="nav-prev"
         mat-flat-button
         color="accent"
         [disabled]="isFirstChapter"
-        (click)="navigateToPreviousChapter()"
+        [routerLink]="['/manga', mangaId, chapterId - 1]"
       >
         Previous
-      </button>
-      <button
+      </a>
+      <a
+        class="nav-next"
         mat-flat-button
         color="accent"
         [disabled]="isLastChapter"
-        (click)="navigateToNextChapter()"
+        [routerLink]="['/manga', mangaId, chapterId + 1]"
       >
         Next
-      </button>
+      </a>
     </div>
   </div>
 </ng-template>

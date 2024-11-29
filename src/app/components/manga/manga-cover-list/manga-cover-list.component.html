@@ -1,15 +1,23 @@
 <div class="manga-container-wrapper">
   <ng-container *ngIf="manga; else skeleton">
-    <button class="manga-container" (click)="onClickRead()">
+    <a
+      class="manga-container"
+      [routerLink]="['/manga', this.manga.id]"
+      (click)="onClickRead()"
+    >
       <app-image-container
         [primaryUrl]="manga.imagePath"
         [fallbackUrl]="manga.pic"
       ></app-image-container>
-    </button>
+    </a>
     <div class="info-box">
-      <button class="manga-title mat-h2" (click)="onClickRead()">
+      <a
+        class="manga-title mat-h2"
+        [routerLink]="['/manga', this.manga.id]"
+        (click)="onClickRead()"
+      >
         <span>{{ manga.name }}</span>
-      </button>
+      </a>
       <div class="manga-info">
         <span><b>Chapters: </b>{{ manga.chapterCount }} chapters</span>
       </div>

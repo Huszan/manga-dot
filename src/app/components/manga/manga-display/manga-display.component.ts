@@ -88,14 +88,18 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
   private _initializeProgress() {
     this._progressSub = this._readProgressService.readProgressList$.subscribe(
       (list) => {
-        if (this.manga === null) return;
-        const progress = list?.filter((el) => el.mangaId === this.manga!.id)[0];
-        if (progress) {
-          this.readProgress = progress;
-          this._cdr.detectChanges();
-        }
+        this.checkProgress(list);
+        this._cdr.detectChanges();
       }
     );
+  }
+
+  checkProgress(list: ReadProgressType[] | null) {
+    if (!list) return;
+    const progress = list?.filter((el) => el.mangaId === this.mangaId)[0];
+    if (progress) {
+      this.readProgress = progress;
+    }
   }
 
   get isLikedByUser() {
@@ -113,7 +117,7 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
   onLike() {
     if (!this.user) {
       this._snackbar.open('You need to be logged in', 'Close', {
-        duration: 8000,
+        duration: 4000,
       });
       return;
     }
@@ -125,20 +129,9 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
       if (res.status === 'success') {
         this.mangaService.updateLikes();
       } else if (res.message) {
-        this._snackbar.open(res.message, 'Close', { duration: 8000 });
+        this._snackbar.open(res.message, 'Close', { duration: 4000 });
       }
     });
-  }
-
-  onChapterSelect(chapter: number) {
-    this.router.navigate(['manga', this.mangaId, chapter]);
-  }
-
-  onContinueReading() {
-    this.router.navigate(
-      ['manga', this.mangaId, this.readProgress?.lastReadChapter],
-      { queryParams: { lastReadPage: this.readProgress?.lastReadPage } }
-    );
   }
 
   onDelete() {
@@ -173,10 +166,6 @@ export class MangaDisplayComponent implements OnInit, OnDestroy {
         );
       }
     });
-  }
-
-  onEdit() {
-    this.router.navigate(['/manga', this.mangaId, 'edit']);
   }
 
   ngOnDestroy() {

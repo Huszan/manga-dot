@@ -1,7 +1,20 @@
-
 <span class="input-wrapper">
-  <input placeholder="Search..." [value]="searchString" (input)="searchValueChange($event)" (keyup.enter)="onSearch()">
-  <button (click)="onSearch()">
+  <input
+    placeholder="Search..."
+    [value]="searchString"
+    (input)="searchValueChange($event)"
+    (keyup.enter)="onEnter()"
+  />
+  <a
+    #navAnchor
+    mat-flat-button
+    [color]="'accent'"
+    [disabled]="!searchString || searchString === ''"
+    [routerLink]="route"
+    [queryParams]="queryParams"
+    [queryParamsHandling]="'merge'"
+    (click)="clearSearchInput()"
+  >
     <mat-icon color="primary">search</mat-icon>
-  </button>
+  </a>
 </span>

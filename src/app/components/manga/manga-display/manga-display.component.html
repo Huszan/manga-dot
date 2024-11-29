@@ -96,7 +96,7 @@
         >
           <mat-icon>delete</mat-icon>
         </button>
-        <button
+        <a
           *ngIf="
             this.user &&
             this.user.accountType &&
@@ -105,21 +105,22 @@
           mat-flat-button
           class="edit-button"
           [color]="'accent'"
-          (click)="onEdit()"
+          [routerLink]="['/manga', mangaId, 'edit']"
         >
           <mat-icon>edit</mat-icon>
-        </button>
-        <button
+        </a>
+        <a
           *ngIf="this.user"
           class="continue-button"
           mat-flat-button
           color="accent"
-          [disabled]="!this.readProgress"
-          (click)="onContinueReading()"
+          [disabled]="!readProgress"
+          [routerLink]="['/manga', mangaId, readProgress?.lastReadChapter]"
+          [queryParams]="{ lastReadPage: readProgress?.lastReadPage }"
         >
           Continue reading
           <mat-icon>arrow_forward</mat-icon>
-        </button>
+        </a>
       </div>
     </div>
   </div>
@@ -129,13 +130,18 @@
     <ul class="chapter-list-wrapper p-8">
       <ng-container *ngIf="manga && manga.chapters; else skeleton">
         <ng-container *ngFor="let chapter of manga!.chapters; let i = index">
-          <li class="chapter-wrapper" (click)="onChapterSelect(i)">
-            <span mat-button class="name-wrapper">
+          <li class="chapter-wrapper">
+            <a class="name-wrapper" [routerLink]="['/manga', this.mangaId, i]">
               {{ chapter.name }}
-            </span>
-            <button mat-icon-button color="primary" class="read-button">
+            </a>
+            <a
+              mat-icon-button
+              color="primary"
+              class="read-button"
+              [routerLink]="['/manga', this.mangaId, i]"
+            >
               <mat-icon>arrow_forward</mat-icon>
-            </button>
+            </a>
           </li>
         </ng-container>
       </ng-container>

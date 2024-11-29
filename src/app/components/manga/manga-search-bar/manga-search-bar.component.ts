@@ -1,10 +1,5 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ViewChild,
-} from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { MatAnchor } from '@angular/material/button';
 
 @Component({
   selector: 'app-manga-search-bar',
@@ -13,27 +8,29 @@ import { NavigationExtras, Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MangaSearchBarComponent {
+  @ViewChild('navAnchor') navAnchor!: MatAnchor;
   searchString: string = '';
 
-  constructor(private router: Router) {}
+  constructor() {}
 
   searchValueChange(event: any) {
     this.searchString = event.target.value;
   }
 
-  onSearch() {
-    if (this.searchString.length <= 0) return;
-    // Forces refresh on manga browse
-    const dummyUrl = '/';
-    const queryParams = { search: this.searchString };
-    const navigationExtras: NavigationExtras = {
-      queryParams,
-      queryParamsHandling: 'merge',
-    };
-    this.router.navigateByUrl(dummyUrl).then(() => {
-      this.router.navigate(['/manga/browse'], navigationExtras).then(() => {
-        this.searchString = '';
-      });
-    });
+  get queryParams() {
+    return { search: this.searchString };
+  }
+
+  get route() {
+    return ['/manga/browse'];
+  }
+
+  onEnter() {
+    this.navAnchor._elementRef.nativeElement.click();
+    this.clearSearchInput();
+  }
+
+  clearSearchInput() {
+    this.searchString = '';
   }
 }

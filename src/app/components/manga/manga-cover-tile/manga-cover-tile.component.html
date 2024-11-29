@@ -1,7 +1,8 @@
 <div class="manga-container-wrapper">
   <ng-container *ngIf="manga; else skeleton">
-    <button
+    <a
       class="manga-container"
+      [routerLink]="['/manga', manga.id]"
       [style]="{ width: size ? size * 10 + 'px' : '' }"
       (click)="onClickRead()"
     >
@@ -10,8 +11,10 @@
         [fallbackUrl]="manga.pic"
       ></app-image-container>
       <span class="manga-title mat-body-2">{{ manga.name }}</span>
-      <span class="manga-info">{{ manga.chapterCount }} chapters</span>
-    </button>
+      <span class="manga-info mat-body-1"
+        >{{ manga.chapterCount }} chapters</span
+      >
+    </a>
   </ng-container>
   <ng-template #skeleton>
     <ngx-skeleton-loader

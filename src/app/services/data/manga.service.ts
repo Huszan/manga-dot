@@ -31,7 +31,11 @@ export class MangaService {
 
   requestChapters(mangaId: number): Promise<void> {
     return new Promise(async (res, rej) => {
-      if (!this.selectedManga$.value) await this.requestManga(mangaId);
+      if (
+        !this.selectedManga$.value ||
+        this.selectedManga$.value.id !== mangaId
+      )
+        await this.requestManga(mangaId);
       const manga = this.selectedManga$.value;
       if (!manga) return rej();
       if (manga.id === mangaId && manga.chapters) return res();

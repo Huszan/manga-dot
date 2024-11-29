@@ -328,7 +328,7 @@ export class CreateMangaFormComponent {
       this._snackbar.open(
         'Testing successful. Click submit to add manga to database!',
         'Close',
-        { duration: 8000 }
+        { duration: 4000 }
       );
     } else {
       this._snackbar.open(
@@ -346,7 +346,7 @@ export class CreateMangaFormComponent {
     this._mangaHttpService.postManga(this.lastTestedForm).subscribe((res) => {
       if (res.status === 'success') {
         this._snackbar.open('Successfully added manga to database!', 'Close', {
-          duration: 8000,
+          duration: 4000,
         });
         this.clearForm();
       } else {
@@ -354,7 +354,7 @@ export class CreateMangaFormComponent {
           res.message ? res.message : 'Something went wrong. Try again later',
           'Close',
           {
-            duration: 8000,
+            duration: 4000,
           }
         );
       }

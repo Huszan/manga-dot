@@ -44,7 +44,6 @@ export class MangaCoverListComponent implements OnInit, OnDestroy {
 
   onClickRead() {
     this._mangaService.selectedManga$.next(this.manga);
-    this._router.navigate(['manga', this.manga.id]);
   }
 
   ngOnDestroy() {

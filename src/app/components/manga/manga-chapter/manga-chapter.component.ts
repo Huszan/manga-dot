@@ -57,6 +57,7 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     this._initSubToParams();
     this._initSubToQueryParams();
     this._initMangaSub();
+    console.log(this.manga);
   }
 
   pageWrapperClass(i: number): string {
@@ -121,20 +122,6 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
       this.manga.chapters &&
       this.manga.chapters[this.chapterId].pages
     );
-  }
-
-  goToChapterSelect() {
-    this._router.navigate(['/manga', this.mangaId]);
-  }
-
-  navigateToPreviousChapter() {
-    if (this.isFirstChapter) return;
-    this.navigateToChapter(this.chapterId - 1);
-  }
-
-  navigateToNextChapter() {
-    if (this.isLastChapter) return;
-    this.navigateToChapter(this.chapterId + 1);
   }
 
   navigateToChapter(chapter: number) {

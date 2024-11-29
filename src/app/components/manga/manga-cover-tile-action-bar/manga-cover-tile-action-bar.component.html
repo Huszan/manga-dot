@@ -7,7 +7,7 @@
     <div class="action-bar">
       <ng-container *ngFor="let button of actionButtonList">
         <button
-          *ngIf="button.isActive"
+          *ngIf="button.isActive && !button.navigation; else anchorTag"
           mat-flat-button
           [color]="button.color"
           (click)="
@@ -19,17 +19,31 @@
           <mat-icon>{{ button.icon }}</mat-icon>
           {{ button.name }}
         </button>
+        <ng-template #anchorTag>
+          <a
+            *ngIf="button.isActive"
+            mat-flat-button
+            [color]="button.color"
+            (click)="button.action()"
+            [routerLink]="button.navigation?.commands"
+            [queryParams]="button.navigation?.queryParams"
+          >
+            <mat-icon>{{ button.icon }}</mat-icon>
+            {{ button.name }}
+          </a>
+        </ng-template>
       </ng-container>
     </div>
   </div>
 </ng-template>
 
 <ng-template #actionBarSkeleton>
-  <div class="action-bar-wrapper">
+  <div class="manga-cover-tile--action-bar-wrapper">
     <ngx-skeleton-loader
       count="1"
       class="manga-container not-intractable"
       [style]="{ width: '100%', height: '100%' }"
+      [theme]="{ width: '100%', height: '100%' }"
     >
     </ngx-skeleton-loader>
   </div>

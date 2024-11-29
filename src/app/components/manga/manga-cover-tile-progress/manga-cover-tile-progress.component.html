@@ -7,6 +7,6 @@
   ></app-manga-cover-tile-progress-bar>
 
   <app-manga-cover-tile-action-bar
-    [actionButtonList]="manga ? actions : undefined"
+    [actionButtonList]="manga && actions.length > 0 ? actions : undefined"
   ></app-manga-cover-tile-action-bar>
 </div>

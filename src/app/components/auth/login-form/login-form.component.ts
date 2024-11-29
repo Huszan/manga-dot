@@ -82,12 +82,12 @@ export class LoginFormComponent {
               : 'Something went wrong. Try again later.',
             'Close',
             {
-              duration: 8000,
+              duration: 4000,
             }
           );
         } else {
           this._snackbar.open(res.message ? res.message : 'Success!', 'Close', {
-            duration: 8000,
+            duration: 4000,
           });
           this.resetForm();
           this._router.navigate(['']);
@@ -102,7 +102,7 @@ export class LoginFormComponent {
     dialogRef.afterClosed().subscribe((res) => {
       if (res && res.message) {
         this._snackbar.open(res.message, 'Close', {
-          duration: 8000,
+          duration: 4000,
         });
       }
     });
@@ -113,7 +113,7 @@ export class LoginFormComponent {
     dialogRef.afterClosed().subscribe((res) => {
       if (res && res.message) {
         this._snackbar.open(res.message, 'Close', {
-          duration: 8000,
+          duration: 4000,
         });
       }
     });

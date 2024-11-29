@@ -26,24 +26,7 @@ export class MangaCoverTileProgressComponent implements OnDestroy {
   subscriptions: Subscription[] = [];
   readProgress: ReadProgressType | undefined;
 
-  actions: ActionButton[] = [
-    {
-      name: 'Continue reading',
-      icon: 'import_contacts',
-      color: 'accent',
-      isActive: true,
-      action: () => this.onContinueReading(),
-    },
-    {
-      icon: 'close',
-      isActive: true,
-      confirmData: {
-        title: `Are you sure you want to remove your reading progress?`,
-        desc: `This action can't be reversed`,
-      },
-      action: () => this.onRemoveProgress(),
-    },
-  ];
+  actions: ActionButton[] = [];
 
   progressBarConfig = {
     wrapperStyle: 'position: absolute; transform: translateY(-100%)',
@@ -63,12 +46,34 @@ export class MangaCoverTileProgressComponent implements OnDestroy {
     this.subscriptions.push(readProgressSub);
   }
 
-  onContinueReading() {
+  initializeActions() {
     if (!this.readProgress) return;
-    this._router.navigate(
-      ['manga', this.readProgress.mangaId, this.readProgress?.lastReadChapter],
-      { queryParams: { lastReadPage: this.readProgress?.lastReadPage } }
-    );
+    this.actions = [
+      {
+        name: 'Continue reading',
+        icon: 'import_contacts',
+        color: 'accent',
+        isActive: true,
+        navigation: {
+          commands: [
+            'manga',
+            this.readProgress.mangaId,
+            this.readProgress?.lastReadChapter,
+          ],
+          queryParams: { lastReadPage: this.readProgress?.lastReadPage },
+        },
+        action: () => {},
+      },
+      {
+        icon: 'close',
+        isActive: true,
+        confirmData: {
+          title: `Are you sure you want to remove your reading progress?`,
+          desc: `This action can't be reversed`,
+        },
+        action: () => this.onRemoveProgress(),
+      },
+    ];
   }
 
   onRemoveProgress() {
@@ -81,6 +86,7 @@ export class MangaCoverTileProgressComponent implements OnDestroy {
     this.readProgress = this._readProgressList.find(
       (val) => val.mangaId === this.manga.id
     );
+    this.initializeActions();
     this._cdr.detectChanges();
   }
 

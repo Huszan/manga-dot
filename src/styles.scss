@@ -385,3 +385,10 @@ $altTheme: (
 .mat-card {
   padding: 0 !important;
 }
+
+a.mat-button-disabled,
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+  text-decoration: none;
+}

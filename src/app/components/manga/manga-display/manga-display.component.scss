@@ -71,13 +71,13 @@ $logo-w: 200px;
 
     .chapter-wrapper {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       padding: 0 15px;
       column-gap: 0.5rem;
 
       .name-wrapper {
-        width: 100%;
+        padding: 10px 30px 10px 15px;
       }
 
       &:nth-child(even) {

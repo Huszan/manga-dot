@@ -85,12 +85,12 @@ export class RegisterFormComponent {
           res.message ? res.message : 'Something went wrong. Try again later.',
           'Close',
           {
-            duration: 8000,
+            duration: 4000,
           }
         );
       } else {
         this._snackbar.open(res.message ? res.message : 'Success!', 'Close', {
-          duration: 8000,
+          duration: 4000,
         });
         this.resetForm();
         this._router.navigate(['']);

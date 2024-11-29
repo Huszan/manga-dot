@@ -82,7 +82,8 @@
       align-items: center;
       gap: 1rem;
 
-      button {
+      .nav-prev,
+      .nav-next {
         width: 130px;
       }
     }

@@ -6,5 +6,6 @@ export interface ActionButton {
   color?: 'primary' | 'accent' | 'warn';
   isActive: boolean;
   confirmData?: ConfirmDialogData;
+  navigation?: { commands: any[]; queryParams: any };
   action: () => void;
 }
