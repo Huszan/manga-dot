@@ -57,7 +57,6 @@ export class MangaChapterComponent implements OnInit, OnDestroy {
     this._initSubToParams();
     this._initSubToQueryParams();
     this._initMangaSub();
-    console.log(this.manga);
   }
 
   pageWrapperClass(i: number): string {

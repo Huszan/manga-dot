@@ -61,6 +61,7 @@ import { MangaCoverTileProgressBarComponent } from './components/manga/manga-cov
 import { ExpendableContentDirective } from './directives/expendable-content.directive';
 import { EditMangaFormComponent } from './components/manga/edit-manga-form/edit-manga-form.component';
 import { ImageContainerComponent } from './components/global/image-container/image-container.component';
+import { HorizontalScrollDirective } from './directives/horizontal-scroll.directive';
 
 function initializeApp(authService: AuthService) {
   return () => authService.initialize();
@@ -97,6 +98,7 @@ function initializeApp(authService: AuthService) {
     MangaCoverTileProgressBarComponent,
     ExpendableContentDirective,
     ImageContainerComponent,
+    HorizontalScrollDirective,
   ],
   imports: [
     BrowserModule,

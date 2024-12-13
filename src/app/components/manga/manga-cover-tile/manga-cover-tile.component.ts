@@ -25,6 +25,7 @@ export class MangaCoverTileComponent implements OnInit, OnDestroy {
 
   user: UserType | null = null;
   imageUrl?: string;
+  isMouseMoved = false;
 
   private userSub!: Subscription;
 
@@ -42,8 +43,34 @@ export class MangaCoverTileComponent implements OnInit, OnDestroy {
     });
   }
 
-  onClickRead() {
+  onClickRead(e: MouseEvent) {
+    if (this.isMouseMoved) {
+      e.preventDefault();
+      return;
+    }
     this._mangaService.selectedManga$.next(this.manga);
+  }
+
+  onMouseDown(event: MouseEvent): void {
+    if (event.button === 0) {
+      event.preventDefault();
+    }
+    this.isMouseMoved = false;
+
+    const mouseMoveListener = () => {
+      this.isMouseMoved = true;
+      this._cdr.detectChanges();
+      window.removeEventListener('mousemove', mouseMoveListener);
+    };
+
+    window.addEventListener('mousemove', mouseMoveListener);
+
+    const mouseUpListener = () => {
+      window.removeEventListener('mousemove', mouseMoveListener);
+      window.removeEventListener('mouseup', mouseUpListener);
+    };
+
+    window.addEventListener('mouseup', mouseUpListener);
   }
 
   ngOnDestroy() {

@@ -2,9 +2,10 @@
   <ng-container *ngIf="manga; else skeleton">
     <a
       class="manga-container"
-      [routerLink]="['/manga', manga.id]"
+      [routerLink]="isMouseMoved ? null : ['/manga', manga.id]"
       [style]="{ width: size ? size * 10 + 'px' : '' }"
-      (click)="onClickRead()"
+      (mousedown)="onMouseDown($event)"
+      (click)="onClickRead($event)"
     >
       <app-image-container
         [primaryUrl]="manga.imagePath"
